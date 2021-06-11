@@ -20,3 +20,9 @@ cd ../../
 
 # Checkout the analysis code
 git clone git@github.com:crovelli/RKAnalysis.git 
+git fetch crovelli
+git checkout -b master crovelli/master
+
+# Compile
+setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:../FastForest/build/
+make all
