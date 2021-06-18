@@ -68,7 +68,7 @@ void SkimmerWithKStar::Loop() {
   if (fChain == 0) return;
 
   // Load Analysis MVA weights for G.
-  std::string bdtfile = "models/xgbmodel_kee_final_12B_0.txt";
+  std::string bdtfile = "models/model_PFPF_george.txt";
   std::vector<std::string> feat = {"f0","f1", "f2","f3","f4","f5","f6","f7","f8","f9","f10","f11"};
   const auto fastForest = fastforest::load_txt(bdtfile.c_str(), feat);
   // Load Analysis MVA weights PFLP
@@ -762,6 +762,16 @@ void SkimmerWithKStar::Loop() {
 	bool isTagAMcEle   = (Electron_genPartIdx[ele1_idx]>-0.5);
 	bool isProbeAMcEle = (Electron_genPartIdx[ele2_idx]>-0.5);
 
+	if(isTagAMcEle){
+	  tag_ptMc.push_back(GenPart_pt[Electron_genPartIdx[ele1_idx]]);
+	}else{
+	  tag_ptMc.push_back(0.);
+	}
+	if(isProbeAMcEle){
+	  probe_ptMc.push_back(GenPart_pt[Electron_genPartIdx[ele2_idx]]);
+	}else{
+	  probe_ptMc.push_back(0.);
+	}
 	tag_matchMc.push_back(isTagAMcEle);
 	probe_matchMc.push_back(isProbeAMcEle);
 	tag_matchMcFromJPsi.push_back(isTagAMcEleFromJPsi);
@@ -772,6 +782,8 @@ void SkimmerWithKStar::Loop() {
 	probe_matchMcFromJPsi.push_back(0);  
 	tag_matchMc.push_back(0);  
 	probe_matchMc.push_back(0);  
+	tag_ptMc.push_back(0.);
+	probe_ptMc.push_back(0.);
       }
       
     } // Loop over good Bs
@@ -804,6 +816,8 @@ void SkimmerWithKStar::Loop() {
     tag_pfmvaId.clear();  
     tag_convveto.clear();
     if(sampleID>0){
+      tag_ptMc.clear();
+      probe_ptMc.clear();
       tag_matchMcFromJPsi.clear();  
       tag_matchMc.clear();
       bmatchMC.clear();
@@ -959,7 +973,11 @@ bool SkimmerWithKStar::isMcB( int theB ) {
   bool okMatch = (ele1_genPartIdx>-0.5 && ele2_genPartIdx>-0.5 && k_genPartIdx>-0.5);
   bool RK_res1 = abs(ele1_genMotherPdgId)==443 && abs(k_genMotherPdgId)==521;
   bool RK_res2 = (ele1_genMotherPdgId==ele2_genMotherPdgId) && (k_genMotherPdgId==ele1_genGMotherPdgId) && (k_genMotherPdgId==ele2_genGMotherPdgId);
-  bool RK_res = okMatch && RK_res1 && RK_res2;
+
+  bool RK_res3 = abs(ele1_genMotherPdgId)==521 && abs(k_genMotherPdgId)==521;
+  bool RK_res4 = (ele1_genMotherPdgId==ele2_genMotherPdgId) && (k_genMotherPdgId==ele1_genMotherPdgId) && (k_genMotherPdgId==ele2_genMotherPdgId);
+
+  bool RK_res = okMatch  && (( RK_res1 && RK_res2) || (RK_res3 &&RK_res4)) ;
 
   return RK_res;
 }
@@ -1024,6 +1042,8 @@ void SkimmerWithKStar::bookOutputTree()
   outTree_->Branch("tag_convveto", "std::vector<bool>", &tag_convveto);  
 
   if(sampleID>0){
+    outTree_->Branch("tag_ptMc", "std::vector<float>", &tag_ptMc);
+    outTree_->Branch("probe_ptMc", "std::vector<float>", &probe_ptMc);
     outTree_->Branch("tag_matchMcFromJPsi", "std::vector<bool>", &tag_matchMcFromJPsi);  
     outTree_->Branch("tag_matchMc", "std::vector<bool>", &tag_matchMc);  
   }

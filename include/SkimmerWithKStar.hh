@@ -90,6 +90,8 @@ private:
   vector <float> tag_pfmvaId={};
   vector <bool>  tag_matchMcFromJPsi={};
   vector <bool>  tag_matchMc={};
+  vector <float> tag_ptMc={};
+  vector <float> probe_ptMc={};
   vector <float> mll_fullfit={};
   vector <float> mll_raw={};
   vector <float> fit_mass={};
