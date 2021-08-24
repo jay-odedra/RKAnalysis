@@ -14,9 +14,7 @@
 #include "RooFit.h"
 #include "RooFitResult.h"
 #include "RooWorkspace.h"
-#include "RooDoubleCB.h"
 #include "RooCBShape.h"
-#include "RooGaussian.h"
 #include "RooStats/SPlot.h"
 
 #include "TFile.h"
@@ -37,14 +35,21 @@ void AddModel(RooWorkspace*, float, float);
 void DoSPlot(RooWorkspace*);
 void MakePlots(RooWorkspace*);
 void MakeHistos(RooWorkspace*);
-void getDataSet(const char *, RooWorkspace*, float, float);
+void getDataSet(const char *, RooWorkspace*, float, float, int);
 
-void B_splot()
+void B_splot(int wantPFPF)
 {
   // set range of observable
-  Float_t lowRange  = 4.5;   
-  Float_t highRange = 6.0;   
-
+  Float_t lowRange  = 0.;   
+  Float_t highRange = 10.;   
+  if (wantPFPF) {
+    lowRange  = 4.5;   
+    highRange = 6.0;   
+  } else {
+    lowRange  = 4.8;   
+    highRange = 5.8;   
+  }
+    
   // Create a new workspace to manage the project.
   RooWorkspace* wspace = new RooWorkspace("myWS");
   
@@ -53,7 +58,7 @@ void B_splot()
   AddModel(wspace, lowRange, highRange);
   
   // add dataset from converted root tree
-  getDataSet("/eos/cms/store/user/crovelli/LowPtEle/TnpDataB/March21noRegression/FormattedTnPForB_March21_ParkingBPH1and2_Run2018D_part1and2.root", wspace, lowRange, highRange);
+  getDataSet("/eos/cms/store/user/crovelli/LowPtEle/TnpDataB/March21noRegression/FormattedTnPForB_March21_ParkingBPH1and2_Run2018D_part1and2.root", wspace, lowRange, highRange, wantPFPF);
   
   // inspect the workspace if you wish
   wspace->Print();
@@ -82,7 +87,7 @@ void AddModel(RooWorkspace* ws, float lowRange, float highRange){
   // signal model
   std::cout << "make B model" << std::endl;
 
-  RooRealVar m1("m1", "B Mass", 5.278, 5.25, 5.30);                  
+  RooRealVar m1("m1", "B Mass", 5.278, 5.27, 5.28);                  
   RooRealVar sigma1("sigma1", "sigma1",  0.05, 0.02, 0.08);
   RooRealVar alpha1("alpha1", "alpha1",  1.85, 0.0, 10.);          
   RooRealVar n1("n1", "N1", 5., 0.0, 10.);        
@@ -329,7 +334,7 @@ void MakeHistos(RooWorkspace* ws){
 }
 
 // Convert ROOT tree in RooDataset
-void getDataSet(const char *rootfile, RooWorkspace *ws, float lowRange, float highRange) {    
+void getDataSet(const char *rootfile, RooWorkspace *ws, float lowRange, float highRange, int wantPFPF) {    
   
   cout << "roofitting file " << rootfile << endl;
   
@@ -354,28 +359,12 @@ void getDataSet(const char *rootfile, RooWorkspace *ws, float lowRange, float hi
 
   RooDataSet *data = new RooDataSet("data","data",tree,setall,0); 
 
-  // Inclusive, PF-PF
-  data = (RooDataSet*)data->reduce("pair_mass>3 && pair_mass<3.2 && probePfmvaId<20 && tagPfmvaId<20");
-  data->Print();
-
-  // Barrel:
-  // pt: 1-1.5 GeV    
-  // data = (RooDataSet*)data->reduce("hlt_9ip6==1 && probePt>1.0 && probePt<1.5 && probeEta<1.5 && probeEta>-1.5");      
-  // pT: 1.5-2 GeV
-  // data = (RooDataSet*)data->reduce("hlt_9ip6==1 && probePt>1.5 && probePt<2.0 && probeEta<1.5 && probeEta>-1.5");    
-  // pt: 2.0-5.0 GeV 
-  // data = (RooDataSet*)data->reduce("hlt_9ip6==1 && probePt>2.0 && probePt<5.0 && probeEta<1.5 && probeEta>-1.5");    
-  // pt: >5.0 GeV 
-  // data = (RooDataSet*)data->reduce("hlt_9ip6==1 && probePt>5.0 && probeEta<1.5 && probeEta>-1.5");    
-  //
-  // Endcap:
-  // pt: 1.0-2.0 GeV - test
-  // data = (RooDataSet*)data->reduce("hlt_9ip6==1 && probePt>1.0 && probePt<2.0 && (probeEta<-1.5 || probeEta>1.5)");    
-  // pt: 2.0-5.0 GeV 
-  // data = (RooDataSet*)data->reduce("hlt_9ip6==1 && probePt>2.0 && probePt<5.0 && (probeEta<-1.5 || probeEta>1.5)");    
-  // pt: >5.0 GeV 
-  // data = (RooDataSet*)data->reduce("hlt_9ip6==1 && probePt>5.0 && (probeEta<-1.5 || probeEta>1.5)");            
-
+  // Inclusive
+  if (wantPFPF==1) {   // PF-PF
+    data = (RooDataSet*)data->reduce("pair_mass>3 && pair_mass<3.2 && probePfmvaId<20 && tagPfmvaId<20");
+  } else {             // PF-LPT
+    data = (RooDataSet*)data->reduce("pair_mass>3.05 && pair_mass<3.15 && (probeMvaId<20 || tagMvaId<20) && ( (probeMvaId<20 && probeMvaId>1) || (tagMvaId<20 && tagMvaId>1) ) && theAnalysisBdtO>0");
+  }
   data->Print();
 
   ws->import(*data);
