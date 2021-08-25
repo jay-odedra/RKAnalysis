@@ -390,9 +390,7 @@ void getDataSet(const char *rootfile, RooWorkspace *ws, float lowRange, float hi
   } else {             // PF-LPT
     if (checkO==1) 
       data = (RooDataSet*)data->reduce("pair_mass>3.05 && pair_mass<3.15 && (probeMvaId<20 || tagMvaId<20) && theAnalysisBdtO>0");
-    // data = (RooDataSet*)data->reduce("pair_mass>3.05 && pair_mass<3.15 && (probeMvaId<20 || tagMvaId<20) && ( (probeMvaId<20 && probeMvaId>1) || (tagMvaId<20 && tagMvaId>1) ) && theAnalysisBdtO>0");
     else
-      //data = (RooDataSet*)data->reduce("pair_mass>3.05 && pair_mass<3.15 && (probeMvaId<20 || tagMvaId<20) && ( (probeMvaId<20 && probeMvaId>1) || (tagMvaId<20 && tagMvaId>1) ) && theAnalysisBdtG>-6");
       data = (RooDataSet*)data->reduce("pair_mass>3.05 && pair_mass<3.15 && (probeMvaId<20 || tagMvaId<20) && theAnalysisBdtG>-4.5");
   }
   data->Print();
