@@ -31,13 +31,13 @@ using namespace RooStats;
 using namespace std;
 
 // see below for implementation
-void AddModel(RooWorkspace*, float, float);
+void AddModel(RooWorkspace*, float, float, int, int);
 void DoSPlot(RooWorkspace*);
-void MakePlots(RooWorkspace*);
-void MakeHistos(RooWorkspace*);
-void getDataSet(const char *, RooWorkspace*, float, float, int);
+void MakePlots(RooWorkspace*, int, int);
+void MakeHistos(RooWorkspace*, int, int);
+void getDataSet(const char *, RooWorkspace*, float, float, int, int);
 
-void B_splot(int wantPFPF)
+void B_splot(int wantPFPF, int checkO)
 {
   // set range of observable
   Float_t lowRange  = 0.;   
@@ -55,10 +55,10 @@ void B_splot(int wantPFPF)
   
   // add the signal and background models to the workspace.
   // Inside this function you will find a description our model.
-  AddModel(wspace, lowRange, highRange);
+  AddModel(wspace, lowRange, highRange, wantPFPF, checkO);
   
   // add dataset from converted root tree
-  getDataSet("/eos/cms/store/user/crovelli/LowPtEle/TnpDataB/March21noRegression/FormattedTnPForB_March21_ParkingBPH1and2_Run2018D_part1and2.root", wspace, lowRange, highRange, wantPFPF);
+  getDataSet("/eos/cms/store/user/crovelli/LowPtEle/TnpDataB/March21noRegression/FormattedTnPForB_March21_ParkingBPH1and2_Run2018D_part1and2.root", wspace, lowRange, highRange, wantPFPF, checkO);
   
   // inspect the workspace if you wish
   wspace->Print();
@@ -68,17 +68,17 @@ void B_splot(int wantPFPF)
 
   // Make some plots showing the discriminating variable and
   // the control variable after unfolding.
-  MakePlots(wspace);
+  MakePlots(wspace, wantPFPF, checkO);
   
   // Save variables in histos
-  MakeHistos(wspace);
+  MakeHistos(wspace, wantPFPF, checkO);
 
   // cleanup
   delete wspace;
 }
 
 // Signal and background fit models
-void AddModel(RooWorkspace* ws, float lowRange, float highRange){
+void AddModel(RooWorkspace* ws, float lowRange, float highRange, int wantPFPF, int checkO){
   
   // make a RooRealVar for the observables
   RooRealVar B_mass("B_mass", "M_{B}", lowRange, highRange,"GeV");
@@ -88,9 +88,27 @@ void AddModel(RooWorkspace* ws, float lowRange, float highRange){
   std::cout << "make B model" << std::endl;
 
   RooRealVar m1("m1", "B Mass", 5.278, 5.27, 5.28);                  
-  RooRealVar sigma1("sigma1", "sigma1",  0.05, 0.02, 0.08);
   RooRealVar alpha1("alpha1", "alpha1",  1.85, 0.0, 10.);          
-  RooRealVar n1("n1", "N1", 5., 0.0, 10.);        
+
+  float sigma1UpperLimit = 0.08;
+  float sigma1LowerLimit = 0.02;
+  float sigma1Init = 0.05;
+  if (wantPFPF==0 && checkO==0) {
+    sigma1UpperLimit = 0.04;
+    sigma1Init = 0.02;
+  }
+  RooRealVar sigma1("sigma1", "sigma1",  sigma1Init, sigma1LowerLimit, sigma1UpperLimit);
+  
+  float n1UpperLimit = 10.0;
+  float n1LowerLimit = 0.0;
+  float n1Init = 5.0;
+  if (wantPFPF==0) {
+    n1Init = 3.5;
+    n1UpperLimit = 4.0;
+    n1LowerLimit = 3.0;
+  }
+  RooRealVar n1("n1", "N1", n1Init, n1LowerLimit, n1UpperLimit);
+
   RooCBShape bModel("bModel","bModel",B_mass,m1,sigma1,alpha1,n1);
 
   RooRealVar bYield("bYield","fitted yield for Bs", 2000 , 1., 500000) ;              
@@ -100,7 +118,10 @@ void AddModel(RooWorkspace* ws, float lowRange, float highRange){
   // background model
   std::cout << "make background model" << std::endl;
 
-  RooRealVar alpha("alpha", "Decay const for background mass spectrum", -0.1, -1., 0.,"1/GeV");      
+  float alphaUpperLimit = 0.;
+  if (wantPFPF==0 && checkO==0) alphaUpperLimit = 0.5;
+  RooRealVar alpha("alpha", "Decay const for background mass spectrum", -0.1, -1., alphaUpperLimit,"1/GeV");      
+  
   RooExponential bkgModel("bkgModel", "bkg Mass Model", B_mass, alpha);
 
   RooRealVar bkgYield("bkgYield","fitted yield for background", 10000 , 1., 5000000) ;             
@@ -181,7 +202,7 @@ void DoSPlot(RooWorkspace* ws){
 }
 
 // Control plots
-void MakePlots(RooWorkspace* ws){
+void MakePlots(RooWorkspace* ws, int wantPFPF, int checkO){
   
   // Here we make plots of the discriminating variable (B_mass) after the fit
   // and of the control variable (ID, or whatever) after unfolding with sPlot.
@@ -262,8 +283,8 @@ void MakePlots(RooWorkspace* ws){
   cdataG->cd(3);
   frame3g->Draw() ;
   
-  cdataO->SaveAs("SPlotOtto.png");
-  cdataG->SaveAs("SPlotGeorge.png");
+  if (wantPFPF==1 || checkO==1) cdataO->SaveAs("SPlotOtto.png");
+  if (wantPFPF==1 || checkO==0) cdataG->SaveAs("SPlotGeorge.png");
 
 
   // Fit variable
@@ -279,7 +300,7 @@ void MakePlots(RooWorkspace* ws){
 }
 
 // Control plots
-void MakeHistos(RooWorkspace* ws){
+void MakeHistos(RooWorkspace* ws, int wantPFPF, int checkO){
   
   gStyle->SetOptStat(0);
 
@@ -297,10 +318,10 @@ void MakeHistos(RooWorkspace* ws){
   RooDataSet * dataw_bkg = new RooDataSet(data->GetName(),data->GetTitle(),data,*data->get(),0,"bkgYield_sw") ;
   
   // convert to TH1
-  TH1 *h1_theAnalysisBdtO_B = dataw_b->createHistogram("h1_theAnalysisBdtO_B",*theAnalysisBdtO,Binning(40));         
-  TH1 *h1_theAnalysisBdtO_bkg  = dataw_bkg->createHistogram("h1_theAnalysisBdtO_bkg",*theAnalysisBdtO,Binning(40));           
-  TH1 *h1_theAnalysisBdtG_B = dataw_b->createHistogram("h1_theAnalysisBdtG_B",*theAnalysisBdtG,Binning(40));         
-  TH1 *h1_theAnalysisBdtG_bkg  = dataw_bkg->createHistogram("h1_theAnalysisBdtG_bkg",*theAnalysisBdtG,Binning(40));           
+  TH1 *h1_theAnalysisBdtO_B = dataw_b->createHistogram("h1_theAnalysisBdtO_B",*theAnalysisBdtO,Binning(30));         
+  TH1 *h1_theAnalysisBdtO_bkg  = dataw_bkg->createHistogram("h1_theAnalysisBdtO_bkg",*theAnalysisBdtO,Binning(30));           
+  TH1 *h1_theAnalysisBdtG_B = dataw_b->createHistogram("h1_theAnalysisBdtG_B",*theAnalysisBdtG,Binning(30));         
+  TH1 *h1_theAnalysisBdtG_bkg  = dataw_bkg->createHistogram("h1_theAnalysisBdtG_bkg",*theAnalysisBdtG,Binning(30));           
 
   TFile myFileSPlots("myFileSPlots.root","RECREATE");
   myFileSPlots.cd();
@@ -310,31 +331,35 @@ void MakeHistos(RooWorkspace* ws){
   h1_theAnalysisBdtG_B->Write();        
   h1_theAnalysisBdtG_bkg->Write();        
 
-  TCanvas* ch1 = new TCanvas("ch1","ch1", 1);
-  h1_theAnalysisBdtO_B->SetLineWidth(2);
-  h1_theAnalysisBdtO_bkg->SetLineWidth(2);
-  h1_theAnalysisBdtO_B->SetLineColor(6);
-  h1_theAnalysisBdtO_bkg->SetLineColor(4);
-  h1_theAnalysisBdtO_B->SetTitle("");
-  h1_theAnalysisBdtO_bkg->SetTitle("");
-  h1_theAnalysisBdtO_B->DrawNormalized("hist");
-  h1_theAnalysisBdtO_bkg->DrawNormalized("samehist");
-  ch1->SaveAs("BdtOH.png");
+  if (wantPFPF==1 || checkO==1) {
+    TCanvas* ch1 = new TCanvas("ch1","ch1", 1);
+    h1_theAnalysisBdtO_B->SetLineWidth(2);
+    h1_theAnalysisBdtO_bkg->SetLineWidth(2);
+    h1_theAnalysisBdtO_B->SetLineColor(6);
+    h1_theAnalysisBdtO_bkg->SetLineColor(4);
+    h1_theAnalysisBdtO_B->SetTitle("");
+    h1_theAnalysisBdtO_bkg->SetTitle("");
+    h1_theAnalysisBdtO_B->DrawNormalized("hist");
+    h1_theAnalysisBdtO_bkg->DrawNormalized("samehist");
+    ch1->SaveAs("BdtOH.png");
+  }
 
-  TCanvas* ch2 = new TCanvas("ch2","ch2", 1);
-  h1_theAnalysisBdtG_B->SetLineWidth(2);
-  h1_theAnalysisBdtG_bkg->SetLineWidth(2);
-  h1_theAnalysisBdtG_B->SetLineColor(6);
-  h1_theAnalysisBdtG_bkg->SetLineColor(4);
-  h1_theAnalysisBdtG_B->SetTitle("");
-  h1_theAnalysisBdtG_bkg->SetTitle("");
-  h1_theAnalysisBdtG_B->DrawNormalized("hist");
-  h1_theAnalysisBdtG_bkg->DrawNormalized("samehist");
-  ch2->SaveAs("BdtGH.png");
+  if (wantPFPF==1 || checkO==0){
+    TCanvas* ch2 = new TCanvas("ch2","ch2", 1);
+    h1_theAnalysisBdtG_B->SetLineWidth(2);
+    h1_theAnalysisBdtG_bkg->SetLineWidth(2);
+    h1_theAnalysisBdtG_B->SetLineColor(6);
+    h1_theAnalysisBdtG_bkg->SetLineColor(4);
+    h1_theAnalysisBdtG_B->SetTitle("");
+    h1_theAnalysisBdtG_bkg->SetTitle("");
+    h1_theAnalysisBdtG_B->DrawNormalized("hist");
+    h1_theAnalysisBdtG_bkg->DrawNormalized("samehist");
+    ch2->SaveAs("BdtGH.png");
+  }
 }
 
 // Convert ROOT tree in RooDataset
-void getDataSet(const char *rootfile, RooWorkspace *ws, float lowRange, float highRange, int wantPFPF) {    
+void getDataSet(const char *rootfile, RooWorkspace *ws, float lowRange, float highRange, int wantPFPF, int checkO) {    
   
   cout << "roofitting file " << rootfile << endl;
   
@@ -349,8 +374,8 @@ void getDataSet(const char *rootfile, RooWorkspace *ws, float lowRange, float hi
   RooRealVar tagPfmvaId("tagPfmvaId", "tagPfmvaId", -0.5, 20.5, "");           
   //
   // BDT output
-  RooRealVar theAnalysisBdtO("theAnalysisBdtO", "theAnalysisBdtO", -18., 18., "");           
-  RooRealVar theAnalysisBdtG("theAnalysisBdtG", "theAnalysisBdtG", -18., 18., "");           
+  RooRealVar theAnalysisBdtO("theAnalysisBdtO", "theAnalysisBdtO", -15., 15., "");           
+  RooRealVar theAnalysisBdtG("theAnalysisBdtG", "theAnalysisBdtG", -15., 15., "");           
 
   RooArgSet setall(B_mass,pair_mass,probeMvaId,tagMvaId,probePfmvaId,tagPfmvaId,theAnalysisBdtO,theAnalysisBdtG);
 
@@ -363,7 +388,12 @@ void getDataSet(const char *rootfile, RooWorkspace *ws, float lowRange, float hi
   if (wantPFPF==1) {   // PF-PF
     data = (RooDataSet*)data->reduce("pair_mass>3 && pair_mass<3.2 && probePfmvaId<20 && tagPfmvaId<20");
   } else {             // PF-LPT
-    data = (RooDataSet*)data->reduce("pair_mass>3.05 && pair_mass<3.15 && (probeMvaId<20 || tagMvaId<20) && ( (probeMvaId<20 && probeMvaId>1) || (tagMvaId<20 && tagMvaId>1) ) && theAnalysisBdtO>0");
+    if (checkO==1) 
+      data = (RooDataSet*)data->reduce("pair_mass>3.05 && pair_mass<3.15 && (probeMvaId<20 || tagMvaId<20) && theAnalysisBdtO>0");
+    // data = (RooDataSet*)data->reduce("pair_mass>3.05 && pair_mass<3.15 && (probeMvaId<20 || tagMvaId<20) && ( (probeMvaId<20 && probeMvaId>1) || (tagMvaId<20 && tagMvaId>1) ) && theAnalysisBdtO>0");
+    else
+      //data = (RooDataSet*)data->reduce("pair_mass>3.05 && pair_mass<3.15 && (probeMvaId<20 || tagMvaId<20) && ( (probeMvaId<20 && probeMvaId>1) || (tagMvaId<20 && tagMvaId>1) ) && theAnalysisBdtG>-6");
+      data = (RooDataSet*)data->reduce("pair_mass>3.05 && pair_mass<3.15 && (probeMvaId<20 || tagMvaId<20) && theAnalysisBdtG>-4.5");
   }
   data->Print();
 
