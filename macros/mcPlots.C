@@ -7,13 +7,16 @@
 #include <iostream>  
 
 // To be run on MC tnp formatted ntuples to get distributions for 
-// - comparison with sPlots
+// - comparison with sPlots (checkWrtData=1)
 // - comparison between distribution pre/post tnp selection
 // Select signal and background based on match with MC-truth
 
-void mcPlots::Loop()
+void mcPlots::Loop(int checkWrtData)
 {
   if (fChain == 0) return;
+
+  if (checkWrtData==1) cout << "Check with data" << endl;
+  else cout << "Check with MC" << endl;
 
   // Analysis BDT distributions to final comparisons
   TH1F *bdtOHs = new TH1F("bdtOHs","bdtOHs", 30, -15., 15.);
@@ -24,6 +27,16 @@ void mcPlots::Loop()
   TH1F *bdtGHb = new TH1F("bdtGHb","bdtGHb", 30, -15., 15.);
   bdtOHb->Sumw2();
   bdtGHb->Sumw2();
+
+  // Analysis BDT distributions to final comparisons with sPlots only
+  TH1F *bdtOHsPFPF = new TH1F("bdtOHsPFPF","bdtOHsPFPF", 30, -15., 15.);
+  TH1F *bdtGHsPFPF = new TH1F("bdtGHsPFPF","bdtGHsPFPF", 30, -15., 15.);
+  bdtOHsPFPF->Sumw2();
+  bdtGHsPFPF->Sumw2();
+  TH1F *bdtOHsPFLPT = new TH1F("bdtOHsPFLPT","bdtOHsPFLPT", 30, -15., 15.);
+  TH1F *bdtGHsPFLPT = new TH1F("bdtGHsPFLPT","bdtGHsPFLPT", 30, -15., 15.);
+  bdtOHsPFLPT->Sumw2();
+  bdtGHsPFLPT->Sumw2();
 
   // Other distributions
   TH1F *tagPfIdHs   = new TH1F("tagPfIdHs",  "tagPfIdHs",  40,-10,10);
@@ -78,10 +91,10 @@ void mcPlots::Loop()
     if (tagPfmvaId>20.5)   continue;
     if (probePfmvaId>20.5) continue;
     // 
-    if (theAnalysisBdtO>18)  continue;
-    if (theAnalysisBdtO<-18) continue;
-    if (theAnalysisBdtG>18)  continue;
-    if (theAnalysisBdtG<-18) continue;
+    if (theAnalysisBdtO>15)  continue;
+    if (theAnalysisBdtO<-15) continue;
+    if (theAnalysisBdtG>15)  continue;
+    if (theAnalysisBdtG<-15) continue;
 
     // Fill distributions for real Bs
     if (B_matchMC==1) {
@@ -97,6 +110,24 @@ void mcPlots::Loop()
       if (probePfmvaId<20) probePfIdHs->Fill(probePfmvaId);
       if (tagMvaId<20)     tagIdHs->Fill(tagMvaId);
       if (probeMvaId<20)   probeIdHs->Fill(probeMvaId);
+
+      // Only for comparison with sPlots
+      if (checkWrtData==1) { 
+
+	if (pair_mass<3.0 || pair_mass>3.2) continue;
+
+	if (probePfmvaId<20 && tagPfmvaId<20) { // PFPF
+	  bdtOHsPFPF -> Fill(theAnalysisBdtO);
+	  bdtGHsPFPF -> Fill(theAnalysisBdtG);
+
+	} else {   // PFLPT
+	  if (pair_mass<3.05 || pair_mass>3.15) continue;
+	  if (theAnalysisBdtO>0) bdtOHsPFLPT -> Fill(theAnalysisBdtO);
+	  if (theAnalysisBdtG>-4.5) bdtGHsPFLPT -> Fill(theAnalysisBdtG);
+	}
+
+      }
+
 
     } else {
 
@@ -160,6 +191,12 @@ void mcPlots::Loop()
   TFile myfile("myFileMC.root","RECREATE");
   bdtOHs->Write();
   bdtGHs->Write();
+  if (checkWrtData==1) {
+    bdtOHsPFLPT->Write();
+    bdtGHsPFLPT->Write();
+    bdtOHsPFPF->Write();
+    bdtGHsPFPF->Write();
+  }
   tagIdHs->Write();  
   probeIdHs->Write();   
   probePfIdHs->Write();   
