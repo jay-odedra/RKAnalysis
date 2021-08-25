@@ -19,7 +19,7 @@ using namespace std;
 void nanoVsTnp()
 {
   // Files
-  TFile fileTnP("../files_first/mcDistributionsWithTnP.root");
+  TFile fileTnP("../files_first/mcDistributionsWithTnP_forComparisonWithNoTnP.root");
   TFile fileNoTnP("../files_first/mcDistributionsNoTnP.root");
 
   // Histos
