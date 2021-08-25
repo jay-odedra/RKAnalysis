@@ -159,7 +159,7 @@ void drawTH1pair(TH1* h1, TH1* h2,
   delete canvas;
   frame->Reset("ICES");
 
-  TFile fileOut(outputFILE.c_str(), "RECREATE");
+  TFile fileOut(outputFILE.c_str(), "UPDATE");
   fileOut.cd();
   ratio->Write( ("ratio_" + canvasName).c_str());
   h2->Write( ("MC_" + canvasName).c_str());
@@ -203,7 +203,11 @@ void mcVsSplots(int wantPFPF, int doOtto)
   gROOT->SetStyle("Plain");
   gStyle->SetOptStat(0);
   // 
-  drawTH1pair(data_bdtO, mc_bdtO,  "BDT [Otto]",  "a.u.",1.,"ottoBdt","./",2,"Data","MC");
-  drawTH1pair(data_bdtG, mc_bdtG,  "BDT [George]","a.u.",1.,"georgeBdt","./",2,"Data","MC");
 
+  if (wantPFPF==0 && doOtto==1) drawTH1pair(data_bdtO, mc_bdtO,  "BDT [Otto]",  "a.u.",1.,"ottoBdt","./",2,"Data","MC");
+  if (wantPFPF==0 && doOtto==0) drawTH1pair(data_bdtG, mc_bdtG,  "BDT [George]","a.u.",1.,"georgeBdt","./",2,"Data","MC");
+  if (wantPFPF==1) {
+    drawTH1pair(data_bdtO, mc_bdtO,  "BDT [Otto]",  "a.u.",1.,"ottoBdt","./",2,"Data","MC");
+    drawTH1pair(data_bdtG, mc_bdtG,  "BDT [George]","a.u.",1.,"georgeBdt","./",2,"Data","MC");
+  }
 }
