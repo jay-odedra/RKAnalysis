@@ -41,12 +41,20 @@ private:
   void bookOutputHistos();
   void SetNvtxWeights(std::string nvtxWeightFile);
   float GetNvtxWeight(float nvtx);
+  void SetAnBdtWeights();
+  float GetAnBdtWeight(float bdt, int pfpf);
 
   // to compute weights for pileup
   std::vector<Double_t> nvtxweights_;
   std::vector<Double_t> nvtxlowedge_;
 
+  // to compute systematics
+  std::vector<Double_t> anweight_pflpt_common_;
+  std::vector<Double_t> anweight_pfpf_common_;
+  std::vector<Double_t> lowedge_;
+
   // settings
+  bool dosyst_;
   bool donvtxreweight_;
   int sampleID;
   string nvtxWFileName_;
@@ -101,6 +109,7 @@ private:
   vector <float> fit_Bcos2D={};   
   vector <float> fit_Bsvprob={};
   vector <float> fit_Bxysig={};
+  vector <float>  fit_Bi3dsig={};
   vector <bool> bmatchMC={};   
   vector <float> Kpt={}; 
   vector <float> K_eta={}; 
@@ -134,6 +143,8 @@ private:
   vector <float> probe_fBrem={};
   vector <float> analysisBdtG={};
   vector <float> analysisBdtO={};
+  vector <float> analysisBdtC={};
+  vector <float> analysisBdtCWithSyst={};
 
   vector <float> LKdz_vec={};
   vector <float> L1L2dr_vec={};
@@ -141,6 +152,7 @@ private:
   vector <float> Kiso_vec={};
   vector <float> BBDPhi_vec={};
   vector <float> BTrkdxy2_vec={};
+  vector <float> passymVar_vec={};
 
   vector <float> Dmass_vec={};
   vector <float> Dmass_flip_vec={};
