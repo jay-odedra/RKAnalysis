@@ -48,9 +48,12 @@ SkimmerWithKStar::SkimmerWithKStar(TChain *tree, int isMC )
 
   sampleID = isMC;         
 
-  // To be set by hand   
+  // To be set by hand - chiara
   donvtxreweight_ = 0;
-  nvtxWFileName_ = "/afs/cern.ch/user/c/crovelli/public/bphys/march/nvtxWeights_run2018D.root"; 
+  nvtxWFileName_ = "/afs/cern.ch/user/c/crovelli/public/bphys/march/nvtxWeights2018ALL.root";
+
+  // To be set by hand - chiara
+  dosyst_ = 0;
 }
 
 SkimmerWithKStar::~SkimmerWithKStar() {
@@ -85,8 +88,14 @@ void SkimmerWithKStar::Loop() {
   std::vector<std::string> featOttoPFLP = {"f0","f1", "f2","f3","f4","f5","f6","f7","f8","f9","f10","f11","f12","f13","f14","f15","f16","f17","f18","f19","f20","f21", "f22","f23","f24","f25","f26","f27"};
   const auto fastForestOttoPFLP = fastforest::load_txt(bdtfileOttoPFLP.c_str(), featOttoPFLP);
 
-
-
+  // Load Analysis MVA weights for common BDT
+  std::string bdtfileCommonPFPF = "models/xgbmodel_kee_12B_kee_correct_pu_cuts3varDepth16_mu7_0.txt";
+  std::vector<std::string> featCommonPFPF = {"f0","f1", "f2","f3","f4","f5","f6","f7","f8","f9","f10","f11","f12","f13","f14"};
+  const auto fastForestCommonPFPF = fastforest::load_txt(bdtfileCommonPFPF.c_str(), featCommonPFPF);
+  // Load Analysis MVA weights PFLP
+  std::string bdtfileCommonPFLP = "models/xgbmodel_kee_12B_kee_correct_pu_cuts3varDepth16_mu7_0.txt";
+  std::vector<std::string> featCommonPFLP = {"f0","f1", "f2","f3","f4","f5","f6","f7","f8","f9","f10","f11","f12","f13","f14"};
+  const auto fastForestCommonPFLP = fastforest::load_txt(bdtfileCommonPFLP.c_str(), featCommonPFLP);
 
   // Loop over events
   Long64_t nentries = fChain->GetEntries();
@@ -97,7 +106,7 @@ void SkimmerWithKStar::Loop() {
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
     nb = fChain->GetEntry(jentry);   nbytes += nb;
-    if (jentry%10000==0) cout << jentry << endl;
+    if (jentry%500==0) cout << jentry << endl;
 
     // To keep track of the total number of events 
     h_entries->Fill(5);
@@ -157,6 +166,9 @@ void SkimmerWithKStar::Loop() {
       }
     }
     trg_muon_pt=ptTrgMu;
+    TVector3 trgMuVtx;
+    trgMuVtx.SetXYZ(Muon_vx[idTrgMu], Muon_vy[idTrgMu], Muon_vz[idTrgMu]);   
+
 
     // calculation of BBDPhi
     TLorentzVector trgmuon_vec(0,0,0,0);
@@ -281,7 +293,6 @@ void SkimmerWithKStar::Loop() {
       }
     }
 
-
     // Minimal Bcandidate requirements
     vector<int> goodBs;
     vector<int> goodBorder;
@@ -293,6 +304,7 @@ void SkimmerWithKStar::Loop() {
       // preparing variables
       int ele1_idx = BToKEE_l1Idx[iB];
       int ele2_idx = BToKEE_l2Idx[iB];
+      int k_idx    = BToKEE_kIdx[iB];  
       
       float ele1_pt = BToKEE_fit_l1_pt[iB];
       float ele2_pt = BToKEE_fit_l2_pt[iB];
@@ -301,14 +313,73 @@ void SkimmerWithKStar::Loop() {
       float ele1_eta = BToKEE_fit_l1_eta[iB];     
       float ele2_eta = BToKEE_fit_l2_eta[iB];    
       float k_eta    = BToKEE_fit_k_eta[iB];    
+
+      float ele1_phi = BToKEE_fit_l1_phi[iB];     
+      float ele2_phi = BToKEE_fit_l2_phi[iB];    
+      float k_phi    = BToKEE_fit_k_phi[iB];    
       
-      // B selection (standard cut)
+
+      // Preselection proposed by George on top of nanoAOD presel and used for the training
+      float theL1kDz = fabs(ProbeTracks_vz[k_idx]-Electron_vz[ele1_idx]);
+      float theL2kDz = fabs(ProbeTracks_vz[k_idx]-Electron_vz[ele2_idx]);
+      float theLKdz  = theL1kDz;
+      if (theL2kDz<theLKdz) theLKdz = theL2kDz;
+      bool LKdzSel = theLKdz<1;
+
+      TLorentzVector theL1_pihypoTLV(0,0,0,0);
+      theL1_pihypoTLV.SetPtEtaPhiM(ele1_pt,ele1_eta,ele1_phi,0.135);
+      TLorentzVector theL2_pihypoTLV(0,0,0,0);
+      theL2_pihypoTLV.SetPtEtaPhiM(ele2_pt,ele2_eta,ele2_phi,0.135);
+      TLorentzVector theK_pihypoTLV(0,0,0,0);
+      theK_pihypoTLV.SetPtEtaPhiM(k_pt,k_eta,k_phi,0.135);
+      TLorentzVector theK_TLV(0,0,0,0);
+      theK_TLV.SetPtEtaPhiM(k_pt,k_eta,k_phi,0.493677);
+      float theBToKEE_Dmass_l1=(theL1_pihypoTLV + theK_TLV).M();
+      float theBToKEE_Dmass_l2=(theL2_pihypoTLV + theK_TLV).M();
+      float theBToKEE_Dmass=0.;
+      if(ProbeTracks_charge[k_idx]*Electron_charge[ele1_idx]<0) theBToKEE_Dmass=theBToKEE_Dmass_l1;
+      if(ProbeTracks_charge[k_idx]*Electron_charge[ele2_idx]<0) theBToKEE_Dmass=theBToKEE_Dmass_l2;
+      bool theKLmassD0Sel = theBToKEE_Dmass>1.885;
+
+      float theXySig = BToKEE_l_xy[iB]/BToKEE_l_xy_unc[iB];        
+
+      bool georgePresel = LKdzSel && theKLmassD0Sel && (BToKEE_svprob[iB]>0.005) && (theXySig>2) && (BToKEE_fit_cos2D[iB]>0.9);      
+      if (!georgePresel) continue;
+
+
+      // Further B selection (de-activated for now)
       bool vtxFitSel = BToKEE_fit_pt[iB]>_ptB && BToKEE_svprob[iB]>_svProb && BToKEE_fit_cos2D[iB]>_cos2D;
       bool ele1Sel = fabs(ele1_eta)<2.4 && ele1_pt>0.7;
       bool ele2Sel = fabs(ele2_eta)<2.4 && ele2_pt>0.7;
       bool kSel = k_pt>0.7 && fabs(k_eta)<2.4; 
       bool additionalSel = BToKEE_fit_mass[iB]>4.5 && BToKEE_fit_mass[iB]<6.0;
       bool isBsel = vtxFitSel && ele1Sel && ele2Sel && kSel && additionalSel;
+
+
+      // -------------------------------------------------------------------------
+      // Minimal selection to reduce the ntuples size - chiara
+      /*
+      bool extraEle1Sel = fabs(ele1_eta)<2.4 && ele1_pt>1.0;   // questo non era applicato x produzione ntuple
+      bool extraEle2Sel = fabs(ele2_eta)<2.4 && ele2_pt>1.0;   // questo non era applicato x produzione ntuple
+      bool extraKSel = k_pt>0.7 && fabs(k_eta)<2.4;
+      bool extraPFLPT = true;
+      if (Electron_isLowPt[ele1_idx]==1 && Electron_isLowPt[ele2_idx]==1) extraPFLPT = false;     
+      bool extraOverlap = true;
+      if (Electron_isPFoverlap[ele1_idx]==1 || Electron_isPFoverlap[ele2_idx]==1) extraOverlap = false; 
+      bool extraConv = true;
+      if (Electron_convVeto[ele1_idx]==0 || Electron_convVeto[ele2_idx]==0) extraConv = false;    
+      bool extraMll = true;
+      if (BToKEE_mll_raw[iB]>3.4 || BToKEE_mll_raw[iB]<2.6) extraMll = false;
+      bool extraIdLPt = true;
+      if (Electron_mvaId[ele1_idx]<-3 || Electron_mvaId[ele2_idx]<-3) extraIdLPt = false; // questo non era applicato x produzione ntuple,
+                                                                                          // ma c'e' un taglio a -2.5 che credo venga dai nani
+      bool extraIdPF = true;
+      if (Electron_pfmvaId[ele1_idx]<-3 || Electron_pfmvaId[ele2_idx]<-3) extraIdPF = false;  // applicato
+      bool isExtraSel = extraEle1Sel && extraEle2Sel && extraKSel && extraPFLPT && extraOverlap && extraConv && extraMll && extraIdLPt && extraIdPF;
+      if (!isExtraSel) continue;
+      */
+
+      // -------------------------------------------------------------------------
 	
       int i2D=n;
       for (u_int m=0; m<n; m++){
@@ -357,6 +428,8 @@ void SkimmerWithKStar::Loop() {
       float thisBcos    = BToKEE_fit_cos2D[thisB];
       float thisBsvprob = BToKEE_svprob[thisB];
       float thisBxysig  = BToKEE_l_xy[thisB]/BToKEE_l_xy_unc[thisB];
+      float thisBi3dsig = BToKEE_k_svip3d[thisB]/BToKEE_k_svip3d_err[thisB]; 
+
       bool isThisAMcB = -1;
       if (sampleID>0) isThisAMcB = isMcB(thisB);      
       
@@ -457,14 +530,11 @@ void SkimmerWithKStar::Loop() {
 	  }
 	}
       }
-
-      
+    
       TLorentzVector ele1TLV(0,0,0,0);
       ele1TLV.SetPtEtaPhiM(ele1_pt,ele1_eta,ele1_phi,0.000511);
       TLorentzVector ele2TLV(0,0,0,0);
       ele2TLV.SetPtEtaPhiM(ele2_pt,ele2_eta,ele2_phi,0.000511);
-
-
 
       float x=goodBorder[iB];
       bPtOrder.push_back(x);
@@ -472,6 +542,7 @@ void SkimmerWithKStar::Loop() {
       b2DOrder.push_back(y);
       float z=goodBorderXY[iB];
       bXYOrder.push_back(z);
+
       p4Trk.push_back(prob4trk);
       p4TrkKStar.push_back(prob4trkKStar);
       
@@ -493,6 +564,8 @@ void SkimmerWithKStar::Loop() {
       fit_Bcos2D.push_back(thisBcos);
       fit_Bsvprob.push_back(thisBsvprob);
       fit_Bxysig.push_back(thisBxysig);
+      fit_Bi3dsig.push_back(thisBi3dsig);
+
       if(sampleID>0){
 	bmatchMC.push_back(isThisAMcB);
       }
@@ -540,14 +613,23 @@ void SkimmerWithKStar::Loop() {
       float L1iso = BToKEE_l1_iso04[thisB];
       float L2iso = BToKEE_l2_iso04[thisB];
       float Kiso = BToKEE_k_iso04[thisB];
-      
-      
+  
+
+      // Vtx-related
       float distance_b_trk1=10;         
       float distance_b_trk2=10;         
       float mean_b_trk=0;      
       int imean_b_trk=0 ;
       float vx_b=BToKEE_vtx_x[thisB];
       float vy_b=BToKEE_vtx_y[thisB];
+      float vz_b=BToKEE_vtx_z[thisB];
+
+      float thePassymVar = -999.;
+      if (idTrgMu<0) thePassymVar = -999.;
+      TVector3 b_vtx;
+      b_vtx.SetXYZ(vx_b,vy_b,vz_b);
+      thePassymVar = ( ((l1v3+l2v3).Cross(b_vtx-trgMuVtx)).Mag()-(kv3.Cross(b_vtx-trgMuVtx)).Mag() )/( ((l1v3+l2v3).Cross(b_vtx-trgMuVtx)).Mag()+(kv3.Cross(b_vtx-trgMuVtx)).Mag() );
+
 
       float BTrkdxy2=0;
       
@@ -583,8 +665,9 @@ void SkimmerWithKStar::Loop() {
       
       float BBDPhi=DeltaPhi(BToKEE_fit_phi[thisB],sum_track_vec.Phi());
       
+
+      // -------------------------------------------------------------
       // Analysis BDT George
-      
       float L2id=Electron_mvaId[ele2_idx];
       if( Electron_isPF[ele2_idx]) L2id=Electron_pfmvaId[ele2_idx];
 
@@ -594,7 +677,7 @@ void SkimmerWithKStar::Loop() {
       Kiso_vec.push_back(Kiso);
       BBDPhi_vec.push_back(BBDPhi);
       BTrkdxy2_vec.push_back(BTrkdxy2);
-
+      passymVar_vec.push_back(thePassymVar);
 
       float scoreBdt=0.;
       if(Electron_isPF[ele1_idx]&&Electron_isPF[ele2_idx]){
@@ -602,21 +685,45 @@ void SkimmerWithKStar::Loop() {
 	scoreBdt = fastForest(vecBdt.data());
 	analysisBdtG.push_back(scoreBdt);
       } else {
-	// change here with the other BDT by George 
 	std::vector<float> vecBdt = {thisBsvprob, thisBxysig, ele2_pt, thisKpt, thisBcos, LKdz,  L1L2dr, LKdr, L2id, Kiso, BBDPhi, BTrkdxy2 };
 	scoreBdt = fastForestPFLP(vecBdt.data());
 	analysisBdtG.push_back(scoreBdt);
       }
+      
+
+      // -----------------------------------------------------------
+      // Common analysis BDT
+      
+      float BToKEE_k_DCASig = ProbeTracks_DCASig[k_idx];
+      
+      float scoreBdtCommon=0.;
+      if(Electron_isPF[ele1_idx] && Electron_isPF[ele2_idx]){
+	std::vector<float> vecBdtCommon = {thisBsvprob, thisBxysig, ele2_pt, thisKpt, thisBcos, LKdz,  L1L2dr, LKdr, L2id, Kiso, BBDPhi, BTrkdxy2, BToKEE_k_DCASig, thePassymVar, thisBi3dsig };   
+	scoreBdtCommon = fastForest(vecBdtCommon.data());
+	analysisBdtC.push_back(scoreBdtCommon);
+
+	float scoreBdtCommonWithSyst = scoreBdtCommon;
+	if (dosyst_) scoreBdtCommonWithSyst = GetAnBdtWeight(scoreBdtCommon, 1);   
+	analysisBdtCWithSyst.push_back(scoreBdtCommonWithSyst);  
+
+      } else {
+	std::vector<float> vecBdtCommon = {thisBsvprob, thisBxysig, ele2_pt, thisKpt, thisBcos, LKdz,  L1L2dr, LKdr, L2id, Kiso, BBDPhi, BTrkdxy2, BToKEE_k_DCASig, thePassymVar, thisBi3dsig };  
+	scoreBdtCommon = fastForestPFLP(vecBdtCommon.data());
+	analysisBdtC.push_back(scoreBdt);
+	
+	float scoreBdtCommonWithSyst = scoreBdtCommon;
+	if (dosyst_) scoreBdtCommonWithSyst = GetAnBdtWeight(scoreBdtCommon, 0);
+	analysisBdtCWithSyst.push_back(scoreBdtCommonWithSyst);  
+      }
 
 
+      // ----------------------------------------------------------------
       // Analysis BDT Otto PFPF
-
       float BToKEE_fit_l1_normpt=BToKEE_fit_l1_pt[thisB]/BToKEE_fit_mass[thisB];
       float BToKEE_fit_l2_normpt=BToKEE_fit_l2_pt[thisB]/BToKEE_fit_mass[thisB];
       float BToKEE_l1_dxy_sig=(Electron_dxy[ele1_idx]) /Electron_dxyErr[ele1_idx];
       float BToKEE_l2_dxy_sig=(Electron_dxy[ele2_idx]) /Electron_dxyErr[ele2_idx];
       float BToKEE_fit_k_normpt=BToKEE_fit_k_pt[thisB] /BToKEE_fit_mass[thisB];
-      float BToKEE_k_DCASig=ProbeTracks_DCASig[k_idx];
       float BToKEE_k_dxy_sig=ProbeTracks_dxyS[k_idx];
       float BToKEE_fit_normpt=BToKEE_fit_pt[thisB] /BToKEE_fit_mass[thisB];
       float BToKEE_l_xy_sig = (BToKEE_l_xy[thisB]) /BToKEE_l_xy_unc[thisB];
@@ -667,6 +774,7 @@ void SkimmerWithKStar::Loop() {
 	
 	scoreBdtOtto = fastForestOttoPFPF(vecBdtOtto.data());
 	analysisBdtO.push_back(scoreBdtOtto);
+
 	/*	if(jentry<10) std::cout<<"1 "<<"0:"<< BToKEE_b_iso04_rel<<" 1:"<< BToKEE_eleDR<<" 2:"<< thisBcos<<" 3:"<< BToKEE_fit_k_normpt<<" 4:"<<
 	BToKEE_fit_l1_normpt<<" 5:"<<BToKEE_fit_l2_normpt<<" 6:"<< BToKEE_fit_normpt<<" 7:"<<
 	BToKEE_k_DCASig<<" 8:"<< BToKEE_k_dzTrg<<" 9:"<< BToKEE_k_iso04_rel<<" 10:"<< BToKEE_k_svip2d[thisB]<<" 11:"<< BToKEE_k_svip3d[thisB]<<" 12:"<<
@@ -702,9 +810,28 @@ void SkimmerWithKStar::Loop() {
 	*/
       }
 
-      
-
-
+      TLorentzVector l1_pihypoTLV(0,0,0,0);
+      l1_pihypoTLV.SetPtEtaPhiM(ele1_pt,ele1_eta,ele1_phi,0.135);
+      TLorentzVector l2_pihypoTLV(0,0,0,0);
+      l2_pihypoTLV.SetPtEtaPhiM(ele2_pt,ele2_eta,ele2_phi,0.135);
+      TLorentzVector l1_khypoTLV(0,0,0,0);
+      l1_khypoTLV.SetPtEtaPhiM(ele1_pt,ele1_eta,ele1_phi,0.493677);
+      TLorentzVector l2_khypoTLV(0,0,0,0);
+      l2_khypoTLV.SetPtEtaPhiM(ele2_pt,ele2_eta,ele2_phi,0.493677);
+      TLorentzVector k_pihypoTLV(0,0,0,0);
+      k_pihypoTLV.SetPtEtaPhiM(k_pt,k_eta,k_phi,0.135);
+      float BToKEE_Dmass_l1=(l1_pihypoTLV + kTLV).M();
+      float BToKEE_Dmass_l2=(l2_pihypoTLV + kTLV).M();
+      float BToKEE_Dmass_flip_l1=(l1_khypoTLV + k_pihypoTLV).M();
+      float BToKEE_Dmass_flip_l2=(l2_khypoTLV + k_pihypoTLV).M();
+      float BToKEE_Dmass=0.;
+      if(ProbeTracks_charge[k_idx]*Electron_charge[ele1_idx]<0) BToKEE_Dmass=BToKEE_Dmass_l1;
+      if(ProbeTracks_charge[k_idx]*Electron_charge[ele2_idx]<0) BToKEE_Dmass=BToKEE_Dmass_l2;
+      float BToKEE_Dmass_flip=0;
+      if(ProbeTracks_charge[k_idx]*Electron_charge[ele1_idx]<0) BToKEE_Dmass_flip=BToKEE_Dmass_flip_l1;
+      if(ProbeTracks_charge[k_idx]*Electron_charge[ele2_idx]<0) BToKEE_Dmass_flip=BToKEE_Dmass_flip_l2;
+      float BToKEE_Dmass_ll=(l1_khypoTLV + l2_pihypoTLV).M();
+      float BToKEE_Dmass_ll_flip=(l1_pihypoTLV + l2_khypoTLV).M();      
 
       b_iso04_rel_vec.push_back(BToKEE_b_iso04_rel);
       eleDR_vec.push_back(BToKEE_eleDR);
@@ -722,31 +849,6 @@ void SkimmerWithKStar::Loop() {
       probe_iso04_rel_vec.push_back(BToKEE_l2_iso04_rel);
       llkDR_vec.push_back(BToKEE_llkDR);
       ptAsym_vec.push_back(BToKEE_ptAsym);
-
-      TLorentzVector l1_pihypoTLV(0,0,0,0);
-      l1_pihypoTLV.SetPtEtaPhiM(ele1_pt,ele1_eta,ele1_phi,0.135);
-      TLorentzVector l2_pihypoTLV(0,0,0,0);
-      l2_pihypoTLV.SetPtEtaPhiM(ele2_pt,ele2_eta,ele2_phi,0.135);
-      TLorentzVector l1_khypoTLV(0,0,0,0);
-      l1_khypoTLV.SetPtEtaPhiM(ele1_pt,ele1_eta,ele1_phi,0.493677);
-      TLorentzVector l2_khypoTLV(0,0,0,0);
-      l2_khypoTLV.SetPtEtaPhiM(ele2_pt,ele2_eta,ele2_phi,0.493677);
-      TLorentzVector k_pihypoTLV(0,0,0,0);
-      k_pihypoTLV.SetPtEtaPhiM(k_pt,k_eta,k_phi,0.135);
-      // kTLV exists already
-      float BToKEE_Dmass_l1=(l1_pihypoTLV + kTLV).M();
-      float BToKEE_Dmass_l2=(l2_pihypoTLV + kTLV).M();
-      float BToKEE_Dmass_flip_l1=(l1_khypoTLV + k_pihypoTLV).M();
-      float BToKEE_Dmass_flip_l2=(l2_khypoTLV + k_pihypoTLV).M();
-      float BToKEE_Dmass=0.;
-      if(ProbeTracks_charge[k_idx]*Electron_charge[ele1_idx]<0) BToKEE_Dmass=BToKEE_Dmass_l1;
-      if(ProbeTracks_charge[k_idx]*Electron_charge[ele2_idx]<0) BToKEE_Dmass=BToKEE_Dmass_l2;
-      float BToKEE_Dmass_flip=0;
-      if(ProbeTracks_charge[k_idx]*Electron_charge[ele1_idx]<0) BToKEE_Dmass_flip=BToKEE_Dmass_flip_l1;
-      if(ProbeTracks_charge[k_idx]*Electron_charge[ele2_idx]<0) BToKEE_Dmass_flip=BToKEE_Dmass_flip_l2;
-      float BToKEE_Dmass_ll=(l1_khypoTLV + l2_pihypoTLV).M();
-      float BToKEE_Dmass_ll_flip=(l1_pihypoTLV + l2_khypoTLV).M();
-
       
       Dmass_vec.push_back(BToKEE_Dmass);
       Dmass_flip_vec.push_back(BToKEE_Dmass_flip);
@@ -794,6 +896,12 @@ void SkimmerWithKStar::Loop() {
     if (selectedPairsSize<=0) continue;
     h_selection->Fill(6.,perEveW);
 
+    
+    // ------------------------------------------------------
+    // Minimal selection to reduce the ntuples size - chiara
+    // if (hlt9==0) continue;
+    // ------------------------------------------------------
+
     // Filling the output tree
     outTree_->Fill();
     
@@ -832,6 +940,7 @@ void SkimmerWithKStar::Loop() {
     fit_Bcos2D.clear();
     fit_Bsvprob.clear();    
     fit_Bxysig.clear();    
+    fit_Bi3dsig.clear();
 
     Kpt.clear();
     K_eta.clear();
@@ -852,12 +961,17 @@ void SkimmerWithKStar::Loop() {
 
     analysisBdtG.clear();
     analysisBdtO.clear();
+    analysisBdtC.clear();
+    analysisBdtCWithSyst.clear(); 
+
     LKdz_vec.clear();
     L1L2dr_vec.clear();
     LKdr_vec.clear();
     Kiso_vec.clear();
     BBDPhi_vec.clear();
     BTrkdxy2_vec.clear(); 
+    passymVar_vec.clear();
+
     Dmass_vec.clear();
     Dmass_flip_vec.clear();
     Dmass_ll_vec.clear();
@@ -1011,6 +1125,9 @@ void SkimmerWithKStar::PrepareOutputs(std::string filename)
 
   // loading weights for pileup if needed
   if (donvtxreweight_) SetNvtxWeights(nvtxWFileName_);
+
+  // loading weights for systematics if needed
+  if (dosyst_) SetAnBdtWeights();  
 };
 
 
@@ -1055,6 +1172,8 @@ void SkimmerWithKStar::bookOutputTree()
   outTree_->Branch("fit_Bcos2D",  "std::vector<float>", &fit_Bcos2D);  
   outTree_->Branch("fit_Bsvprob", "std::vector<float>", &fit_Bsvprob);  
   outTree_->Branch("fit_Bxysig",  "std::vector<float>", &fit_Bxysig);  
+  outTree_->Branch("fit_Bi3dsig", "std::vector<float>", &fit_Bi3dsig);
+
   outTree_->Branch("bmatchMC", "std::vector<bool>", &bmatchMC);  
   outTree_->Branch("K_pt", "std::vector<float>", &Kpt);  
   outTree_->Branch("K_eta", "std::vector<float>", &K_eta);  
@@ -1087,6 +1206,8 @@ void SkimmerWithKStar::bookOutputTree()
   }
   outTree_->Branch("analysisBdtG", "std::vector<float>", &analysisBdtG);
   outTree_->Branch("analysisBdtO", "std::vector<float>", &analysisBdtO);
+  outTree_->Branch("analysisBdtC", "std::vector<float>", &analysisBdtC);
+  outTree_->Branch("analysisBdtCWithSyst", "std::vector<float>", &analysisBdtCWithSyst);
   
   outTree_->Branch("LKdz", "std::vector<float>", &LKdz_vec);
   outTree_->Branch("L1L2dr", "std::vector<float>", &L1L2dr_vec);
@@ -1094,6 +1215,7 @@ void SkimmerWithKStar::bookOutputTree()
   outTree_->Branch("Kiso", "std::vector<float>", &Kiso_vec);
   outTree_->Branch("BBDPhi", "std::vector<float>", &BBDPhi_vec);
   outTree_->Branch("BTrkdxy2", "std::vector<float>", &BTrkdxy2_vec);
+  outTree_->Branch("passymVar", "std::vector<float>", &passymVar_vec);
 
   outTree_->Branch("Dmass", "std::vector<float>", &Dmass_vec);
   outTree_->Branch("Dmass_flip", "std::vector<float>", &Dmass_flip_vec);
@@ -1127,6 +1249,42 @@ void SkimmerWithKStar::bookOutputHistos()
   //
   h_entries   = new TH1F("h_entries",  "Number of entries",   3,  3.5, 6.5);
   h_selection = new TH1F("h_selection","Selection breakdown", 8, -0.5, 7.5);
+}
+
+void SkimmerWithKStar::SetAnBdtWeights() {
+
+  TFile *f_pflpt_commonRatio = new TFile("models/anBdtSystematics_PFLPT_common.root","READ");
+  TFile *f_pfpf_commonRatio  = new TFile("models/anBdtSystematics_PFPF_common.root","READ"); 
+
+  TH1F *anweight_pflpt_common = (TH1F*)f_pflpt_commonRatio->Get("ratio_commonBdt");
+  TH1F *anweight_pfpf_common  = (TH1F*)f_pfpf_commonRatio->Get("ratio_commonBdt");
+  
+  for (int i = 0; i<anweight_pflpt_common->GetNbinsX(); i++) {
+
+    float weight1=anweight_pflpt_common->GetBinContent(i+1);
+    anweight_pflpt_common_.push_back(weight1);             
+
+    float weight2=anweight_pfpf_common->GetBinContent(i+1);
+    anweight_pfpf_common_.push_back(weight2);              
+
+    float lowedge=anweight_pflpt_common->GetBinLowEdge(i+1); 
+    lowedge_.push_back(lowedge);
+  }
+}
+
+float SkimmerWithKStar::GetAnBdtWeight(float bdt, int pfpf ) {
+
+  int thesizem1 = lowedge_.size()-1;
+
+  float weight=1;
+  for (int i = 0; i<thesizem1; i++) {   
+    if (lowedge_[i]<=bdt && lowedge_[i+1]>bdt) { 
+      if (pfpf==1) weight = anweight_pfpf_common_[i];  
+      if (pfpf==0) weight = anweight_pflpt_common_[i];  
+    }
+  }
+  
+  return weight;
 }
 
 int main(int argc, char **argv){
