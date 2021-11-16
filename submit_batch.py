@@ -58,7 +58,7 @@ def main():
     parser.add_option('-q', '--queue',         action='store',      dest='queue',         help='run in batch in queue specified as option (default -q 8nh)', default='8nh')
     parser.add_option('-n', '--nfileperjob',   action='store',      dest='nfileperjob',   help='split the jobs with n files read/batch job'                , default=1,   type='int')
     parser.add_option('-p', '--prefix',        action='store',      dest='prefix',        help='the prefix to be added to the output'                      , default=defaultoutputdir)
-    parser.add_option('-a', '--application',   action='store',      dest='application',   help='the executable to be run'                                  , default='/afs/cern.ch/work/c/crovelli/BPhys/RKAnalysis_10_2_15/src/RKAnalysis/BParkApp')
+    parser.add_option('-a', '--application',   action='store',      dest='application',   help='the executable to be run'                                  , default='/afs/cern.ch/work/c/crovelli/BPhys/RK_CMSSW_10_2_15/src/RKAnalysis/BParkApp')
     parser.add_option('-c', '--create',        action='store_true', dest='create',        help='create only the jobs, do not submit them'                  , default=False)
     parser.add_option('-t', '--testnjobs',     action='store',      dest='testnjobs',     help='submit only the first n jobs'                              , default=1000000, type='int')
     parser.add_option('-N', '--neventsjob',    action='store',      dest='neventsjob',    help='split the jobs with n events  / batch job'                 , default=200,     type='int')
