@@ -7,22 +7,32 @@ import numpy as np
 from sklearn.externals import joblib
 from xgboost import XGBClassifier
 import glob
-import xgboost as xgb  
+import xgboost as xgb 
+
 
 ROOT.gStyle.SetOptStat(111111)
 ROOT.gROOT.SetBatch(True)
 
-def computeBdt():
+def computeBdt(isPFPF):
 
     # -------------------------------------------------
     # -------------------------------------------------
     # To be modified - XGBoost model in .pkl
-    fmodel = '/afs/cern.ch/user/k/klau/myWorkspace/public/RK_analysisBDT/models_PFe_v7.2/xgbmodel_kee_12B_kee_correct_pu_Depth17_PFe_v7.2_0.pkl'
-    print('dumping BDT output reading from...'.format(fmodel))
+    if (isPFPF==1): 
+        fmodel = '../models/xgbmodel_kee_12B_kee_correct_pu_Depth17_PFe_v7.2_0.pkl'
+        print('dumping BDT output for PFPF reading from...'.format(fmodel))
+
+    if (isPFPF==0): 
+        fmodel = '../models/xgbmodel_kee_12B_kee_correct_pu_Depth17_LowPtPF_v7.2_0.pkl'
+        print('dumping BDT output for PFLPT reading from...'.format(fmodel))
 
     # To be modified - input root tree with variables
     data_dir = '/tmp/crovelli'
-    tf = ROOT.TFile.Open('{d}/FormattedTnPForB_March21_BuToKee_mc_bparkPU_newMatch.root'.format(d=data_dir), "update")
+    if (isPFPF==1):
+        tf = ROOT.TFile.Open('{d}/FormattedTnPForB_PFPF_March21_BuToKee_mc_bparkPU_newMatch.root'.format(d=data_dir), "update")
+    if (isPFPF==0):
+        tf = ROOT.TFile.Open('{d}/FormattedTnPForB_PFLPT_March21_BuToKee_mc_bparkPU_newMatch.root'.format(d=data_dir), "update")
+        
     # -------------------------------------------------
     # -------------------------------------------------
 
@@ -35,7 +45,6 @@ def computeBdt():
 
     booster = bdt._Booster
     print(booster)
-
 
     # --------------------------------------------------
     # Read the original root tree
@@ -54,10 +63,9 @@ def computeBdt():
     ## now loop over the original tree entries and fill the extra branch
     for ie, event in enumerate(tftree):
 
-        #if ie>0: continue
-        if (tftree.B_mass<5.2597077 or tftree.B_mass>5.2597081): continue
+        #if ie>500: continue
 
-        if ie%1==100: print ("Processing event ie = ",ie)
+        if ie%500==1: print ("Processing event ie = ",ie)
 
         # inputs to BDT
         f0  = tftree.B_svprob
@@ -84,7 +92,7 @@ def computeBdt():
             f.write(line)
             f.write('\n')
         f.close()    
-        dtest = xgb.DMatrix('dumpThisEntry.txt')
+        dtest = xgb.DMatrix('dumpThisEntry.txt', silent =1)
 
         # compute the BDT score   
         ypred = booster.predict(dtest)
@@ -92,7 +100,7 @@ def computeBdt():
         # Store the BDT score in the tree as an extra branch
         xgb_arr[0] = float(ypred)
         branch.Fill()
-        print('ypred = ',ypred)
+        # print('ypred = ',ypred)
         
 
     # --------------------------------------------------
@@ -104,6 +112,8 @@ def computeBdt():
 if __name__ == "__main__":
 
     parser = optparse.OptionParser(usage='usage: %prog [opts] ', version='%prog 1.0')    
+    parser.add_option('', '--isPFPF' , type='string' , default='1' , help='isPFPFP (options = 1 (default) or 0)')
     (options, args) = parser.parse_args()
 
-    computeBdt()
+    if options.isPFPF in ['0']: computeBdt(0)
+    if options.isPFPF in ['1']: computeBdt(1)
