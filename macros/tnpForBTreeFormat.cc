@@ -9,7 +9,7 @@
 
 using namespace std;
 
-void tnpForBTreeFormat(const char* filename) {
+void tnpForBTreeFormat(const char* filename, int isPFPF) {
 
   cout << "Formatting " << filename << endl;  
 
@@ -291,22 +291,17 @@ void tnpForBTreeFormat(const char* filename) {
   Float_t   tagPhi;
   Float_t   tagId;
   Int_t     tagIsPF;
-  Float_t   tagDxySig;
-  Float_t   tagDzTrg;
   Float_t   tagIso04Rel;
   Float_t   probePt;
   Float_t   probeEta;
   Float_t   probePhi;
   Float_t   probeId;
   Int_t     probeIsPF;
-  Float_t   probeDxySig;
-  Float_t   probeDzTrg;
   Float_t   probeIso04Rel;
   Float_t   elesDr;
   Float_t   kPt;
   Float_t   kEta;
   Float_t   kPhi;
-  Float_t   B_isoRel;
   Float_t   B_cos2d;
   Float_t   B_pt;
   Float_t   B_mass;
@@ -314,11 +309,7 @@ void tnpForBTreeFormat(const char* filename) {
   Float_t   B_i3dsig;
   Float_t   B_svprob;
   Int_t     B_matchMC;
-  Float_t   kDCASig;
-  Float_t   kDzTrg;
   Float_t   kIso04Rel;
-  Float_t   kSvip2d;
-  Float_t   kSvip3d;
   Float_t   theLlkDR;
   Float_t   thePtAsym;
   Float_t   theLKdz;
@@ -328,16 +319,8 @@ void tnpForBTreeFormat(const char* filename) {
   Float_t   theLKdr_raw;
   Float_t   theBBDPhi;
   Float_t   theBTrkdxy2;
-  Float_t   theDmass;
-  Float_t   theDmass_flip;
-  Float_t   theDmass_ll;
-  Float_t   theDmass_ll_flip; 
-  Float_t   theDmass_mukhad;
   Float_t   theDmass_mukmu;
   Float_t   theKLmassD0;
-  Float_t   theAnalysisBdtG;
-  Float_t   theAnalysisBdtO;
-  Float_t   theAnalysisBdtC;
   Float_t   llpair_mass;
   Float_t   llpair_mass_fit;
   Float_t   weight;
@@ -354,8 +337,6 @@ void tnpForBTreeFormat(const char* filename) {
     theTreeNew->Branch("tagPhi",&tagPhi,"tagPhi/F");
     theTreeNew->Branch("tagId",&tagId,"tagId/F");
     theTreeNew->Branch("tagIsPF",&tagIsPF,"tagIsPF/I");
-    theTreeNew->Branch("tagDxySig",&tagDxySig,"tagDxySig/F");
-    theTreeNew->Branch("tagDzTrg",&tagDzTrg,"tagDzTrg/F");
     theTreeNew->Branch("tagIso04Rel",&tagIso04Rel,"tagIso04Rel/F");
 
     theTreeNew->Branch("probePt",&probePt,"probePt/F");
@@ -363,8 +344,6 @@ void tnpForBTreeFormat(const char* filename) {
     theTreeNew->Branch("probePhi",&probePhi,"probePhi/F");
     theTreeNew->Branch("probeId",&probeId,"probeId/F");
     theTreeNew->Branch("probeIsPF",&probeIsPF,"probeIsPF/I");
-    theTreeNew->Branch("probeDxySig",&probeDxySig,"probeDxySig/F");
-    theTreeNew->Branch("probeDzTrg",&probeDzTrg,"probeDzTrg/F");
     theTreeNew->Branch("probeIso04Rel",&probeIso04Rel,"probeIso04Rel/F");
 
     theTreeNew->Branch("elesDr",&elesDr,"elesDr/F");
@@ -372,11 +351,7 @@ void tnpForBTreeFormat(const char* filename) {
     theTreeNew->Branch("kPt",&kPt,"kPt/F");
     theTreeNew->Branch("kEta",&kEta,"kEta/F");
     theTreeNew->Branch("kPhi",&kPhi,"kPhi/F");
-    theTreeNew->Branch("kDCASig",&kDCASig,"kDCASig/F");
-    theTreeNew->Branch("kDzTrg",&kDzTrg,"kDzTrg/F");
     theTreeNew->Branch("kIso04Rel",&kIso04Rel,"kIso04Rel/F");
-    theTreeNew->Branch("kSvip2d",&kSvip2d,"kSvip2d/F");
-    theTreeNew->Branch("kSvip3d",&kSvip3d,"kSvip3d/F");
 
     theTreeNew->Branch("B_mass", &B_mass, "B_mass/F");
     theTreeNew->Branch("B_cos2d", &B_cos2d, "B_cos2d/F");
@@ -384,10 +359,8 @@ void tnpForBTreeFormat(const char* filename) {
     theTreeNew->Branch("B_svprob", &B_svprob, "B_svprob/F");
     theTreeNew->Branch("B_xysig", &B_xysig, "B_xysig/F");
     theTreeNew->Branch("B_i3dsig", &B_i3dsig, "B_i3dsig/F");
-    theTreeNew->Branch("B_isoRel", &B_isoRel, "B_isoRel/F");
     theTreeNew->Branch("B_matchMC", &B_matchMC, "B_matchMC/I");
 
-    theTreeNew->Branch("theLlkDR", &theLlkDR, "theLlkDR/F");
     theTreeNew->Branch("thePtAsym", &thePtAsym, "thePtAsym/F");
     theTreeNew->Branch("theLKdz", &theLKdz, "theLKdz/F");
     theTreeNew->Branch("theL1L2dr", &theL1L2dr, "theL1L2dr/F");
@@ -397,18 +370,9 @@ void tnpForBTreeFormat(const char* filename) {
     theTreeNew->Branch("theBBDPhi", &theBBDPhi, "theBBDPhi/F");
     theTreeNew->Branch("theBTrkdxy2", &theBTrkdxy2, "theBTrkdxy2/F");
 
-    theTreeNew->Branch("theDmass", &theDmass, "theDmass/F");
-    theTreeNew->Branch("theDmass_flip", &theDmass_flip, "theDmass_flip/F");
-    theTreeNew->Branch("theDmass_ll", &theDmass_ll, "theDmass_ll/F");
-    theTreeNew->Branch("theDmass_ll_flip", &theDmass_ll_flip, "theDmass_ll_flip/F");
-    theTreeNew->Branch("theDmass_mukhad", &theDmass_mukhad, "theDmass_mukhad/F");  
     theTreeNew->Branch("theDmass_mukmu",  &theDmass_mukmu,  "theDmass_mukmu/F");  
     theTreeNew->Branch("theKLmassD0", &theKLmassD0, "theKLmassD0/F");
 
-    theTreeNew->Branch("theAnalysisBdtG", &theAnalysisBdtG, "theAnalysisBdtG/F");
-    theTreeNew->Branch("theAnalysisBdtO", &theAnalysisBdtO, "theAnalysisBdtO/F");
-    theTreeNew->Branch("theAnalysisBdtC", &theAnalysisBdtC, "theAnalysisBdtC/F");
-    
     theTreeNew->Branch("llpair_mass", &llpair_mass, "llpair_mass/F");
     theTreeNew->Branch("llpair_mass_fit", &llpair_mass_fit, "llpair_mass_fit/F");
     theTreeNew->Branch("weight", &weight, "weight/F");
@@ -425,6 +389,10 @@ void tnpForBTreeFormat(const char* filename) {
 
     // Loop over Bs
     for (unsigned int ii=0; ii<fit_Bmass->size(); ii++) {
+
+      // PFPF or PFLPT
+      if ( isPFPF==1 && (tag_isPF->at(ii)==0 || probe_isPF->at(ii)==0) ) continue;
+      if ( isPFPF==0 && (tag_isPF->at(ii)==1 && probe_isPF->at(ii)==1) ) continue;
       
       /*
       // further selection on electrons (chiara, eventualmente da stringere cosi' nel dumper)
@@ -456,15 +424,12 @@ void tnpForBTreeFormat(const char* filename) {
       } else {
 	B_matchMC = -1;
       }
-      B_isoRel  = B_iso04_rel->at(ii);  
       //
       tagPt       = tag_pt->at(ii);
       tagEta      = tag_eta->at(ii);
       tagPhi      = tag_phi->at(ii);
       tagId       = tag_id->at(ii);
       tagIsPF     = tag_isPF->at(ii);
-      tagDxySig   = tag_dxy_sig->at(ii);
-      tagDzTrg    = tag_dzTrg->at(ii);
       tagIso04Rel = tag_iso04_rel->at(ii);
       //
       probePt       = probe_pt->at(ii);
@@ -472,8 +437,6 @@ void tnpForBTreeFormat(const char* filename) {
       probePhi      = probe_phi->at(ii);
       probeId       = probe_id->at(ii);
       probeIsPF     = probe_isPF->at(ii);
-      probeDxySig   = probe_dxy_sig->at(ii);
-      probeDzTrg    = probe_dzTrg->at(ii);
       probeIso04Rel = probe_iso04_rel->at(ii);
       //
       kPt  = K_pt->at(ii);
@@ -488,25 +451,11 @@ void tnpForBTreeFormat(const char* filename) {
       theBBDPhi = BBDPhi->at(ii); 
       theBTrkdxy2 = BTrkdxy2->at(ii);  
       //
-      theDmass         = Dmass->at(ii);
-      theDmass_flip    = Dmass_flip->at(ii);
-      theDmass_ll      = Dmass_ll->at(ii);
-      theDmass_ll_flip = Dmass_ll_flip->at(ii);
-      theDmass_mukhad  = Dmass_mukhad->at(ii); 
       theDmass_mukmu   = Dmass_mukmu->at(ii); 
       theKLmassD0      = KLmassD0->at(ii);
       //
-      kDCASig   = k_DCASig->at(ii);    
-      kDzTrg    = k_dzTrg->at(ii); 
       kIso04Rel = k_iso04_rel->at(ii); 
-      kSvip2d   = k_svip2d->at(ii); 
-      kSvip3d   = k_svip3d->at(ii); 
-      theLlkDR  = llkDR->at(ii); 
       thePtAsym = ptAsym->at(ii); 
-      //
-      theAnalysisBdtG = analysisBdtG->at(ii);
-      theAnalysisBdtO = analysisBdtO->at(ii);
-      theAnalysisBdtC = analysisBdtC->at(ii);
       //
       llpair_mass = mll_raw->at(ii);
       llpair_mass_fit = mll_fullfit->at(ii);
