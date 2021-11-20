@@ -27,26 +27,38 @@ OUTLIB	         = $(INCLUDEDIR)/lib/
 
 $(OUTLIB)BParkBase.o: $(INCLUDEDIR)/src/BParkBase.C \
 	$(INCLUDEDIR)/src/BPark.cc \
-	$(INCLUDEDIR)/src/SkimmerWithKStar.cc 
+	$(INCLUDEDIR)/src/TestMva.cc 
 	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)BParkBase.o $<
 $(OUTLIB)BPark.o: $(INCLUDEDIR)/src/BPark.cc 
 	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)BPark.o $<
+$(OUTLIB)TestMva.o: $(INCLUDEDIR)/src/TestMva.cc 
+	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -L../FastForest/build/ -lfastforest -o $(OUTLIB)TestMva.o $<
+$(OUTLIB)BParkBaseNew.o: $(INCLUDEDIR)/src/BParkBaseNew.C \
+	$(INCLUDEDIR)/src/BParkBaseNew.C \
+	$(INCLUDEDIR)/src/SkimmerWithKStar.cc 
+	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)BParkBaseNew.o $<
+#$(OUTLIB)BParkBaseNewWithKStar.o: $(INCLUDEDIR)/src/BParkBaseNewWithKStar.C \
+#	$(INCLUDEDIR)/src/BParkBaseNewWithKStar.C \
+#	$(INCLUDEDIR)/src/SkimmerWithKStar.cc 
+#	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)BParkBaseNewWithKStar.o $<
 $(OUTLIB)SkimmerWithKStar.o: $(INCLUDEDIR)/src/SkimmerWithKStar.cc 
 	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -L../FastForest/build/ -lfastforest -o $(OUTLIB)SkimmerWithKStar.o $<
 
 # ==================== BParkApp =============================================
-BParkApp:  $(INCLUDEDIR)/src/BParkApp.C \
+SkimmerWithKStar:  $(INCLUDEDIR)/src/BParkApp.C \
 	$(OUTLIB)BParkBase.o \
 	$(OUTLIB)BPark.o \
+	$(OUTLIB)TestMva.o \
+	$(OUTLIB)BParkBaseNew.o \
 	$(OUTLIB)SkimmerWithKStar.o 
-	$(CXX) $(CXXFLAGS) -ldl -L../FastForest/build/ -lfastforest -o BParkApp $(OUTLIB)/*.o $(GLIBS) $(LDFLAGS) $ $<
-BParkApp.clean:
-	rm -f BParkApp
+	$(CXX) $(CXXFLAGS) -ldl -L../FastForest/build/ -lfastforest -o SkimmerWithKStar.exe $(OUTLIB)/*.o $(GLIBS) $(LDFLAGS) $ $<
+SkimmerWithKStar.clean:
+	rm -f SkimmerWithKStar.exe
 
 # ==================== reduced trees =============================================
 
 clean:
 	rm -f $(OUTLIB)*.o
-	rm -f BParkApp
+	rm -f SkimmerWithKStar.exe
 
-all:  BParkApp
+all:  SkimmerWithKStar

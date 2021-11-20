@@ -9,11 +9,11 @@
 #include <string>
 #include <TLorentzVector.h>
 
-#include "./BParkBase.h"
+#include "./BParkBaseNew.h"
 
 using namespace std;
 
-class SkimmerWithKStar : public BParkBase{
+class SkimmerWithKStar : public BParkBaseNew{
 public:
 
   //! constructor
@@ -37,19 +37,21 @@ private:
   // Analysis methods
   bool isMcB( int myB );
   bool isMcEleFromJPsi (int myEle );
+  bool isTag( int myEle );     
+  bool isProbe( int myEle );     
   void bookOutputTree();
   void bookOutputHistos();
-  void SetNvtxWeights(std::string nvtxWeightFile);
-  float GetNvtxWeight(float nvtx);
+  void SetPuWeights(std::string puWeightFile);
+  float GetPUWeight(float pun);
+
 
   // to compute weights for pileup
-  std::vector<Double_t> nvtxweights_;
-  std::vector<Double_t> nvtxlowedge_;
+  std::vector<Double_t> puweights_;
 
   // settings
-  bool donvtxreweight_;
+  bool dopureweight_;
   int sampleID;
-  string nvtxWFileName_;
+  string puWFileName_;
   float lumiWeight_;
 
   // ---- outputs
@@ -68,9 +70,11 @@ private:
   int    theSampleID;
   float  rho;
   float  pu_weight;
+  float  pu_n;
   float perEveW;
   //
   int hlt9;
+  int hlt12;
   float trg_muon_pt;
   // 
   int selectedBSize;
@@ -90,8 +94,8 @@ private:
   vector <float> tag_pfmvaId={};
   vector <bool>  tag_matchMcFromJPsi={};
   vector <bool>  tag_matchMc={};
-  vector <float> tag_ptMc={};
-  vector <float> probe_ptMc={};
+  vector <float>  tag_ptMc={};
+  vector <float>  probe_ptMc={};
   vector <float> mll_fullfit={};
   vector <float> mll_raw={};
   vector <float> fit_mass={};

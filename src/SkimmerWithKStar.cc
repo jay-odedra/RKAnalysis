@@ -13,9 +13,12 @@
 #include <TClass.h>
 
 #include <cmath>
+#include <iostream> 
 
 #include "../FastForest/include/fastforest.h"
-#include "../include/SkimmerWithKStar.hh"    
+#include "../include/SkimmerWithKStar.hh"
+
+#define MAX_PU_REWEIGHT 60
 
 using namespace std;
 
@@ -43,14 +46,16 @@ float SkimmerWithKStar::DeltaPhi(float  phi1, float phi2){
   return dphi;
 }
 
+
+
+
 SkimmerWithKStar::SkimmerWithKStar(TChain *tree, int isMC )     
-  : BParkBase((TTree*) tree, isMC ) {        
+  : BParkBaseNew((TTree*) tree, isMC ) {        
 
-  sampleID = isMC;         
-
-  // To be set by hand   
-  donvtxreweight_ = 0;
-  nvtxWFileName_ = "/afs/cern.ch/user/c/crovelli/public/bphys/march/nvtxWeights_run2018D.root"; 
+  // Chiara: to be set by hand   
+  sampleID = isMC;         // 0 = data, >=1 MC
+  dopureweight_ = 0;    // chiara: eventualmente da fare con numero di vertici    
+  puWFileName_ = "";
 }
 
 SkimmerWithKStar::~SkimmerWithKStar() {
@@ -68,20 +73,20 @@ void SkimmerWithKStar::Loop() {
   if (fChain == 0) return;
 
   // Load Analysis MVA weights for G.
-  std::string bdtfile = "models/model_PFPF_george.txt";
+  std::string bdtfile = "../data/model_PFPF_george.txt";
   std::vector<std::string> feat = {"f0","f1", "f2","f3","f4","f5","f6","f7","f8","f9","f10","f11"};
   const auto fastForest = fastforest::load_txt(bdtfile.c_str(), feat);
   // Load Analysis MVA weights PFLP
-  std::string bdtfilePFLP = "models/model_PFLP_george.txt";
+  std::string bdtfilePFLP = "../data/model_PFLP_george.txt";
   std::vector<std::string> featPFLP = {"f0","f1", "f2","f3","f4","f5","f6","f7","f8","f9","f10","f11"};
   const auto fastForestPFLP = fastforest::load_txt(bdtfilePFLP.c_str(), featPFLP);
 
   // Load Analysis MVA weights for Otto
-  std::string bdtfileOttoPFPF = "models/otto_model.txt";
+  std::string bdtfileOttoPFPF = "../data/otto_model.txt";
   std::vector<std::string> featOttoPFPF = {"f0","f1", "f2","f3","f4","f5","f6","f7","f8","f9","f10","f11","f12","f13","f14","f15","f16","f17","f18","f19","f20","f21", "f22","f23","f24","f25"};
   const auto fastForestOttoPFPF = fastforest::load_txt(bdtfileOttoPFPF.c_str(), featOttoPFPF);
   // PF+LP
-  std::string bdtfileOttoPFLP = "models/otto_model_pflp.txt";
+  std::string bdtfileOttoPFLP = "../data/otto_model_pflp.txt";
   std::vector<std::string> featOttoPFLP = {"f0","f1", "f2","f3","f4","f5","f6","f7","f8","f9","f10","f11","f12","f13","f14","f15","f16","f17","f18","f19","f20","f21", "f22","f23","f24","f25","f26","f27"};
   const auto fastForestOttoPFLP = fastforest::load_txt(bdtfileOttoPFLP.c_str(), featOttoPFLP);
 
@@ -91,13 +96,15 @@ void SkimmerWithKStar::Loop() {
   // Loop over events
   Long64_t nentries = fChain->GetEntries();
   Long64_t nbytes = 0, nb = 0;
+  //  nentries=100;
   cout << "entries : " <<  nentries << endl;
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
 
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
     nb = fChain->GetEntry(jentry);   nbytes += nb;
-    if (jentry%10000==0) cout << jentry << endl;
+    //if (jentry%10000==0) cout << jentry << endl;
+    if (jentry%10==0) cout << jentry << endl;
 
     // To keep track of the total number of events 
     h_entries->Fill(5);
@@ -115,8 +122,10 @@ void SkimmerWithKStar::Loop() {
     
     // PU weight (for MC only and if requested)
     pu_weight = 1.;
-    if (sampleID>0 && donvtxreweight_==1) {    
-      pu_weight = GetNvtxWeight(nvtx);         
+    pu_n = -1.;
+    if (sampleID>0) {     // MC
+      pu_n = Pileup_nTrueInt;           
+      if (dopureweight_) pu_weight = GetPUWeight(pu_n);         
     }
 
     // other weights for the dataset
@@ -136,11 +145,14 @@ void SkimmerWithKStar::Loop() {
     h_selection->Fill(1.,perEveW);
 
     // Trigger 
-    int iHLT_Mu9_IP6 = (int)HLT_Mu9_IP6;
-    hlt9 = iHLT_Mu9_IP6;
-    h_selection->Fill(2.,perEveW);
+    int iHLT_Mu12_IP6 = (int)HLT_Mu12_IP6;
+    int iHLT_Mu9_IP6  = (int)HLT_Mu9_IP6;
+    ////////////////////////////if (iHLT_Mu12_IP6==0 && iHLT_Mu9_IP6==0) continue;         
+    hlt9  = iHLT_Mu9_IP6;
+    hlt12 = iHLT_Mu12_IP6;
     
     // Triggering muons
+   
     bool nTriggerMuon=0;
     int idTrgMu=-1;
     float ptTrgMu=0.;
@@ -156,8 +168,8 @@ void SkimmerWithKStar::Loop() {
 	}
       }
     }
+    
     trg_muon_pt=ptTrgMu;
-
     // calculation of BBDPhi
     TLorentzVector trgmuon_vec(0,0,0,0);
     TLorentzVector sum_track_vec(0,0,0,0);
@@ -178,6 +190,8 @@ void SkimmerWithKStar::Loop() {
       }
       
     }
+
+    h_selection->Fill(2.,perEveW);
 
     // B candidates
     if (nBToKEE<=0) continue;
@@ -218,6 +232,7 @@ void SkimmerWithKStar::Loop() {
       }
     }
     
+
     // order by the cos2D    
     u_int iBGd2D[1000]={0};
     float c2BG[1000]={0.};    
@@ -282,6 +297,7 @@ void SkimmerWithKStar::Loop() {
     }
 
 
+
     // Minimal Bcandidate requirements
     vector<int> goodBs;
     vector<int> goodBorder;
@@ -290,55 +306,68 @@ void SkimmerWithKStar::Loop() {
 
     for (u_int iB=0; iB<n; iB++) {
 
-      // preparing variables
-      int ele1_idx = BToKEE_l1Idx[iB];
-      int ele2_idx = BToKEE_l2Idx[iB];
-      
-      float ele1_pt = BToKEE_fit_l1_pt[iB];
-      float ele2_pt = BToKEE_fit_l2_pt[iB];
-      float k_pt    = BToKEE_fit_k_pt[iB];
-      
-      float ele1_eta = BToKEE_fit_l1_eta[iB];     
-      float ele2_eta = BToKEE_fit_l2_eta[iB];    
-      float k_eta    = BToKEE_fit_k_eta[iB];    
-      
-      // B selection (standard cut)
-      bool vtxFitSel = BToKEE_fit_pt[iB]>_ptB && BToKEE_svprob[iB]>_svProb && BToKEE_fit_cos2D[iB]>_cos2D;
-      bool ele1Sel = fabs(ele1_eta)<2.4 && ele1_pt>0.7;
-      bool ele2Sel = fabs(ele2_eta)<2.4 && ele2_pt>0.7;
-      bool kSel = k_pt>0.7 && fabs(k_eta)<2.4; 
-      bool additionalSel = BToKEE_fit_mass[iB]>4.5 && BToKEE_fit_mass[iB]<6.0;
-      bool isBsel = vtxFitSel && ele1Sel && ele2Sel && kSel && additionalSel;
+      //    for (u_int ik=0; ik<n; ik++){
+      //  if(ptBG[ik]>0){
+      //	u_int iB= iBGd[ik];
 	
-      int i2D=n;
-      for (u_int m=0; m<n; m++){
-	if(iBGd2D[m]==iB) {
-	  i2D=m; 
-	  break;
+	// preparing variables
+	int ele1_idx = BToKEE_l1Idx[iB];
+	int ele2_idx = BToKEE_l2Idx[iB];
+	
+	float ele1_pt = BToKEE_fit_l1_pt[iB];
+	float ele2_pt = BToKEE_fit_l2_pt[iB];
+	float k_pt    = BToKEE_fit_k_pt[iB];
+	
+	float ele1_eta = BToKEE_fit_l1_eta[iB];     
+	float ele2_eta = BToKEE_fit_l2_eta[iB];    
+	float k_eta    = BToKEE_fit_k_eta[iB];    
+	// float ele1_phi = BToKEE_fit_l1_phi[iB];    
+	// float ele2_phi = BToKEE_fit_l2_phi[iB];    
+	// float b_xySig = BToKEE_l_xy[iB]/BToKEE_l_xy_unc[iB];
+	
+	// B selection (standard cut)
+	bool vtxFitSel = BToKEE_fit_pt[iB]>_ptB && BToKEE_svprob[iB]>_svProb && BToKEE_fit_cos2D[iB]>_cos2D;
+	bool ele1Sel = fabs(ele1_eta)<2.4 && ele1_pt>0.7;
+	bool ele2Sel = fabs(ele2_eta)<2.4 && ele2_pt>0.7;
+	bool kSel = k_pt>0.7 && fabs(k_eta)<2.4; 
+	bool additionalSel = BToKEE_fit_mass[iB]>4.5 && BToKEE_fit_mass[iB]<6.0;
+	bool isBsel = vtxFitSel && ele1Sel && ele2Sel && kSel && additionalSel;
+	
+	
+	// if (!isBsel) continue;
+	
+	int i2D=n;
+	for (u_int m=0; m<n; m++){
+	  if(iBGd2D[m]==iB) {
+	    i2D=m; 
+	    break;
+	  }
 	}
-      }
-      int ik=n;
-      for (u_int m=0; m<n; m++){
-	if(iBGd[m]==iB) {
-	  ik=m; 
-	  break;
+	int ik=n;
+	for (u_int m=0; m<n; m++){
+	  if(iBGd[m]==iB) {
+	    ik=m; 
+	    break;
+	  }
 	}
-      }
-      int ixy=n;
-      for (u_int m=0; m<n; m++){
-	if(iBGdxy[m]==iB) {
+	int ixy=n;
+	for (u_int m=0; m<n; m++){
+	  if(iBGdxy[m]==iB) {
 	    ixy=m; 
 	    break;
+	  }
 	}
-      }
-      
-      goodBs.push_back(iB);
-      goodBorder.push_back(ik);
-      goodBorder2D.push_back(i2D);
-      goodBorderXY.push_back(ixy);
-    }
+	
+	
+	
+	goodBs.push_back(iB);
+	goodBorder.push_back(ik);
+	goodBorder2D.push_back(i2D);
+	goodBorderXY.push_back(ixy);
 
+    }
     if (goodBs.size()>0) h_selection->Fill(4.,perEveW);
+    
     
     selectedBSize = goodBs.size();
     
@@ -361,6 +390,7 @@ void SkimmerWithKStar::Loop() {
       if (sampleID>0) isThisAMcB = isMcB(thisB);      
       
       // K-infos for further cuts offline
+      // int thisK = BToKEE_kIdx[thisB];
       float thisKpt = BToKEE_fit_k_pt[thisB];   
       
       // Electrons
@@ -458,11 +488,12 @@ void SkimmerWithKStar::Loop() {
 	}
       }
 
-      
+
       TLorentzVector ele1TLV(0,0,0,0);
       ele1TLV.SetPtEtaPhiM(ele1_pt,ele1_eta,ele1_phi,0.000511);
       TLorentzVector ele2TLV(0,0,0,0);
       ele2TLV.SetPtEtaPhiM(ele2_pt,ele2_eta,ele2_phi,0.000511);
+
 
 
 
@@ -484,6 +515,7 @@ void SkimmerWithKStar::Loop() {
       tag_mvaId.push_back(Electron_mvaId[ele1_idx]);
       tag_pfmvaId.push_back(Electron_pfmvaId[ele1_idx]);
       tag_convveto.push_back(Electron_convVeto[ele1_idx]);
+      // tag_pfRelIso.push_back(Electron_pfRelIso[ele1_idx]);  
       //
       tag_drm.push_back(dr1m);
       probe_drm.push_back(dr2m);
@@ -509,11 +541,21 @@ void SkimmerWithKStar::Loop() {
       probe_pfmvaId.push_back(Electron_pfmvaId[ele2_idx]);
       probe_dxySig.push_back(Electron_dxy[ele2_idx]/Electron_dxyErr[ele2_idx]);  
       probe_dzSig.push_back(Electron_dz[ele2_idx]/Electron_dzErr[ele2_idx]);  
+      // probe_pfRelIso.push_back(Electron_pfRelIso[ele2_idx]);  
+      // probe_trkRelIso.push_back(Electron_trkRelIso[ele2_idx]);  
       probe_fBrem.push_back(Electron_fBrem[ele2_idx]);  
+      //probe_unBiased.push_back(Electron_unBiased[ele2_idx]);  
+      //probe_ptBiased.push_back(Electron_ptBiased[ele2_idx]);  
       probe_convveto.push_back(Electron_convVeto[ele2_idx]);
       mll_fullfit.push_back(BToKEE_mll_fullfit[thisB]);
       mll_raw.push_back(BToKEE_mll_raw[thisB]);
       fit_mass.push_back(BToKEE_fit_mass[thisB]); 
+
+      
+
+
+
+
       
       // Vertex distances
       float l1kDz = fabs(kvz-l1vz);
@@ -788,7 +830,6 @@ void SkimmerWithKStar::Loop() {
       
     } // Loop over good Bs
       
-
     // At least one tag and one probe
     selectedPairsSize = tag_pt.size();
     if (selectedPairsSize<=0) continue;
@@ -796,6 +837,7 @@ void SkimmerWithKStar::Loop() {
 
     // Filling the output tree
     outTree_->Fill();
+    
     
     // Cleaning all vectors used for the selection
     goodBs.clear();
@@ -815,9 +857,10 @@ void SkimmerWithKStar::Loop() {
     tag_mvaId.clear();  
     tag_pfmvaId.clear();  
     tag_convveto.clear();
+    // tag_pfRelIso.clear();
     if(sampleID>0){
-      tag_ptMc.clear();
-      probe_ptMc.clear();
+      tag_ptMc.clear();  
+      probe_ptMc.clear();  
       tag_matchMcFromJPsi.clear();  
       tag_matchMc.clear();
       bmatchMC.clear();
@@ -848,7 +891,14 @@ void SkimmerWithKStar::Loop() {
     probe_pfmvaId.clear();  
     probe_dxySig.clear();  
     probe_dzSig.clear();  
+    // probe_pfRelIso.clear();  
+    // probe_trkRelIso.clear();  
+    //  probe_fBrem.clear();  
+    //    probe_unBiased.clear();  
+    // probe_ptBiased.clear();  
     probe_convveto.clear();
+
+
 
     analysisBdtG.clear();
     analysisBdtO.clear();
@@ -879,63 +929,55 @@ void SkimmerWithKStar::Loop() {
     probe_iso04_rel_vec.clear();
     llkDR_vec.clear();
     ptAsym_vec.clear();
+
+
+
+
+
+
   }
 }
 
-void SkimmerWithKStar::SetNvtxWeights(std::string nvtxWeightFile) {
+void SkimmerWithKStar::SetPuWeights(std::string puWeightFile) {
 
-  if (nvtxWeightFile == "") {
+  if (puWeightFile == "") {
     std::cout << "you need a weights file to use this function" << std::endl;
     return;
   }
-  std::cout << "PU REWEIGHTING Based on #vertices:: Using file " << nvtxWeightFile << std::endl;
+  std::cout << "PU REWEIGHTING:: Using file " << puWeightFile << std::endl;
   
-  TFile *f_nvtx = new TFile(nvtxWeightFile.c_str(),"READ");
-  f_nvtx->cd();
+  TFile *f_pu  = new TFile(puWeightFile.c_str(),"READ");
+  f_pu->cd();
   
-  TH1F *nvtxweights = 0;
-  TH1F *mc_nvtx = 0;
-  mc_nvtx     = (TH1F*) f_nvtx->Get("mcNvtx");
-  nvtxweights = (TH1F*) f_nvtx->Get("weights");
+  TH1D *puweights = 0;
+  TH1D *gen_pu = 0;
+  gen_pu    = (TH1D*) f_pu->Get("generated_pu");
+  puweights = (TH1D*) f_pu->Get("weights");
   
-  if (!nvtxweights || !mc_nvtx) {
-    std::cout << "weights histograms not found in file " << nvtxWeightFile << std::endl;
+  if (!puweights || !gen_pu) {
+    std::cout << "weights histograms  not found in file " << puWeightFile << std::endl;
     return;
   }
-  TH1F* weightedNvtx= (TH1F*)mc_nvtx->Clone("weightedNvtx");
-  weightedNvtx->Multiply(nvtxweights);
+  TH1D* weightedPU= (TH1D*)gen_pu->Clone("weightedPU");
+  weightedPU->Multiply(puweights);
   
-  // Rescaling weights in order to preserve same integral of events     
-  TH1F* weights = (TH1F*)nvtxweights->Clone("rescaledWeights");
-  weights->Scale( mc_nvtx->Integral() / weightedNvtx->Integral() );
+  // Rescaling weights in order to preserve same integral of events                               
+  TH1D* weights = (TH1D*)puweights->Clone("rescaledWeights");
+  weights->Scale( gen_pu->Integral(1,MAX_PU_REWEIGHT) / weightedPU->Integral(1,MAX_PU_REWEIGHT) );
   
-  float sumNvtxweights=0.;
-  for (int i = 0; i<nvtxweights->GetNbinsX(); i++) {
+  float sumPuWeights=0.;
+  for (int i = 0; i<MAX_PU_REWEIGHT; i++) {
     float weight=1.;
     weight=weights->GetBinContent(i+1);
-    sumNvtxweights+=weight;
-    nvtxweights_.push_back(weight);
-    float lowedge=weights->GetBinLowEdge(i+1);
-    nvtxlowedge_.push_back(lowedge);
+    sumPuWeights+=weight;
+    puweights_.push_back(weight);
   }
 }
 
-float SkimmerWithKStar::GetNvtxWeight(float nvtx) {
-
-  int thesize   = nvtxlowedge_.size();
-  int thesizem1 = nvtxlowedge_.size()-1;
+float SkimmerWithKStar::GetPUWeight(float pun) {
+  
   float weight=1;
-
-  if (sampleID!=0 && thesize>0 && donvtxreweight_) {
-    for (int i = 0; i<thesizem1; i++) {   
-      if (nvtxlowedge_[i]<=nvtx && nvtxlowedge_[i+1]>nvtx) { 
-	weight = nvtxweights_[i];
-      }
-    }
-    if (nvtxlowedge_[thesizem1]<=nvtx) { 
-      weight = nvtxweights_[thesizem1];
-    }
-  }
+  if (sampleID!=0 && pun<MAX_PU_REWEIGHT && puweights_.size()>0 && dopureweight_) weight = puweights_[pun];
 
   return weight;
 }
@@ -971,6 +1013,7 @@ bool SkimmerWithKStar::isMcB( int theB ) {
 
   // B -> K J/psi(ll) at gen level
   bool okMatch = (ele1_genPartIdx>-0.5 && ele2_genPartIdx>-0.5 && k_genPartIdx>-0.5);
+
   bool RK_res1 = abs(ele1_genMotherPdgId)==443 && abs(k_genMotherPdgId)==521;
   bool RK_res2 = (ele1_genMotherPdgId==ele2_genMotherPdgId) && (k_genMotherPdgId==ele1_genGMotherPdgId) && (k_genMotherPdgId==ele2_genGMotherPdgId);
 
@@ -998,6 +1041,24 @@ bool SkimmerWithKStar::isMcEleFromJPsi( int ele_idx ) {
   return okMatch;
 }
 
+bool SkimmerWithKStar::isTag( int theEle ) {
+
+  bool isTag = true;
+  
+  // chiara
+
+  return isTag;  
+}
+
+bool SkimmerWithKStar::isProbe( int theEle ) {
+
+  bool isProbe = true;
+  
+  // chiara
+
+  return isProbe;  
+}
+
 void SkimmerWithKStar::PrepareOutputs(std::string filename) 
 {
   _datasetName=filename;
@@ -1010,7 +1071,7 @@ void SkimmerWithKStar::PrepareOutputs(std::string filename)
   bookOutputHistos();
 
   // loading weights for pileup if needed
-  if (donvtxreweight_) SetNvtxWeights(nvtxWFileName_);
+  if (dopureweight_) SetPuWeights(puWFileName_);
 };
 
 
@@ -1025,8 +1086,12 @@ void SkimmerWithKStar::bookOutputTree()
   outTree_->Branch("nvtx", &nvtx, "nvtx/I");    
   outTree_->Branch("sampleID", &sampleID, "sampleID/I");    
   outTree_->Branch("rho", &rho, "rho/F");    
+  //  outTree_->Branch("pu_weight", &pu_weight, "pu_weight/F");    
+  //  outTree_->Branch("pu_n", &pu_n, "pu_n/F");    
+  //  outTree_->Branch("perEveW", &perEveW, "perEveW/F");    
 
   outTree_->Branch("hlt9", &hlt9, "hlt9/I");
+  //   outTree_->Branch("hlt12", &hlt12, "hlt12/I");
   outTree_->Branch("trg_muon_pt", &trg_muon_pt, "trg_muon_pt/F");
 
   outTree_->Branch("selectedBSize",  &selectedBSize,  "selectedBSize/I");   
@@ -1039,16 +1104,20 @@ void SkimmerWithKStar::bookOutputTree()
   outTree_->Branch("tag_isLowPt", "std::vector<bool>", &tag_isLowPt);  
   outTree_->Branch("tag_mvaId", "std::vector<float>", &tag_mvaId);  
   outTree_->Branch("tag_pfmvaId", "std::vector<float>", &tag_pfmvaId);  
+  // new
   outTree_->Branch("tag_convveto", "std::vector<bool>", &tag_convveto);  
+  // outTree_->Branch("tag_pfRelIso", "std::vector<float>", &tag_pfRelIso);  
+  // end new
 
   if(sampleID>0){
-    outTree_->Branch("tag_ptMc", "std::vector<float>", &tag_ptMc);
-    outTree_->Branch("probe_ptMc", "std::vector<float>", &probe_ptMc);
     outTree_->Branch("tag_matchMcFromJPsi", "std::vector<bool>", &tag_matchMcFromJPsi);  
     outTree_->Branch("tag_matchMc", "std::vector<bool>", &tag_matchMc);  
+    outTree_->Branch("tag_ptMc", "std::vector<float>", &tag_ptMc);  
+    outTree_->Branch("probe_ptMc", "std::vector<float>", &probe_ptMc);  
   }
   outTree_->Branch("mll_fullfit", "std::vector<float>", &mll_fullfit);  
   outTree_->Branch("mll_raw", "std::vector<float>", &mll_raw);  
+
   outTree_->Branch("fit_mass", "std::vector<float>", &fit_mass);  
 
   outTree_->Branch("fit_Bpt",     "std::vector<float>", &fit_Bpt);  
@@ -1070,6 +1139,11 @@ void SkimmerWithKStar::bookOutputTree()
   outTree_->Branch("probe_pfmvaId", "std::vector<float>", &probe_pfmvaId);  
   outTree_->Branch("probe_dxySig", "std::vector<float>", &probe_dxySig);  
   outTree_->Branch("probe_dzSig", "std::vector<float>", &probe_dzSig);  
+  //  outTree_->Branch("probe_pfRelIso", "std::vector<float>", &probe_pfRelIso);  
+  // outTree_->Branch("probe_trkRelIso", "std::vector<float>", &probe_trkRelIso);  
+  // outTree_->Branch("probe_fBrem", "std::vector<float>", &probe_fBrem);  
+  // outTree_->Branch("probe_unBiased", "std::vector<float>", &probe_unBiased);  
+  // outTree_->Branch("probe_ptBiased", "std::vector<float>", &probe_ptBiased);  
   outTree_->Branch("probe_convveto", "std::vector<bool>", &probe_convveto);  
 
   if(sampleID>0){
@@ -1118,7 +1192,11 @@ void SkimmerWithKStar::bookOutputTree()
   outTree_->Branch("llkDR", "std::vector<float>", &llkDR_vec);
   outTree_->Branch("ptAsym", "std::vector<float>", &ptAsym_vec);
 
+
   outTree_->Branch("selectedPairsSize",  &selectedPairsSize,  "selectedPairsSize/I");   
+
+
+
 }
 
 void SkimmerWithKStar::bookOutputHistos() 
@@ -1129,9 +1207,11 @@ void SkimmerWithKStar::bookOutputHistos()
   h_selection = new TH1F("h_selection","Selection breakdown", 8, -0.5, 7.5);
 }
 
+
+
 int main(int argc, char **argv){
   if (argc <2 ) {
-    std::cerr << "Usage: " << argv[0] << " [file_list.txt] [outputFile] [0=data, 1=MC noK*, 2=MC with K*] [nmin] [nmax] [ptB] [svprob] [co2D]" << std::endl;
+    std::cerr << "Usage: " << argv[0] << " [file_list.txt] [outputFile] [1=MC,0=data] [nmin] [nmax] [ptB] [svprob] [co2D]" << std::endl;
     return 1;
   }
   char inputFileName[500];
@@ -1195,13 +1275,19 @@ int main(int argc, char **argv){
 
   tnp.PrepareOutputs(outputFileName);   
   std::cout<<"we are here 2 "<< std::endl;
-
   tnp.SetCuts(ptB,svprob,cos2D);
-
   tnp.Loop();
   std::cout<<"we are here 3"<< std::endl;
 
   return 0;
 
 }
+
+
+
+
+
+
+
+
 
