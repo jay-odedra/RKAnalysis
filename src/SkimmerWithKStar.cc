@@ -194,7 +194,7 @@ void SkimmerWithKStar::Loop() {
     h_selection->Fill(2.,perEveW);
 
     // B candidates
-    if (nBToKEE<=0) continue;
+    //if (nBToKEE<=0) continue;
     h_selection->Fill(3.,perEveW);
 
 
@@ -366,13 +366,14 @@ void SkimmerWithKStar::Loop() {
 	goodBorderXY.push_back(ixy);
 
     }
-    if (goodBs.size()>0) h_selection->Fill(4.,perEveW);
+    //if (goodBs.size()>0)
+    h_selection->Fill(4.,perEveW);
     
     
     selectedBSize = goodBs.size();
     
     // At least one good B candidate
-    if (goodBs.size()<=0) continue;
+    //if (goodBs.size()<=0) continue;
     h_selection->Fill(5.,perEveW);
 
     
@@ -832,7 +833,7 @@ void SkimmerWithKStar::Loop() {
       
     // At least one tag and one probe
     selectedPairsSize = tag_pt.size();
-    if (selectedPairsSize<=0) continue;
+    //if (selectedPairsSize<=0) continue;
     h_selection->Fill(6.,perEveW);
 
     // Filling the output tree
