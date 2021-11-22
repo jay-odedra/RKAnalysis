@@ -73,20 +73,20 @@ void SkimmerWithKStar::Loop() {
   if (fChain == 0) return;
 
   // Load Analysis MVA weights for G.
-  std::string bdtfile = "../data/model_PFPF_george.txt";
+  std::string bdtfile = "./data/model_PFPF_george.txt";
   std::vector<std::string> feat = {"f0","f1", "f2","f3","f4","f5","f6","f7","f8","f9","f10","f11"};
   const auto fastForest = fastforest::load_txt(bdtfile.c_str(), feat);
   // Load Analysis MVA weights PFLP
-  std::string bdtfilePFLP = "../data/model_PFLP_george.txt";
+  std::string bdtfilePFLP = "./data/model_PFLP_george.txt";
   std::vector<std::string> featPFLP = {"f0","f1", "f2","f3","f4","f5","f6","f7","f8","f9","f10","f11"};
   const auto fastForestPFLP = fastforest::load_txt(bdtfilePFLP.c_str(), featPFLP);
 
   // Load Analysis MVA weights for Otto
-  std::string bdtfileOttoPFPF = "../data/otto_model.txt";
+  std::string bdtfileOttoPFPF = "./data/otto_model.txt";
   std::vector<std::string> featOttoPFPF = {"f0","f1", "f2","f3","f4","f5","f6","f7","f8","f9","f10","f11","f12","f13","f14","f15","f16","f17","f18","f19","f20","f21", "f22","f23","f24","f25"};
   const auto fastForestOttoPFPF = fastforest::load_txt(bdtfileOttoPFPF.c_str(), featOttoPFPF);
   // PF+LP
-  std::string bdtfileOttoPFLP = "../data/otto_model_pflp.txt";
+  std::string bdtfileOttoPFLP = "./data/otto_model_pflp.txt";
   std::vector<std::string> featOttoPFLP = {"f0","f1", "f2","f3","f4","f5","f6","f7","f8","f9","f10","f11","f12","f13","f14","f15","f16","f17","f18","f19","f20","f21", "f22","f23","f24","f25","f26","f27"};
   const auto fastForestOttoPFLP = fastforest::load_txt(bdtfileOttoPFLP.c_str(), featOttoPFLP);
 
