@@ -1254,7 +1254,7 @@ int main(int argc, char **argv){
   vector<string> filesToRemove;
   int nfiles=0;
   int i=0;
-  while( !(inputFile->eof()) ){
+  while( !(inputFile->eof()) && i<10000 ){
     inputFile->getline(Buffer,500);
     if(i>=nmin&& i<nmax){
       nfiles=nfiles+1;
