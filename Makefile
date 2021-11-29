@@ -37,14 +37,23 @@ $(OUTLIB)BParkBaseNew.o: $(INCLUDEDIR)/src/BParkBaseNew.C \
 	$(INCLUDEDIR)/src/BParkBaseNew.C \
 	$(INCLUDEDIR)/src/SkimmerWithKStar.cc 
 	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)BParkBaseNew.o $<
+$(OUTLIB)EfficiencyBase.o: $(INCLUDEDIR)/src/EfficiencyBase.C \
+	$(INCLUDEDIR)/src/EfficiencyBase.C \
+	$(INCLUDEDIR)/src/Efficiency.cc 
+	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)EfficiencyBase.o $<
 #$(OUTLIB)BParkBaseNewWithKStar.o: $(INCLUDEDIR)/src/BParkBaseNewWithKStar.C \
 #	$(INCLUDEDIR)/src/BParkBaseNewWithKStar.C \
 #	$(INCLUDEDIR)/src/SkimmerWithKStar.cc 
 #	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)BParkBaseNewWithKStar.o $<
 $(OUTLIB)SkimmerWithKStar.o: $(INCLUDEDIR)/src/SkimmerWithKStar.cc 
 	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -L../FastForest/build/ -lfastforest -o $(OUTLIB)SkimmerWithKStar.o $<
+$(OUTLIB)Efficiency.o: $(INCLUDEDIR)/src/Efficiency.cc 
+	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -L../FastForest/build/ -lfastforest -o $(OUTLIB)Efficiency.o $<
+$(OUTLIB)main.o: $(INCLUDEDIR)/src/main.cc 
+	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -L../FastForest/build/ -lfastforest -o $(OUTLIB)main.o $<
 
 # ==================== BParkApp =============================================
+
 SkimmerWithKStar:  $(INCLUDEDIR)/src/BParkApp.C \
 	$(OUTLIB)BParkBase.o \
 	$(OUTLIB)BPark.o \
@@ -55,10 +64,22 @@ SkimmerWithKStar:  $(INCLUDEDIR)/src/BParkApp.C \
 SkimmerWithKStar.clean:
 	rm -f SkimmerWithKStar.exe
 
+Efficiency:  $(INCLUDEDIR)/src/BParkApp.C \
+	$(OUTLIB)BParkBase.o \
+	$(OUTLIB)BPark.o \
+	$(OUTLIB)TestMva.o \
+	$(OUTLIB)EfficiencyBase.o \
+	$(OUTLIB)Efficiency.o \
+	$(OUTLIB)main.o 
+	$(CXX) $(CXXFLAGS) -ldl -L../FastForest/build/ -lfastforest -o Efficiency.exe $(OUTLIB)/*.o $(GLIBS) $(LDFLAGS) $ $<
+Efficiency.clean:
+	rm -f Efficiency.exe
+
 # ==================== reduced trees =============================================
 
 clean:
 	rm -f $(OUTLIB)*.o
+	rm -f Efficiency.exe
 	rm -f SkimmerWithKStar.exe
 
-all:  SkimmerWithKStar
+all: Efficiency #SkimmerWithKStar

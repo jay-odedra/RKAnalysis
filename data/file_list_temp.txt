@@ -1,0 +1,15 @@
+#/afs/cern.ch/user/b/bainbrid/public/Trigger/BParkingNANO/CMSSW_10_2_15/src/PhysicsTools/BParkingNano/test/BParkNANO_mc_10215_default.root
+/afs/cern.ch/user/b/bainbrid/public/Trigger/BParkingNANO/CMSSW_10_2_15/src/PhysicsTools/BParkingNano/test/BParkNANO_mc_10215_modded.root
+
+#/eos/cms/store/group/phys_bphys/bpark/nanoaod_Run3/BParkingNANO_2021Nov23/BuToKee_Mufilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/crab_BuToKee_v3/211123_152209/0000/BParkNANO_mc_2021Nov23_168.root
+
+#/eos/cms/store/group/phys_bphys/bpark/nanoaod_Run3/BParkingNANO_2021Nov23/BuToKee_Mufilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/crab_BuToKee_v3/211123_152209/0000/BParkNANO_mc_2021Nov23_1.root
+#/eos/cms/store/group/phys_bphys/bpark/nanoaod_Run3/BParkingNANO_2021Nov23/BuToKee_Mufilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/crab_BuToKee_v3/211123_152209/0000/BParkNANO_mc_2021Nov23_10.root
+#/eos/cms/store/group/phys_bphys/bpark/nanoaod_Run3/BParkingNANO_2021Nov23/BuToKee_Mufilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/crab_BuToKee_v3/211123_152209/0000/BParkNANO_mc_2021Nov23_100.root
+#/eos/cms/store/group/phys_bphys/bpark/nanoaod_Run3/BParkingNANO_2021Nov23/BuToKee_Mufilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/crab_BuToKee_v3/211123_152209/0000/BParkNANO_mc_2021Nov23_101.root
+#/eos/cms/store/group/phys_bphys/bpark/nanoaod_Run3/BParkingNANO_2021Nov23/BuToKee_Mufilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/crab_BuToKee_v3/211123_152209/0000/BParkNANO_mc_2021Nov23_102.root
+#/eos/cms/store/group/phys_bphys/bpark/nanoaod_Run3/BParkingNANO_2021Nov23/BuToKee_Mufilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/crab_BuToKee_v3/211123_152209/0000/BParkNANO_mc_2021Nov23_103.root
+#/eos/cms/store/group/phys_bphys/bpark/nanoaod_Run3/BParkingNANO_2021Nov23/BuToKee_Mufilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/crab_BuToKee_v3/211123_152209/0000/BParkNANO_mc_2021Nov23_104.root
+#/eos/cms/store/group/phys_bphys/bpark/nanoaod_Run3/BParkingNANO_2021Nov23/BuToKee_Mufilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/crab_BuToKee_v3/211123_152209/0000/BParkNANO_mc_2021Nov23_105.root
+#/eos/cms/store/group/phys_bphys/bpark/nanoaod_Run3/BParkingNANO_2021Nov23/BuToKee_Mufilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/crab_BuToKee_v3/211123_152209/0000/BParkNANO_mc_2021Nov23_106.root
+#/eos/cms/store/group/phys_bphys/bpark/nanoaod_Run3/BParkingNANO_2021Nov23/BuToKee_Mufilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/crab_BuToKee_v3/211123_152209/0000/BParkNANO_mc_2021Nov23_107.root
