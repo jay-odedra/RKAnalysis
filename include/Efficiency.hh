@@ -41,7 +41,9 @@ public:
   bool recoCand(int theB,
 		int& e1_gen_idx,int& e2_gen_idx,
 		int& e1_reco_idx,float& e1_reco_pt,float& e1_reco_eta,
-		int& e2_reco_idx,float& e2_reco_pt,float& e2_reco_eta);
+		int& e1_reco_pf,int& e1_reco_lowpt,int& e1_reco_overlap,
+		int& e2_reco_idx,float& e2_reco_pt,float& e2_reco_eta,
+		int& e2_reco_pf,int& e2_reco_lowpt,int& e2_reco_overlap);
     
 private:
   
@@ -85,6 +87,14 @@ private:
   float e2_reco_pt_;
   float e1_reco_eta_;
   float e2_reco_eta_;
+
+  // RECO algo
+  int e1_reco_pf_;
+  int e2_reco_pf_;
+  int e1_reco_lowpt_;
+  int e2_reco_lowpt_;
+  int e1_reco_overlap_;
+  int e2_reco_overlap_;
 
   // Pre-selection and BDT
   float ip3d_;

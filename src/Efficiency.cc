@@ -27,18 +27,29 @@ void Efficiency::Loop() {
 
   // Event loop 
   //nentries=1000;
+  int cntr1 = 0;
+  int cntr2 = 0;
+  int cntr3 = 0;
   for (Long64_t jentry=0; jentry<nentries; ++jentry) {
+
+    // Limit events to process
+    //if (jentry>5000) break;
+
+    // Limit to event range
+    //if (jentry<19181) continue; if (jentry>19181) break;
 
     // Initialise variables
     initVars();
 
-    // Timing
+    // Load tree and count events
     Long64_t ientry = this->LoadTree(jentry);
     if (ientry < 0) break;
     fChain->GetEntry(jentry);
-    //if (jentry<35050) continue; if (jentry>35050) break; //@@ debug
-    //if (jentry>50001) break; //@@ debug
-    if (jentry>0 && jentry%10000==0) {
+    cntr1++;
+
+    // Timing
+    int interval = 1000;
+    if (jentry%interval==0) {
       auto now = std::chrono::system_clock::now();
       std::chrono::duration<double> elapsed_seconds = now-start;
       std::chrono::duration<double> predicted_duration = elapsed_seconds * (nentries*1.)/(jentry*1.);
@@ -57,7 +68,7 @@ void Efficiency::Loop() {
     theEvent_ = event;
     
     // Triggering muon pT
-    bool nTriggerMuon=0;
+    int nTriggerMuon=0;
     int idTrgMu=-1;
     float ptTrgMu=0.;
     if(nMuon>0){
@@ -98,70 +109,61 @@ void Efficiency::Loop() {
     if (!ok) { std::cout << "ERROR!" << std::endl; continue; } // outTree_->Fill();
 
     // Safety limit on number of BToKEE candidates
-    //int maxBToKEE = nBToKEE < 1000 ? nBToKEE : 1000;
-    int maxBToKEE = nBToKEE;
-    if ( maxBToKEE > 1000 ) {
+    int maxBToKEE = EfficiencyBase::nBToKEE_max_;
+    if ( nBToKEE < maxBToKEE ) { maxBToKEE = nBToKEE; }
+    else {
       std::cout << "Too many BToKEE candidates (" << nBToKEE 
-		<< "). Truncating ..." << std::endl;
-      maxBToKEE = 1000;
+		<< "). Truncating to " << maxBToKEE
+		<< " ..." << std::endl;
+      cntr3++;
     }
     if (verbose_>3) std::cout << "nBToKEE: " << nBToKEE
 			      << " maxBToKEE: " << maxBToKEE
 			      << std::endl;
 
+    // Loop through all RECO'ed B->Kee candidates and find the GEN-matched triplet
     for (u_int iB=0; iB<maxBToKEE; ++iB) {
-      if (verbose_>3) std:: cout << "iB: " << iB << std::endl;
+      if (verbose_>4) std:: cout << "iB: " << iB << std::endl;
       int e1_reco_idx = -1;
       int e2_reco_idx = -1;
       e1_reco_pt_ = -10.;
       e2_reco_pt_ = -10.;
       e1_reco_eta_ = -10.;
       e2_reco_eta_ = -10.;
+      e1_reco_pf_ = 0;
+      e2_reco_pf_ = 0;
+      e1_reco_lowpt_ = 0;
+      e2_reco_lowpt_ = 0;
+      e1_reco_overlap_ = 0;
+      e2_reco_overlap_ = 0;
       if ( recoCand(iB,
 		    e1_gen_idx,e2_gen_idx,
 		    e1_reco_idx,e1_reco_pt_,e1_reco_eta_,
-		    e2_reco_idx,e2_reco_pt_,e2_reco_eta_) ) {
+		    e1_reco_pf_,e1_reco_lowpt_,e1_reco_overlap_,
+		    e2_reco_idx,e2_reco_pt_,e2_reco_eta_,
+		    e2_reco_pf_,e2_reco_lowpt_,e2_reco_overlap_) ) {
 	isMatched_ = 1;
 	break;
       }
     }
 
-//    int matched = -1;
-//    int e1_reco_idx = -1;
-//    int e2_reco_idx = -1;
-//    float e1_reco_pt = -10.;
-//    float e2_reco_pt = -10.;
-//    float e1_reco_eta = -10.;
-//    float e2_reco_eta = -10.;
-//    for (u_int iB=0; iB<maxBToKEE; ++iB) {
-//      if (verbose_>3) std:: cout << "iB: " << iB << std::endl;
-//      if ( recoCand(iB,
-//		    e1_gen_idx,e2_gen_idx,
-//		    e1_reco_idx,e1_reco_pt,e1_reco_eta,
-//		    e2_reco_idx,e2_reco_pt,e2_reco_eta) ) {
-//	matched = iB;
-//	break;
-//      }
-//    }
-//    if (matched>=0){
-//      isMatched_ = 1;
-//      e1_reco_pt_ = e1_reco_pt;
-//      e2_reco_pt_ = e2_reco_pt; 
-//      e1_reco_eta_ = e1_reco_eta;
-//      e2_reco_eta_ = e2_reco_eta;
-//    }
-
     // Fill the output tree
+    cntr2++;
     outTree_->Fill();
     
   } // Event loop
   
+  std::cout << "Summary:" << std::endl
+	    << "  Number of events processed: " << cntr1 << std::endl
+	    << "  Number of events written to tree: " << cntr2 << std::endl
+	    << "  Number of events with too many B->Kee candidates: " << cntr3 << std::endl;
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
 Efficiency::Efficiency(TChain* tree, int isMC, std::string output) :
-  EfficiencyBase((TTree*)tree, isMC) 
+  EfficiencyBase((TTree*)tree, isMC)
 {
   prepareOutputs(output);   
   initVars();
@@ -212,6 +214,14 @@ void Efficiency::initVars() {
   e1_reco_eta_=-10.;
   e2_reco_eta_=-10.;
 
+  // RECO algo
+  e1_reco_pf_=0;
+  e2_reco_pf_=0;
+  e1_reco_lowpt_=0;
+  e2_reco_lowpt_=0;
+  e1_reco_overlap_=0;
+  e2_reco_overlap_=0;
+
   // Pre-selection andBDT
   ip3d_=-10.;
   cos2d_=-10.;
@@ -244,8 +254,8 @@ void Efficiency::bookOutputTree() {
   outTree_ = new TTree("tree","tree");
 
   // Scalars
-  outTree_->Branch("theRun", &theRun_, "theRun/I");    
-  outTree_->Branch("theEvent", &theEvent_, "theEvent/I");    
+  outTree_->Branch("theRun", &theRun_, "theRun/I");
+  outTree_->Branch("theEvent", &theEvent_, "theEvent/I");
 
   // Trigger
   outTree_->Branch("trg_muon_pt", &trg_muon_pt_, "trg_muon_pt/F");
@@ -259,24 +269,32 @@ void Efficiency::bookOutputTree() {
   outTree_->Branch("inAcc", &in_acc_, "inAcc/I");
 
   // RECO-to-GEN matching
-  outTree_->Branch("isMatched", &isMatched_, "isMatched/I");  
+  outTree_->Branch("isMatched", &isMatched_, "isMatched/I");
 
   // GEN pt,eta
-  outTree_->Branch("e1_gen_pt", &e1_gen_pt_, "e1_gen_pt/F");  
-  outTree_->Branch("e2_gen_pt", &e2_gen_pt_, "e2_gen_pt/F");  
-  outTree_->Branch("e1_gen_eta", &e1_gen_eta_, "e1_gen_eta/F");  
-  outTree_->Branch("e2_gen_eta", &e2_gen_eta_, "e2_gen_eta/F");  
+  outTree_->Branch("e1_gen_pt", &e1_gen_pt_, "e1_gen_pt/F");
+  outTree_->Branch("e2_gen_pt", &e2_gen_pt_, "e2_gen_pt/F");
+  outTree_->Branch("e1_gen_eta", &e1_gen_eta_, "e1_gen_eta/F");
+  outTree_->Branch("e2_gen_eta", &e2_gen_eta_, "e2_gen_eta/F");
 
   //RECO pt,eta
-  outTree_->Branch("e1_reco_pt", &e1_reco_pt_, "e1_reco_pt/F");  
-  outTree_->Branch("e2_reco_pt", &e2_reco_pt_, "e2_reco_pt/F");  
-  outTree_->Branch("e1_reco_eta", &e1_reco_eta_, "e1_reco_eta/F");  
-  outTree_->Branch("e2_reco_eta", &e2_reco_eta_, "e2_reco_eta/F");  
+  outTree_->Branch("e1_reco_pt", &e1_reco_pt_, "e1_reco_pt/F");
+  outTree_->Branch("e2_reco_pt", &e2_reco_pt_, "e2_reco_pt/F");
+  outTree_->Branch("e1_reco_eta", &e1_reco_eta_, "e1_reco_eta/F");
+  outTree_->Branch("e2_reco_eta", &e2_reco_eta_, "e2_reco_eta/F");
+
+  //RECO algo
+  outTree_->Branch("e1_reco_pf", &e1_reco_pf_, "e1_reco_pf/I");
+  outTree_->Branch("e2_reco_pf", &e2_reco_pf_, "e2_reco_pf/I");
+  outTree_->Branch("e1_reco_lowpt", &e1_reco_lowpt_, "e1_reco_lowpt/I");
+  outTree_->Branch("e2_reco_lowpt", &e2_reco_lowpt_, "e2_reco_lowpt/I");
+  outTree_->Branch("e1_reco_overlap", &e1_reco_overlap_, "e1_reco_overlap/I");
+  outTree_->Branch("e2_reco_overlap", &e2_reco_overlap_, "e2_reco_overlap/I");
 
   // Pre-selection and BDT
-  outTree_->Branch("ip3d", &ip3d_, "ip3d/F");  
-  outTree_->Branch("cos2d", &cos2d_, "cos2d/F");  
-  outTree_->Branch("bdt", &bdt_, "bdt/F");  
+  outTree_->Branch("ip3d", &ip3d_, "ip3d/F");
+  outTree_->Branch("cos2d", &cos2d_, "cos2d/F");
+  outTree_->Branch("bdt", &bdt_, "bdt/F");
 
 }
 
@@ -409,75 +427,160 @@ bool Efficiency::setElePtEta(Efficiency::Daughters& daughters,
 bool Efficiency::recoCand(int theB,
 			  int& e1_gen_idx,int& e2_gen_idx,
 			  int& e1_reco_idx,float& e1_reco_pt,float& e1_reco_eta,
-			  int& e2_reco_idx,float& e2_reco_pt,float& e2_reco_eta) {
+			  int& e1_reco_pf,int& e1_reco_lowpt,int& e1_reco_overlap,
+			  int& e2_reco_idx,float& e2_reco_pt,float& e2_reco_eta,
+			  int& e2_reco_pf,int& e2_reco_lowpt,int& e2_reco_overlap
+			  ) {
+  if (verbose_>4) std::cout << "Efficiency::recoCand:" 
+			    << " e1_gen_idx: " << e1_gen_idx
+			    << " e2_gen_idx: " << e2_gen_idx
+			    << std::endl;
   
   int ele1_idx = BToKEE_l1Idx[theB];
   int ele2_idx = BToKEE_l2Idx[theB];
-  int k_idx    = BToKEE_kIdx[theB];
+  int kaon_idx  = BToKEE_kIdx[theB];
+  if (verbose_>4) std::cout << " ele1_idx: " << ele1_idx
+			    << " ele2_idx: " << ele2_idx
+			    << " kaon_idx: " << kaon_idx
+			    << std::endl;
+  if (ele1_idx == ele2_idx) {
+    std::cout << "Same reco'ed electrons in the B->Ke candidate!!!"
+	      << " theB: " << theB
+	      << " ele1_idx: " << ele1_idx
+	      << std::endl;
+    return false;
+  }
 
-  int k_genPartIdx      = ProbeTracks_genPartIdx[k_idx];  
-  int k_genMotherIdx    = GenPart_genPartIdxMother[k_genPartIdx];
-  int k_genGMotherIdx   = GenPart_genPartIdxMother[k_genMotherIdx];
-  int k_genPdgId        = GenPart_pdgId[k_genPartIdx];
-  int k_genMotherPdgId  = GenPart_pdgId[k_genMotherIdx];
-  int k_genGMotherPdgId = GenPart_pdgId[k_genGMotherIdx];
+  int ele1_isPF = Electron_isPF[ele1_idx];
+  int ele2_isPF = Electron_isPF[ele2_idx];
+  int ele1_isLowPt = Electron_isLowPt[ele1_idx];
+  int ele2_isLowPt = Electron_isLowPt[ele2_idx];
+  int ele1_isPFoverlap = Electron_isPFoverlap[ele1_idx];
+  int ele2_isPFoverlap = Electron_isPFoverlap[ele2_idx];
+  if (verbose_>4) std::cout << " ele1_isPF: " << ele1_isPF
+			    << " ele2_isPF: " << ele2_isPF
+			    << std::endl
+			    << " ele1_isLowPt: " << ele1_isLowPt
+			    << " ele2_isLowPt: " << ele2_isLowPt
+			    << std::endl
+			    << " ele1_isPFoverlap: " << ele1_isPFoverlap
+			    << " ele2_isPFoverlap: " << ele2_isPFoverlap
+			    << std::endl;
+  
+  int ele1_genPartIdx = Electron_genPartIdx[ele1_idx];
+  int ele2_genPartIdx = Electron_genPartIdx[ele2_idx];
+  int kaon_genPartIdx = ProbeTracks_genPartIdx[kaon_idx];
+  if (verbose_>4) std::cout << " ele1_genPartIdx: " << ele1_genPartIdx
+			    << " ele2_genPartIdx: " << ele2_genPartIdx
+			    << " kaon_genPartIdx: " << kaon_genPartIdx
+			    << std::endl;
+  if (ele1_genPartIdx >= EfficiencyBase::nGenPart_max_ || 
+      ele2_genPartIdx >= EfficiencyBase::nGenPart_max_ || 
+      kaon_genPartIdx >= EfficiencyBase::nGenPart_max_ ) {
+    if (verbose_>4) std::cout << "Incorrect GenPart index!!!"
+			      << " ele1_genPartIdx: " << ele1_genPartIdx
+			      << " ele2_genPartIdx: " << ele2_genPartIdx
+			      << " kaon_genPartIdx: " << kaon_genPartIdx
+			      << std::endl; 
+    return false;
+  }
 
-  int ele1_genPartIdx      = Electron_genPartIdx[ele1_idx];  
-  int ele1_genMotherIdx    = GenPart_genPartIdxMother[ele1_genPartIdx];
-  int ele1_genGMotherIdx   = GenPart_genPartIdxMother[ele1_genMotherIdx];
-  int ele1_genPdgId        = GenPart_pdgId[ele1_genPartIdx];
-  int ele1_genMotherPdgId  = GenPart_pdgId[ele1_genMotherIdx];
+  int ele1_genMotherIdx = GenPart_genPartIdxMother[ele1_genPartIdx];
+  int ele2_genMotherIdx = GenPart_genPartIdxMother[ele2_genPartIdx];
+  int kaon_genMotherIdx = GenPart_genPartIdxMother[kaon_genPartIdx];
+  if (verbose_>4) std::cout << " ele1_genMotherIdx: " << ele1_genMotherIdx
+			    << " ele2_genMotherIdx: " << ele2_genMotherIdx
+			    << " kaon_genMotherIdx: " << kaon_genMotherIdx
+			    << std::endl;
+  
+  int ele1_genGMotherIdx = GenPart_genPartIdxMother[ele1_genMotherIdx];
+  int ele2_genGMotherIdx = GenPart_genPartIdxMother[ele2_genMotherIdx];
+  int kaon_genGMotherIdx = GenPart_genPartIdxMother[kaon_genMotherIdx];
+  if (verbose_>4) std::cout << " ele1_genGMotherIdx: " << ele1_genGMotherIdx
+			    << " ele2_genGMotherIdx: " << ele2_genGMotherIdx
+			    << " kaon_genGMotherIdx: " << kaon_genGMotherIdx
+			    << std::endl;
+  
+  int ele1_genPdgId = GenPart_pdgId[ele1_genPartIdx];
+  int ele2_genPdgId = GenPart_pdgId[ele2_genPartIdx];
+  int kaon_genPdgId = GenPart_pdgId[kaon_genPartIdx];
+  if (verbose_>4) std::cout << " ele1_genPdgId: " << ele1_genPdgId
+			    << " ele2_genPdgId: " << ele2_genPdgId
+			    << " kaon_genPdgId: " << kaon_genPdgId
+			    << std::endl;
+  
+  int ele1_genMotherPdgId = GenPart_pdgId[ele1_genMotherIdx];
+  int ele2_genMotherPdgId = GenPart_pdgId[ele2_genMotherIdx];
+  int kaon_genMotherPdgId = GenPart_pdgId[kaon_genMotherIdx];
+  if (verbose_>4) std::cout << " ele1_genMotherPdgId: " << ele1_genMotherPdgId
+			    << " ele2_genMotherPdgId: " << ele2_genMotherPdgId
+			    << " kaon_genMotherPdgId: " << kaon_genMotherPdgId
+			    << std::endl;
+  
   int ele1_genGMotherPdgId = GenPart_pdgId[ele1_genGMotherIdx];
-
-  int ele2_genPartIdx      = Electron_genPartIdx[ele2_idx];  
-  int ele2_genMotherIdx    = GenPart_genPartIdxMother[ele2_genPartIdx];
-  int ele2_genGMotherIdx   = GenPart_genPartIdxMother[ele2_genMotherIdx];
-  int ele2_genPdgId        = GenPart_pdgId[ele2_genPartIdx];
-  int ele2_genMotherPdgId  = GenPart_pdgId[ele2_genMotherIdx];
   int ele2_genGMotherPdgId = GenPart_pdgId[ele2_genGMotherIdx];
-
+  int kaon_genGMotherPdgId = GenPart_pdgId[kaon_genGMotherIdx];
+  if (verbose_>4) std::cout << " ele1_genGMotherPdgId: " << ele1_genGMotherPdgId
+			    << " ele2_genGMotherPdgId: " << ele2_genGMotherPdgId
+			    << " kaon_genGMotherPdgId: " << kaon_genGMotherPdgId
+			    << std::endl;
+  
   bool found = ( ( ele1_genPartIdx >= 0
 		   && ele2_genPartIdx >= 0
-		   && k_genPartIdx >= 0
+		   && kaon_genPartIdx >= 0
 		   ) &&
 		 ( abs(ele1_genPdgId) == 11
 		   && abs(ele2_genPdgId) == 11
-		   && abs(k_genPdgId) == 321 
+		   && abs(kaon_genPdgId) == 321 
 		   ) &&
 		 //( ele1_genPdgId * ele1_genPdgId < 0 ) &&
 		 ( abs(ele1_genMotherPdgId) == 521
 		   && abs(ele2_genMotherPdgId) == 521
-		   && abs(k_genMotherPdgId) == 521
+		   && abs(kaon_genMotherPdgId) == 521
 		   ) );
-
+  
   if (found) {
-//    std::cout << "FOUND " 
-//	      << e1_gen_idx << " " 
-//	      << ele1_genPartIdx << " " 
-//	      << e2_gen_idx << " " 
-//	      << ele2_genPartIdx << " " 
-//	      << std::endl;
-    if (ele1_genPartIdx==e1_gen_idx){
+    if (verbose_>4) std::cout << "FOUND " 
+			      << e1_gen_idx << " " 
+			      << ele1_genPartIdx << " " 
+			      << e2_gen_idx << " " 
+			      << ele2_genPartIdx << " " 
+			      << std::endl;
+    if (e1_gen_idx==ele1_genPartIdx){
       e1_reco_idx = ele1_idx;
       e1_reco_pt  = Electron_pt[ele1_idx];
       e1_reco_eta = Electron_eta[ele1_idx];
-    } else if (ele1_genPartIdx==e2_gen_idx){
-      e2_reco_idx = ele1_idx;
-      e2_reco_pt  = Electron_pt[ele1_idx];
-      e2_reco_eta = Electron_eta[ele1_idx];
-    }
-    if (ele2_genPartIdx==e1_gen_idx){
+      e1_reco_pf  = Electron_isPF[ele1_idx];
+      e1_reco_lowpt = Electron_isLowPt[ele1_idx];
+      e1_reco_overlap = Electron_isPFoverlap[ele1_idx];
+    } 
+    if (e1_gen_idx==ele2_genPartIdx){
       e1_reco_idx = ele2_idx;
       e1_reco_pt  = Electron_pt[ele2_idx];
       e1_reco_eta = Electron_eta[ele2_idx];
-    } else if (ele2_genPartIdx==e2_gen_idx){
+      e1_reco_pf  = Electron_isPF[ele2_idx];
+      e1_reco_lowpt = Electron_isLowPt[ele2_idx];
+      e1_reco_overlap = Electron_isPFoverlap[ele2_idx];
+    }
+    if (e2_gen_idx==ele1_genPartIdx){
+      e2_reco_idx = ele1_idx;
+      e2_reco_pt  = Electron_pt[ele1_idx];
+      e2_reco_eta = Electron_eta[ele1_idx];
+      e2_reco_pf  = Electron_isPF[ele1_idx];
+      e1_reco_lowpt = Electron_isLowPt[ele1_idx];
+      e2_reco_overlap = Electron_isPFoverlap[ele1_idx];
+    }
+    if (e2_gen_idx==ele2_genPartIdx){
       e2_reco_idx = ele2_idx;
       e2_reco_pt  = Electron_pt[ele2_idx];
       e2_reco_eta = Electron_eta[ele2_idx];
+      e2_reco_pf  = Electron_isPF[ele2_idx];
+      e2_reco_lowpt = Electron_isLowPt[ele2_idx];
+      e2_reco_overlap = Electron_isPFoverlap[ele2_idx];
     }
   }
 
-  if (verbose_>3) std::cout << "recoCand: " << found <<  std::endl;
+  if (verbose_>4) std::cout << "recoCand: " << found <<  std::endl;
   return found;
 
 }
