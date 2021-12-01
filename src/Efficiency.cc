@@ -30,10 +30,11 @@ void Efficiency::Loop() {
   int cntr1 = 0;
   int cntr2 = 0;
   int cntr3 = 0;
-  for (Long64_t jentry=0; jentry<nentries; ++jentry) {
+  Long64_t jentry=0;
+  for (; jentry<nentries; ++jentry) {
 
     // Limit events to process
-    //if (jentry>5000) break;
+    if (jentry>5000) break;
 
     // Limit to event range
     //if (jentry<19181) continue; if (jentry>19181) break;
@@ -47,21 +48,9 @@ void Efficiency::Loop() {
     fChain->GetEntry(jentry);
     cntr1++;
 
-    // Timing
+    // Timing per interval
     int interval = 1000;
-    if (jentry%interval==0) {
-      auto now = std::chrono::system_clock::now();
-      std::chrono::duration<double> elapsed_seconds = now-start;
-      std::chrono::duration<double> predicted_duration = elapsed_seconds * (nentries*1.)/(jentry*1.);
-      std::chrono::system_clock::time_point end = start + std::chrono::seconds((int)predicted_duration.count());
-      std::time_t end_time = std::chrono::system_clock::to_time_t(end);
-      std::string tmp = std::ctime(&end_time); 
-      tmp.resize(tmp.length()-1); // remove trailing \n
-      std::cout << "Event: " << jentry
-		<< " Elapsed: " << elapsed_seconds.count() << "s "
-		<< " ETA: " << tmp
-		<< std::endl;
-    }
+    if (jentry%interval==0) { timing(nentries,jentry,start); }
     
     // Scalars
     theRun_ = run;
@@ -143,6 +132,7 @@ void Efficiency::Loop() {
 		    e2_reco_idx,e2_reco_pt_,e2_reco_eta_,
 		    e2_reco_pf_,e2_reco_lowpt_,e2_reco_overlap_) ) {
 	isMatched_ = 1;
+	h_cand_->Fill(iB<1000?iB:1000,1.); // overflows into final bin
 	break;
       }
     }
@@ -152,6 +142,9 @@ void Efficiency::Loop() {
     outTree_->Fill();
     
   } // Event loop
+
+  // Final timing
+  timing(nentries,jentry,start);
   
   std::cout << "Summary:" << std::endl
 	    << "  Number of events processed: " << cntr1 << std::endl
@@ -175,9 +168,26 @@ Efficiency::~Efficiency() {
   outFile_->cd();
   h_entries_->Write();
   h_selection_->Write();
+  h_cand_->Write();
   outTree_->Write();
   outFile_->Close();
 }     
+
+////////////////////////////////////////////////////////////////////////////////
+//
+void Efficiency::timing( int nentries, int jentry, auto start ) {
+  auto now = std::chrono::system_clock::now();
+  std::chrono::duration<double> elapsed_seconds = now-start;
+  std::chrono::duration<double> predicted_duration = elapsed_seconds * (nentries*1.)/(jentry*1.);
+  std::chrono::system_clock::time_point end = start + std::chrono::seconds((int)predicted_duration.count());
+  std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+  std::string tmp = std::ctime(&end_time); 
+  tmp.resize(tmp.length()-1); // remove trailing \n
+  std::cout << "Event: " << jentry
+	    << " Elapsed: " << elapsed_seconds.count() << "s "
+	    << " ETA: " << tmp
+	    << std::endl;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -304,6 +314,7 @@ void Efficiency::bookOutputHistos() {
   std::cout << "Booking histos ..." << std::endl;
   h_entries_   = new TH1F("h_entries",  "Number of entries",   3,  3.5, 6.5);
   h_selection_ = new TH1F("h_selection","Selection breakdown", 8, -0.5, 7.5);
+  h_cand_ = new TH1F("h_cand","Candidate index", 1001, -0.5, 1000.5);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

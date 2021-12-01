@@ -20,6 +20,7 @@ public:
   
   void Loop();
   
+  void timing(int nentries, int jentry, auto start);
   void initVars();
   void prepareOutputs(std::string filename);
   void bookOutputTree();
@@ -56,6 +57,7 @@ private:
   TTree* outTree_=nullptr;
   TH1F* h_entries_=nullptr;
   TH1F* h_selection_=nullptr;
+  TH1F* h_cand_=nullptr;
 
   // Scalars
   int theRun_;
