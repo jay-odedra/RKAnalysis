@@ -21,6 +21,13 @@ public :
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
+   static const int nBToKEE_max_ = 3000;
+   static const int nGenPart_max_ = 200;
+   static const int nElectron_max_ = 100;
+   static const int nMuon_max_ = 20;
+   static const int nProbeTracks_max_ = 400;
+   static const int nTrigObj_max_ = 10;
+
    // Declaration of leaf types
    int _isMC;
    int _isKStar;
@@ -29,157 +36,378 @@ public :
    ULong64_t       event;
 
    UInt_t          nBToKEE;
-   Float_t         BToKEE_b_iso03[3000];   //[nBToKEE]
-   Float_t         BToKEE_b_iso03_dca[3000];   //[nBToKEE]
-   Float_t         BToKEE_b_iso03_dca_tight[3000];   //[nBToKEE]
-   Float_t         BToKEE_b_iso04[3000];   //[nBToKEE]
-   Float_t         BToKEE_b_iso04_dca[3000];   //[nBToKEE]
-   Float_t         BToKEE_b_iso04_dca_tight[3000];   //[nBToKEE]
-   Float_t         BToKEE_cos2D[3000];   //[nBToKEE]
-   Float_t         BToKEE_eta[3000];   //[nBToKEE]
-   Float_t         BToKEE_fit_cos2D[3000];   //[nBToKEE]
-   Float_t         BToKEE_fit_eta[3000];   //[nBToKEE]
-   Float_t         BToKEE_fit_k_eta[3000];   //[nBToKEE]
-   Float_t         BToKEE_fit_k_phi[3000];   //[nBToKEE]
-   Float_t         BToKEE_fit_k_pt[3000];   //[nBToKEE]
-   Float_t         BToKEE_fit_l1_eta[3000];   //[nBToKEE]
-   Float_t         BToKEE_fit_l1_phi[3000];   //[nBToKEE]
-   Float_t         BToKEE_fit_l1_pt[3000];   //[nBToKEE]
-   Float_t         BToKEE_fit_l2_eta[3000];   //[nBToKEE]
-   Float_t         BToKEE_fit_l2_phi[3000];   //[nBToKEE]
-   Float_t         BToKEE_fit_l2_pt[3000];   //[nBToKEE]
-   Float_t         BToKEE_fit_mass[3000];   //[nBToKEE]
-   Float_t         BToKEE_fit_massErr[3000];   //[nBToKEE]
-   Float_t         BToKEE_fit_phi[3000];   //[nBToKEE]
-   Float_t         BToKEE_fit_pt[3000];   //[nBToKEE]
-   Float_t         BToKEE_k_iso03[3000];   //[nBToKEE]
-   Float_t         BToKEE_k_iso03_dca[3000];   //[nBToKEE]
-   Float_t         BToKEE_k_iso03_dca_tight[3000];   //[nBToKEE]
-   Float_t         BToKEE_k_iso04[3000];   //[nBToKEE]
-   Float_t         BToKEE_k_iso04_dca[3000];   //[nBToKEE]
-   Float_t         BToKEE_k_iso04_dca_tight[3000];   //[nBToKEE]
-   Float_t         BToKEE_k_svip2d[3000];   //[nBToKEE]
-   Float_t         BToKEE_k_svip2d_err[3000];   //[nBToKEE]
-   Float_t         BToKEE_k_svip3d[3000];   //[nBToKEE]
-   Float_t         BToKEE_k_svip3d_err[3000];   //[nBToKEE]
-   Float_t         BToKEE_l1_iso03[3000];   //[nBToKEE]
-   Float_t         BToKEE_l1_iso03_dca[3000];   //[nBToKEE]
-   Float_t         BToKEE_l1_iso03_dca_tight[3000];   //[nBToKEE]
-   Float_t         BToKEE_l1_iso04[3000];   //[nBToKEE]
-   Float_t         BToKEE_l1_iso04_dca[3000];   //[nBToKEE]
-   Float_t         BToKEE_l1_iso04_dca_tight[3000];   //[nBToKEE]
-   Float_t         BToKEE_l2_iso03[3000];   //[nBToKEE]
-   Float_t         BToKEE_l2_iso03_dca[3000];   //[nBToKEE]
-   Float_t         BToKEE_l2_iso03_dca_tight[3000];   //[nBToKEE]
-   Float_t         BToKEE_l2_iso04[3000];   //[nBToKEE]
-   Float_t         BToKEE_l2_iso04_dca[3000];   //[nBToKEE]
-   Float_t         BToKEE_l2_iso04_dca_tight[3000];   //[nBToKEE]
-   Float_t         BToKEE_l_xy[3000];   //[nBToKEE]
-   Float_t         BToKEE_l_xy_unc[3000];   //[nBToKEE]
-   Float_t         BToKEE_mass[3000];   //[nBToKEE]
-   Float_t         BToKEE_maxDR[3000];   //[nBToKEE]
-   Float_t         BToKEE_minDR[3000];   //[nBToKEE]
-   Float_t         BToKEE_mllErr_llfit[3000];   //[nBToKEE]
-   Float_t         BToKEE_mll_fullfit[3000];   //[nBToKEE]
-   Float_t         BToKEE_mll_llfit[3000];   //[nBToKEE]
-   Float_t         BToKEE_mll_raw[3000];   //[nBToKEE]
-   Float_t         BToKEE_phi[3000];   //[nBToKEE]
-   Float_t         BToKEE_pt[3000];   //[nBToKEE]
-   Float_t         BToKEE_svprob[3000];   //[nBToKEE]
-   Float_t         BToKEE_vtx_ex[3000];   //[nBToKEE]
-   Float_t         BToKEE_vtx_ey[3000];   //[nBToKEE]
-   Float_t         BToKEE_vtx_ez[3000];   //[nBToKEE]
-   Float_t         BToKEE_vtx_x[3000];   //[nBToKEE]
-   Float_t         BToKEE_vtx_y[3000];   //[nBToKEE]
-   Float_t         BToKEE_vtx_z[3000];   //[nBToKEE]
-   Int_t           BToKEE_b_n_isotrk[3000];   //[nBToKEE]
-   Int_t           BToKEE_b_n_isotrk_dca[3000];   //[nBToKEE]
-   Int_t           BToKEE_b_n_isotrk_dca_tight[3000];   //[nBToKEE]
-   Int_t           BToKEE_charge[3000];   //[nBToKEE]
-   Int_t           BToKEE_kIdx[3000];   //[nBToKEE]
-   Int_t           BToKEE_k_n_isotrk[3000];   //[nBToKEE]
-   Int_t           BToKEE_k_n_isotrk_dca[3000];   //[nBToKEE]
-   Int_t           BToKEE_k_n_isotrk_dca_tight[3000];   //[nBToKEE]
-   Int_t           BToKEE_l1Idx[3000];   //[nBToKEE]
-   Int_t           BToKEE_l1_n_isotrk[3000];   //[nBToKEE]
-   Int_t           BToKEE_l1_n_isotrk_dca[3000];   //[nBToKEE]
-   Int_t           BToKEE_l1_n_isotrk_dca_tight[3000];   //[nBToKEE]
-   Int_t           BToKEE_l2Idx[3000];   //[nBToKEE]
-   Int_t           BToKEE_l2_n_isotrk[3000];   //[nBToKEE]
-   Int_t           BToKEE_l2_n_isotrk_dca[3000];   //[nBToKEE]
-   Int_t           BToKEE_l2_n_isotrk_dca_tight[3000];   //[nBToKEE]
-   Int_t           BToKEE_n_k_used[3000];   //[nBToKEE]
-   Int_t           BToKEE_n_l1_used[3000];   //[nBToKEE]
-   Int_t           BToKEE_n_l2_used[3000];   //[nBToKEE]
-   Int_t           BToKEE_pdgId[3000];   //[nBToKEE]
+   Float_t         BToKEE_b_iso03[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_b_iso03_dca[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_b_iso03_dca_tight[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_b_iso04[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_b_iso04_dca[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_b_iso04_dca_tight[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_cos2D[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_eta[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_fit_cos2D[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_fit_eta[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_fit_k_eta[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_fit_k_phi[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_fit_k_pt[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_fit_l1_eta[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_fit_l1_phi[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_fit_l1_pt[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_fit_l2_eta[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_fit_l2_phi[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_fit_l2_pt[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_fit_mass[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_fit_massErr[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_fit_phi[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_fit_pt[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_k_iso03[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_k_iso03_dca[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_k_iso03_dca_tight[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_k_iso04[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_k_iso04_dca[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_k_iso04_dca_tight[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_k_svip2d[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_k_svip2d_err[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_k_svip3d[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_k_svip3d_err[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_l1_iso03[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_l1_iso03_dca[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_l1_iso03_dca_tight[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_l1_iso04[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_l1_iso04_dca[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_l1_iso04_dca_tight[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_l2_iso03[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_l2_iso03_dca[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_l2_iso03_dca_tight[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_l2_iso04[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_l2_iso04_dca[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_l2_iso04_dca_tight[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_l_xy[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_l_xy_unc[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_mass[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_maxDR[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_minDR[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_mllErr_llfit[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_mll_fullfit[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_mll_llfit[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_mll_raw[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_phi[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_pt[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_svprob[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_vtx_ex[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_vtx_ey[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_vtx_ez[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_vtx_x[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_vtx_y[nBToKEE_max_];   //[nBToKEE]
+   Float_t         BToKEE_vtx_z[nBToKEE_max_];   //[nBToKEE]
+   Int_t           BToKEE_b_n_isotrk[nBToKEE_max_];   //[nBToKEE]
+   Int_t           BToKEE_b_n_isotrk_dca[nBToKEE_max_];   //[nBToKEE]
+   Int_t           BToKEE_b_n_isotrk_dca_tight[nBToKEE_max_];   //[nBToKEE]
+   Int_t           BToKEE_charge[nBToKEE_max_];   //[nBToKEE]
+   Int_t           BToKEE_kIdx[nBToKEE_max_];   //[nBToKEE]
+   Int_t           BToKEE_k_n_isotrk[nBToKEE_max_];   //[nBToKEE]
+   Int_t           BToKEE_k_n_isotrk_dca[nBToKEE_max_];   //[nBToKEE]
+   Int_t           BToKEE_k_n_isotrk_dca_tight[nBToKEE_max_];   //[nBToKEE]
+   Int_t           BToKEE_l1Idx[nBToKEE_max_];   //[nBToKEE]
+   Int_t           BToKEE_l1_n_isotrk[nBToKEE_max_];   //[nBToKEE]
+   Int_t           BToKEE_l1_n_isotrk_dca[nBToKEE_max_];   //[nBToKEE]
+   Int_t           BToKEE_l1_n_isotrk_dca_tight[nBToKEE_max_];   //[nBToKEE]
+   Int_t           BToKEE_l2Idx[nBToKEE_max_];   //[nBToKEE]
+   Int_t           BToKEE_l2_n_isotrk[nBToKEE_max_];   //[nBToKEE]
+   Int_t           BToKEE_l2_n_isotrk_dca[nBToKEE_max_];   //[nBToKEE]
+   Int_t           BToKEE_l2_n_isotrk_dca_tight[nBToKEE_max_];   //[nBToKEE]
+   Int_t           BToKEE_n_k_used[nBToKEE_max_];   //[nBToKEE]
+   Int_t           BToKEE_n_l1_used[nBToKEE_max_];   //[nBToKEE]
+   Int_t           BToKEE_n_l2_used[nBToKEE_max_];   //[nBToKEE]
+   Int_t           BToKEE_pdgId[nBToKEE_max_];   //[nBToKEE]
+
+   UInt_t          nBToKMuMu;
+   Float_t         BToKMuMu_b_iso03[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_b_iso03_dca[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_b_iso03_dca_tight[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_b_iso04[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_b_iso04_dca[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_b_iso04_dca_tight[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_cos2D[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_eta[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_fit_cos2D[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_fit_eta[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_fit_k_eta[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_fit_k_phi[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_fit_k_pt[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_fit_l1_eta[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_fit_l1_phi[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_fit_l1_pt[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_fit_l2_eta[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_fit_l2_phi[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_fit_l2_pt[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_fit_mass[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_fit_massErr[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_fit_phi[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_fit_pt[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_k_iso03[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_k_iso03_dca[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_k_iso03_dca_tight[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_k_iso04[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_k_iso04_dca[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_k_iso04_dca_tight[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_k_svip2d[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_k_svip2d_err[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_k_svip3d[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_k_svip3d_err[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_l1_iso03[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_l1_iso03_dca[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_l1_iso03_dca_tight[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_l1_iso04[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_l1_iso04_dca[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_l1_iso04_dca_tight[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_l2_iso03[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_l2_iso03_dca[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_l2_iso03_dca_tight[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_l2_iso04[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_l2_iso04_dca[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_l2_iso04_dca_tight[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_l_xy[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_l_xy_unc[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_mass[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_maxDR[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_minDR[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_mllErr_llfit[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_mll_fullfit[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_mll_llfit[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_mll_raw[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_phi[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_pt[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_svprob[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_vtx_ex[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_vtx_ey[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_vtx_ez[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_vtx_x[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_vtx_y[70];   //[nBToKMuMu]
+   Float_t         BToKMuMu_vtx_z[70];   //[nBToKMuMu]
+   Int_t           BToKMuMu_b_n_isotrk[70];   //[nBToKMuMu]
+   Int_t           BToKMuMu_b_n_isotrk_dca[70];   //[nBToKMuMu]
+   Int_t           BToKMuMu_b_n_isotrk_dca_tight[70];   //[nBToKMuMu]
+   Int_t           BToKMuMu_charge[70];   //[nBToKMuMu]
+   Int_t           BToKMuMu_kIdx[70];   //[nBToKMuMu]
+   Int_t           BToKMuMu_k_n_isotrk[70];   //[nBToKMuMu]
+   Int_t           BToKMuMu_k_n_isotrk_dca[70];   //[nBToKMuMu]
+   Int_t           BToKMuMu_k_n_isotrk_dca_tight[70];   //[nBToKMuMu]
+   Int_t           BToKMuMu_l1Idx[70];   //[nBToKMuMu]
+   Int_t           BToKMuMu_l1_n_isotrk[70];   //[nBToKMuMu]
+   Int_t           BToKMuMu_l1_n_isotrk_dca[70];   //[nBToKMuMu]
+   Int_t           BToKMuMu_l1_n_isotrk_dca_tight[70];   //[nBToKMuMu]
+   Int_t           BToKMuMu_l2Idx[70];   //[nBToKMuMu]
+   Int_t           BToKMuMu_l2_n_isotrk[70];   //[nBToKMuMu]
+   Int_t           BToKMuMu_l2_n_isotrk_dca[70];   //[nBToKMuMu]
+   Int_t           BToKMuMu_l2_n_isotrk_dca_tight[70];   //[nBToKMuMu]
+   Int_t           BToKMuMu_n_k_used[70];   //[nBToKMuMu]
+   Int_t           BToKMuMu_n_l1_used[70];   //[nBToKMuMu]
+   Int_t           BToKMuMu_n_l2_used[70];   //[nBToKMuMu]
+   Int_t           BToKMuMu_pdgId[70];   //[nBToKMuMu]
+
+   // KStar stuff
+   UInt_t          nBToKsEE;
+   Float_t         BToKsEE_b_iso03[100];   //[nBToKsEE]
+   Float_t         BToKsEE_b_iso04[100];   //[nBToKsEE]
+   Float_t         BToKsEE_barMass[100];   //[nBToKsEE]
+   Float_t         BToKsEE_chi2[100];   //[nBToKsEE]
+   Float_t         BToKsEE_cos2D[100];   //[nBToKsEE]
+   Float_t         BToKsEE_eta[100];   //[nBToKsEE]
+   Float_t         BToKsEE_fit_barKstar_mass[100];   //[nBToKsEE]
+   Float_t         BToKsEE_fit_barMass[100];   //[nBToKsEE]
+   Float_t         BToKsEE_fit_cos2D[100];   //[nBToKsEE]
+   Float_t         BToKsEE_fit_eta[100];   //[nBToKsEE]
+   Float_t         BToKsEE_fit_kstar_eta[100];   //[nBToKsEE]
+   Float_t         BToKsEE_fit_kstar_mass[100];   //[nBToKsEE]
+   Float_t         BToKsEE_fit_kstar_phi[100];   //[nBToKsEE]
+   Float_t         BToKsEE_fit_kstar_pt[100];   //[nBToKsEE]
+   Float_t         BToKsEE_fit_l1_eta[100];   //[nBToKsEE]
+   Float_t         BToKsEE_fit_l1_phi[100];   //[nBToKsEE]
+   Float_t         BToKsEE_fit_l1_pt[100];   //[nBToKsEE]
+   Float_t         BToKsEE_fit_l2_eta[100];   //[nBToKsEE]
+   Float_t         BToKsEE_fit_l2_phi[100];   //[nBToKsEE]
+   Float_t         BToKsEE_fit_l2_pt[100];   //[nBToKsEE]
+   Float_t         BToKsEE_fit_mass[100];   //[nBToKsEE]
+   Float_t         BToKsEE_fit_massErr[100];   //[nBToKsEE]
+   Float_t         BToKsEE_fit_phi[100];   //[nBToKsEE]
+   Float_t         BToKsEE_fit_pt[100];   //[nBToKsEE]
+   Float_t         BToKsEE_fit_trk1_eta[100];   //[nBToKsEE]
+   Float_t         BToKsEE_fit_trk1_phi[100];   //[nBToKsEE]
+   Float_t         BToKsEE_fit_trk1_pt[100];   //[nBToKsEE]
+   Float_t         BToKsEE_fit_trk2_eta[100];   //[nBToKsEE]
+   Float_t         BToKsEE_fit_trk2_phi[100];   //[nBToKsEE]
+   Float_t         BToKsEE_fit_trk2_pt[100];   //[nBToKsEE]
+   Float_t         BToKsEE_l1_iso03[100];   //[nBToKsEE]
+   Float_t         BToKsEE_l1_iso04[100];   //[nBToKsEE]
+   Float_t         BToKsEE_l2_iso03[100];   //[nBToKsEE]
+   Float_t         BToKsEE_l2_iso04[100];   //[nBToKsEE]
+   Float_t         BToKsEE_l_xy[100];   //[nBToKsEE]
+   Float_t         BToKsEE_l_xy_unc[100];   //[nBToKsEE]
+   Float_t         BToKsEE_mass[100];   //[nBToKsEE]
+   Float_t         BToKsEE_max_dr[100];   //[nBToKsEE]
+   Float_t         BToKsEE_min_dr[100];   //[nBToKsEE]
+   Float_t         BToKsEE_mll_fullfit[100];   //[nBToKsEE]
+   Float_t         BToKsEE_mll_llfit[100];   //[nBToKsEE]
+   Float_t         BToKsEE_mll_raw[100];   //[nBToKsEE]
+   Float_t         BToKsEE_phi[100];   //[nBToKsEE]
+   Float_t         BToKsEE_pt[100];   //[nBToKsEE]
+   Float_t         BToKsEE_svprob[100];   //[nBToKsEE]
+   Float_t         BToKsEE_tk1_iso03[100];   //[nBToKsEE]
+   Float_t         BToKsEE_tk1_iso04[100];   //[nBToKsEE]
+   Float_t         BToKsEE_tk2_iso03[100];   //[nBToKsEE]
+   Float_t         BToKsEE_tk2_iso04[100];   //[nBToKsEE]
+   Int_t           BToKsEE_charge[100];   //[nBToKsEE]
+   Int_t           BToKsEE_kstar_idx[100];   //[nBToKsEE]
+   Int_t           BToKsEE_l1_idx[100];   //[nBToKsEE]
+   Int_t           BToKsEE_l2_idx[100];   //[nBToKsEE]
+   Int_t           BToKsEE_pdgId[100];   //[nBToKsEE]
+   Int_t           BToKsEE_trk1_idx[100];   //[nBToKsEE]
+   Int_t           BToKsEE_trk2_idx[100];   //[nBToKsEE]
+
+   UInt_t          nBToKsMuMu;
+   Float_t         BToKsMuMu_b_iso03[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_b_iso04[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_barMass[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_chi2[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_cos2D[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_eta[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_fit_barKstar_mass[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_fit_barMass[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_fit_cos2D[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_fit_eta[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_fit_kstar_eta[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_fit_kstar_mass[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_fit_kstar_phi[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_fit_kstar_pt[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_fit_l1_eta[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_fit_l1_phi[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_fit_l1_pt[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_fit_l2_eta[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_fit_l2_phi[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_fit_l2_pt[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_fit_mass[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_fit_massErr[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_fit_phi[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_fit_pt[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_fit_trk1_eta[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_fit_trk1_phi[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_fit_trk1_pt[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_fit_trk2_eta[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_fit_trk2_phi[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_fit_trk2_pt[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_l1_iso03[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_l1_iso04[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_l2_iso03[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_l2_iso04[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_l_xy[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_l_xy_unc[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_mass[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_max_dr[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_min_dr[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_mll_fullfit[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_mll_llfit[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_mll_raw[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_phi[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_pt[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_svprob[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_tk1_iso03[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_tk1_iso04[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_tk2_iso03[50];   //[nBToKsMuMu]
+   Float_t         BToKsMuMu_tk2_iso04[50];   //[nBToKsMuMu]
+   Int_t           BToKsMuMu_charge[50];   //[nBToKsMuMu]
+   Int_t           BToKsMuMu_kstar_idx[50];   //[nBToKsMuMu]
+   Int_t           BToKsMuMu_l1_idx[50];   //[nBToKsMuMu]
+   Int_t           BToKsMuMu_l2_idx[50];   //[nBToKsMuMu]
+   Int_t           BToKsMuMu_pdgId[50];   //[nBToKsMuMu]
+   Int_t           BToKsMuMu_trk1_idx[50];   //[nBToKsMuMu]
+   Int_t           BToKsMuMu_trk2_idx[50];   //[nBToKsMuMu]
+
+   UInt_t          nKstar;
+   Float_t         Kstar_barMass[200];   //[nKstar]
+   Float_t         Kstar_eta[200];   //[nKstar]
+   Float_t         Kstar_fitted_barMass[200];   //[nKstar]
+   Float_t         Kstar_fitted_eta[200];   //[nKstar]
+   Float_t         Kstar_fitted_mass[200];   //[nKstar]
+   Float_t         Kstar_fitted_phi[200];   //[nKstar]
+   Float_t         Kstar_fitted_pt[200];   //[nKstar]
+   Float_t         Kstar_mass[200];   //[nKstar]
+   Float_t         Kstar_phi[200];   //[nKstar]
+   Float_t         Kstar_pt[200];   //[nKstar]
+   Float_t         Kstar_svprob[200];   //[nKstar]
+   Float_t         Kstar_trk_deltaR[200];   //[nKstar]
+   Int_t           Kstar_charge[200];   //[nKstar]
+   Int_t           Kstar_pdgId[200];   //[nKstar]
+   Int_t           Kstar_trk1_idx[200];   //[nKstar]
+   Int_t           Kstar_trk2_idx[200];   //[nKstar]
+   // end KStar
 
    UInt_t          nElectron;
-   Float_t         Electron_convChi2Prob[100];   //[nElectron]
-   Float_t         Electron_convDeltaCotFromPin[100];   //[nElectron]
-   Float_t         Electron_convLxy[100];   //[nElectron]
-   Float_t         Electron_convMass[100];   //[nElectron]
-   Float_t         Electron_convMassAfterFit[100];   //[nElectron]
-   Float_t         Electron_convMassBeforeFit[100];   //[nElectron]
-   Float_t         Electron_convMassFromPin[100];   //[nElectron]
-   Float_t         Electron_convMinTrkPt[100];   //[nElectron]
-   Float_t         Electron_convVtxRadius[100];   //[nElectron]
-   Float_t         Electron_dxy[100];   //[nElectron]
-   Float_t         Electron_dxyErr[100];   //[nElectron]
-   Float_t         Electron_dz[100];   //[nElectron]
-   Float_t         Electron_dzErr[100];   //[nElectron]
-   Float_t         Electron_dzTrg[100];   //[nElectron]
-   Float_t         Electron_eta[100];   //[nElectron]
-   Float_t         Electron_fBrem[100];   //[nElectron]
-   Float_t         Electron_ip3d[100];   //[nElectron]
-   Float_t         Electron_mass[100];   //[nElectron]
-   Float_t         Electron_mvaId[100];   //[nElectron]
-   Float_t         Electron_pfRelIso[100];   //[nElectron]
-   Float_t         Electron_pfmvaId[100];   //[nElectron]
-   Float_t         Electron_phi[100];   //[nElectron]
-   Float_t         Electron_pt[100];   //[nElectron]
-   Float_t         Electron_ptBiased[100];   //[nElectron]
-   Float_t         Electron_sip3d[100];   //[nElectron]
-   Float_t         Electron_trkRelIso[100];   //[nElectron]
-   Float_t         Electron_unBiased[100];   //[nElectron]
-   Float_t         Electron_vx[100];   //[nElectron]
-   Float_t         Electron_vy[100];   //[nElectron]
-   Float_t         Electron_vz[100];   //[nElectron]
-   Int_t           Electron_charge[100];   //[nElectron]
-   Int_t           Electron_convDeltaExpectedNHitsInner[100];   //[nElectron]
-   Int_t           Electron_convLeadIdx[100];   //[nElectron]
-   Int_t           Electron_convLeadNHitsBeforeVtx[100];   //[nElectron]
-   Int_t           Electron_convMaxNHitsBeforeVtx[100];   //[nElectron]
-   Int_t           Electron_convSumNHitsBeforeVtx[100];   //[nElectron]
-   Int_t           Electron_convTracksN[100];   //[nElectron]
-   Int_t           Electron_convTrailIdx[100];   //[nElectron]
-   Int_t           Electron_convTrailNHitsBeforeVtx[100];   //[nElectron]
-   Int_t           Electron_pdgId[100];   //[nElectron]
-   Bool_t          Electron_convExtra[100];   //[nElectron]
-   Bool_t          Electron_convLead[100];   //[nElectron]
-   Bool_t          Electron_convLoose[100];   //[nElectron]
-   Bool_t          Electron_convOpen[100];   //[nElectron]
-   Bool_t          Electron_convQualityHighEff[100];   //[nElectron]
-   Bool_t          Electron_convQualityHighPurity[100];   //[nElectron]
-   Bool_t          Electron_convTight[100];   //[nElectron]
-   Bool_t          Electron_convTrail[100];   //[nElectron]
-   Bool_t          Electron_convValid[100];   //[nElectron]
-   Bool_t          Electron_convVeto[100];   //[nElectron]
-   Bool_t          Electron_isLowPt[100];   //[nElectron]
-   Bool_t          Electron_isPF[100];   //[nElectron]
-   Bool_t          Electron_isPFoverlap[100];   //[nElectron]
+   Float_t         Electron_convChi2Prob[nElectron_max_];   //[nElectron]
+   Float_t         Electron_convDeltaCotFromPin[nElectron_max_];   //[nElectron]
+   Float_t         Electron_convLxy[nElectron_max_];   //[nElectron]
+   Float_t         Electron_convMass[nElectron_max_];   //[nElectron]
+   Float_t         Electron_convMassAfterFit[nElectron_max_];   //[nElectron]
+   Float_t         Electron_convMassBeforeFit[nElectron_max_];   //[nElectron]
+   Float_t         Electron_convMassFromPin[nElectron_max_];   //[nElectron]
+   Float_t         Electron_convMinTrkPt[nElectron_max_];   //[nElectron]
+   Float_t         Electron_convVtxRadius[nElectron_max_];   //[nElectron]
+   Float_t         Electron_dxy[nElectron_max_];   //[nElectron]
+   Float_t         Electron_dxyErr[nElectron_max_];   //[nElectron]
+   Float_t         Electron_dz[nElectron_max_];   //[nElectron]
+   Float_t         Electron_dzErr[nElectron_max_];   //[nElectron]
+   Float_t         Electron_dzTrg[nElectron_max_];   //[nElectron]
+   Float_t         Electron_eta[nElectron_max_];   //[nElectron]
+   Float_t         Electron_fBrem[nElectron_max_];   //[nElectron]
+   Float_t         Electron_ip3d[nElectron_max_];   //[nElectron]
+   Float_t         Electron_mass[nElectron_max_];   //[nElectron]
+   Float_t         Electron_mvaId[nElectron_max_];   //[nElectron]
+   Float_t         Electron_pfRelIso[nElectron_max_];   //[nElectron]
+   Float_t         Electron_pfmvaId[nElectron_max_];   //[nElectron]
+   Float_t         Electron_phi[nElectron_max_];   //[nElectron]
+   Float_t         Electron_pt[nElectron_max_];   //[nElectron]
+   Float_t         Electron_ptBiased[nElectron_max_];   //[nElectron]
+   Float_t         Electron_sip3d[nElectron_max_];   //[nElectron]
+   Float_t         Electron_trkRelIso[nElectron_max_];   //[nElectron]
+   Float_t         Electron_unBiased[nElectron_max_];   //[nElectron]
+   Float_t         Electron_vx[nElectron_max_];   //[nElectron]
+   Float_t         Electron_vy[nElectron_max_];   //[nElectron]
+   Float_t         Electron_vz[nElectron_max_];   //[nElectron]
+   Int_t           Electron_charge[nElectron_max_];   //[nElectron]
+   Int_t           Electron_convDeltaExpectedNHitsInner[nElectron_max_];   //[nElectron]
+   Int_t           Electron_convLeadIdx[nElectron_max_];   //[nElectron]
+   Int_t           Electron_convLeadNHitsBeforeVtx[nElectron_max_];   //[nElectron]
+   Int_t           Electron_convMaxNHitsBeforeVtx[nElectron_max_];   //[nElectron]
+   Int_t           Electron_convSumNHitsBeforeVtx[nElectron_max_];   //[nElectron]
+   Int_t           Electron_convTracksN[nElectron_max_];   //[nElectron]
+   Int_t           Electron_convTrailIdx[nElectron_max_];   //[nElectron]
+   Int_t           Electron_convTrailNHitsBeforeVtx[nElectron_max_];   //[nElectron]
+   Int_t           Electron_pdgId[nElectron_max_];   //[nElectron]
+   Bool_t          Electron_convExtra[nElectron_max_];   //[nElectron]
+   Bool_t          Electron_convLead[nElectron_max_];   //[nElectron]
+   Bool_t          Electron_convLoose[nElectron_max_];   //[nElectron]
+   Bool_t          Electron_convOpen[nElectron_max_];   //[nElectron]
+   Bool_t          Electron_convQualityHighEff[nElectron_max_];   //[nElectron]
+   Bool_t          Electron_convQualityHighPurity[nElectron_max_];   //[nElectron]
+   Bool_t          Electron_convTight[nElectron_max_];   //[nElectron]
+   Bool_t          Electron_convTrail[nElectron_max_];   //[nElectron]
+   Bool_t          Electron_convValid[nElectron_max_];   //[nElectron]
+   Bool_t          Electron_convVeto[nElectron_max_];   //[nElectron]
+   Bool_t          Electron_isLowPt[nElectron_max_];   //[nElectron]
+   Bool_t          Electron_isPF[nElectron_max_];   //[nElectron]
+   Bool_t          Electron_isPFoverlap[nElectron_max_];   //[nElectron]
 
    UInt_t          nGenPart;
-   Float_t         GenPart_eta[200];   //[nGenPart]
-   Float_t         GenPart_mass[200];   //[nGenPart]
-   Float_t         GenPart_phi[200];   //[nGenPart]
-   Float_t         GenPart_pt[200];   //[nGenPart]
-   Float_t         GenPart_vx[200];   //[nGenPart]
-   Float_t         GenPart_vy[200];   //[nGenPart]
-   Float_t         GenPart_vz[200];   //[nGenPart]
-   Int_t           GenPart_genPartIdxMother[200];   //[nGenPart]
-   Int_t           GenPart_pdgId[200];   //[nGenPart]
-   Int_t           GenPart_status[200];   //[nGenPart]
-   Int_t           GenPart_statusFlags[200];   //[nGenPart]
+   Float_t         GenPart_eta[nGenPart_max_];   //[nGenPart]
+   Float_t         GenPart_mass[nGenPart_max_];   //[nGenPart]
+   Float_t         GenPart_phi[nGenPart_max_];   //[nGenPart]
+   Float_t         GenPart_pt[nGenPart_max_];   //[nGenPart]
+   Float_t         GenPart_vx[nGenPart_max_];   //[nGenPart]
+   Float_t         GenPart_vy[nGenPart_max_];   //[nGenPart]
+   Float_t         GenPart_vz[nGenPart_max_];   //[nGenPart]
+   Int_t           GenPart_genPartIdxMother[nGenPart_max_];   //[nGenPart]
+   Int_t           GenPart_pdgId[nGenPart_max_];   //[nGenPart]
+   Int_t           GenPart_status[nGenPart_max_];   //[nGenPart]
+   Int_t           GenPart_statusFlags[nGenPart_max_];   //[nGenPart]
 
    Float_t         Generator_binvar;
    Float_t         Generator_scalePDF;
@@ -196,48 +424,48 @@ public :
    Float_t         PSWeight[1];   //[nPSWeight]
 
    UInt_t          nMuon;
-   Float_t         Muon_dxy[20];   //[nMuon]
-   Float_t         Muon_dxyErr[20];   //[nMuon]
-   Float_t         Muon_dz[20];   //[nMuon]
-   Float_t         Muon_dzErr[20];   //[nMuon]
-   Float_t         Muon_eta[20];   //[nMuon]
-   Float_t         Muon_ip3d[20];   //[nMuon]
-   Float_t         Muon_mass[20];   //[nMuon]
-   Float_t         Muon_matched_dpt[20];   //[nMuon]
-   Float_t         Muon_matched_dr[20];   //[nMuon]
-   Float_t         Muon_pfRelIso03_all[20];   //[nMuon]
-   Float_t         Muon_pfRelIso04_all[20];   //[nMuon]
-   Float_t         Muon_phi[20];   //[nMuon]
-   Float_t         Muon_pt[20];   //[nMuon]
-   Float_t         Muon_ptErr[20];   //[nMuon]
-   Float_t         Muon_sip3d[20];   //[nMuon]
-   Float_t         Muon_vx[20];   //[nMuon]
-   Float_t         Muon_vy[20];   //[nMuon]
-   Float_t         Muon_vz[20];   //[nMuon]
-   Int_t           Muon_charge[20];   //[nMuon]
-   Int_t           Muon_fired_HLT_Mu10p5_IP3p5[20];   //[nMuon]
-   Int_t           Muon_fired_HLT_Mu12_IP6[20];   //[nMuon]
-   Int_t           Muon_fired_HLT_Mu20_IP4[20];   //[nMuon]
-   Int_t           Muon_fired_HLT_Mu7_IP4[20];   //!
-   Int_t           Muon_fired_HLT_Mu8_IP3[20];   //[nMuon]
-   Int_t           Muon_fired_HLT_Mu8_IP5[20];   //[nMuon]
-   Int_t           Muon_fired_HLT_Mu8_IP6[20];   //[nMuon]
-   Int_t           Muon_fired_HLT_Mu8p5_IP3p5[20];   //[nMuon]
-   Int_t           Muon_fired_HLT_Mu9_IP4[20];   //[nMuon]
-   Int_t           Muon_fired_HLT_Mu9_IP5[20];   //[nMuon]
-   Int_t           Muon_fired_HLT_Mu9_IP6[20];   //[nMuon]
-   Int_t           Muon_isTriggering[20];   //[nMuon]
-   Int_t           Muon_looseId[20];   //[nMuon]
-   Int_t           Muon_pdgId[20];   //[nMuon]
-   Bool_t          Muon_isGlobal[20];   //[nMuon]
-   Bool_t          Muon_isPFcand[20];   //[nMuon]
-   Bool_t          Muon_isTracker[20];   //[nMuon]
-   Bool_t          Muon_mediumId[20];   //[nMuon]
-   UChar_t         Muon_pfIsoId[20];   //[nMuon]
-   Bool_t          Muon_softId[20];   //[nMuon]
-   Bool_t          Muon_tightId[20];   //[nMuon]
-   UChar_t         Muon_tkIsoId[20];   //[nMuon]
-   Bool_t          Muon_triggerIdLoose[20];   //[nMuon]
+   Float_t         Muon_dxy[nMuon_max_];   //[nMuon]
+   Float_t         Muon_dxyErr[nMuon_max_];   //[nMuon]
+   Float_t         Muon_dz[nMuon_max_];   //[nMuon]
+   Float_t         Muon_dzErr[nMuon_max_];   //[nMuon]
+   Float_t         Muon_eta[nMuon_max_];   //[nMuon]
+   Float_t         Muon_ip3d[nMuon_max_];   //[nMuon]
+   Float_t         Muon_mass[nMuon_max_];   //[nMuon]
+   Float_t         Muon_matched_dpt[nMuon_max_];   //[nMuon]
+   Float_t         Muon_matched_dr[nMuon_max_];   //[nMuon]
+   Float_t         Muon_pfRelIso03_all[nMuon_max_];   //[nMuon]
+   Float_t         Muon_pfRelIso04_all[nMuon_max_];   //[nMuon]
+   Float_t         Muon_phi[nMuon_max_];   //[nMuon]
+   Float_t         Muon_pt[nMuon_max_];   //[nMuon]
+   Float_t         Muon_ptErr[nMuon_max_];   //[nMuon]
+   Float_t         Muon_sip3d[nMuon_max_];   //[nMuon]
+   Float_t         Muon_vx[nMuon_max_];   //[nMuon]
+   Float_t         Muon_vy[nMuon_max_];   //[nMuon]
+   Float_t         Muon_vz[nMuon_max_];   //[nMuon]
+   Int_t           Muon_charge[nMuon_max_];   //[nMuon]
+   Int_t           Muon_fired_HLT_Mu10p5_IP3p5[nMuon_max_];   //[nMuon]
+   Int_t           Muon_fired_HLT_Mu12_IP6[nMuon_max_];   //[nMuon]
+   Int_t           Muon_fired_HLT_MunMuon_max__IP4[nMuon_max_];   //[nMuon]
+   Int_t           Muon_fired_HLT_Mu7_IP4[nMuon_max_];   //!
+   Int_t           Muon_fired_HLT_Mu8_IP3[nMuon_max_];   //[nMuon]
+   Int_t           Muon_fired_HLT_Mu8_IP5[nMuon_max_];   //[nMuon]
+   Int_t           Muon_fired_HLT_Mu8_IP6[nMuon_max_];   //[nMuon]
+   Int_t           Muon_fired_HLT_Mu8p5_IP3p5[nMuon_max_];   //[nMuon]
+   Int_t           Muon_fired_HLT_Mu9_IP4[nMuon_max_];   //[nMuon]
+   Int_t           Muon_fired_HLT_Mu9_IP5[nMuon_max_];   //[nMuon]
+   Int_t           Muon_fired_HLT_Mu9_IP6[nMuon_max_];   //[nMuon]
+   Int_t           Muon_isTriggering[nMuon_max_];   //[nMuon]
+   Int_t           Muon_looseId[nMuon_max_];   //[nMuon]
+   Int_t           Muon_pdgId[nMuon_max_];   //[nMuon]
+   Bool_t          Muon_isGlobal[nMuon_max_];   //[nMuon]
+   Bool_t          Muon_isPFcand[nMuon_max_];   //[nMuon]
+   Bool_t          Muon_isTracker[nMuon_max_];   //[nMuon]
+   Bool_t          Muon_mediumId[nMuon_max_];   //[nMuon]
+   UChar_t         Muon_pfIsoId[nMuon_max_];   //[nMuon]
+   Bool_t          Muon_softId[nMuon_max_];   //[nMuon]
+   Bool_t          Muon_tightId[nMuon_max_];   //[nMuon]
+   UChar_t         Muon_tkIsoId[nMuon_max_];   //[nMuon]
+   Bool_t          Muon_triggerIdLoose[nMuon_max_];   //[nMuon]
 
    Float_t         Pileup_nTrueInt;
    Float_t         Pileup_pudensity;
@@ -253,30 +481,30 @@ public :
    Float_t         fixedGridRhoFastjetCentralNeutral;
 
    UInt_t          nProbeTracks;
-   Float_t         ProbeTracks_DCASig[400];   //[nProbeTracks]
-   Float_t         ProbeTracks_dxy[400];   //[nProbeTracks]
-   Float_t         ProbeTracks_dxyS[400];   //[nProbeTracks]
-   Float_t         ProbeTracks_dz[400];   //[nProbeTracks]
-   Float_t         ProbeTracks_dzS[400];   //[nProbeTracks]
-   Float_t         ProbeTracks_dzTrg[400];   //[nProbeTracks]
-   Float_t         ProbeTracks_eta[400];   //[nProbeTracks]
-   Float_t         ProbeTracks_mass[400];   //[nProbeTracks]
-   Float_t         ProbeTracks_phi[400];   //[nProbeTracks]
-   Float_t         ProbeTracks_pt[400];   //[nProbeTracks]
-   Float_t         ProbeTracks_vx[400];   //[nProbeTracks]
-   Float_t         ProbeTracks_vy[400];   //[nProbeTracks]
-   Float_t         ProbeTracks_vz[400];   //[nProbeTracks]
-   Int_t           ProbeTracks_charge[400];   //[nProbeTracks]
-   Int_t           ProbeTracks_isLostTrk[400];   //[nProbeTracks]
-   Int_t           ProbeTracks_isPacked[400];   //[nProbeTracks]
-   Int_t           ProbeTracks_nValidHits[400];   //[nProbeTracks]
-   Int_t           ProbeTracks_pdgId[400];   //[nProbeTracks]
-   Bool_t          ProbeTracks_isMatchedToEle[400];   //[nProbeTracks]
-   Bool_t          ProbeTracks_isMatchedToLooseMuon[400];   //[nProbeTracks]
-   Bool_t          ProbeTracks_isMatchedToLowPtEle[400];   //[nProbeTracks]
-   Bool_t          ProbeTracks_isMatchedToMediumMuon[400];   //[nProbeTracks]
-   Bool_t          ProbeTracks_isMatchedToMuon[400];   //[nProbeTracks]
-   Bool_t          ProbeTracks_isMatchedToSoftMuon[400];   //[nProbeTracks]
+   Float_t         ProbeTracks_DCASig[nProbeTracks_max_];   //[nProbeTracks]
+   Float_t         ProbeTracks_dxy[nProbeTracks_max_];   //[nProbeTracks]
+   Float_t         ProbeTracks_dxyS[nProbeTracks_max_];   //[nProbeTracks]
+   Float_t         ProbeTracks_dz[nProbeTracks_max_];   //[nProbeTracks]
+   Float_t         ProbeTracks_dzS[nProbeTracks_max_];   //[nProbeTracks]
+   Float_t         ProbeTracks_dzTrg[nProbeTracks_max_];   //[nProbeTracks]
+   Float_t         ProbeTracks_eta[nProbeTracks_max_];   //[nProbeTracks]
+   Float_t         ProbeTracks_mass[nProbeTracks_max_];   //[nProbeTracks]
+   Float_t         ProbeTracks_phi[nProbeTracks_max_];   //[nProbeTracks]
+   Float_t         ProbeTracks_pt[nProbeTracks_max_];   //[nProbeTracks]
+   Float_t         ProbeTracks_vx[nProbeTracks_max_];   //[nProbeTracks]
+   Float_t         ProbeTracks_vy[nProbeTracks_max_];   //[nProbeTracks]
+   Float_t         ProbeTracks_vz[nProbeTracks_max_];   //[nProbeTracks]
+   Int_t           ProbeTracks_charge[nProbeTracks_max_];   //[nProbeTracks]
+   Int_t           ProbeTracks_isLostTrk[nProbeTracks_max_];   //[nProbeTracks]
+   Int_t           ProbeTracks_isPacked[nProbeTracks_max_];   //[nProbeTracks]
+   Int_t           ProbeTracks_nValidHits[nProbeTracks_max_];   //[nProbeTracks]
+   Int_t           ProbeTracks_pdgId[nProbeTracks_max_];   //[nProbeTracks]
+   Bool_t          ProbeTracks_isMatchedToEle[nProbeTracks_max_];   //[nProbeTracks]
+   Bool_t          ProbeTracks_isMatchedToLooseMuon[nProbeTracks_max_];   //[nProbeTracks]
+   Bool_t          ProbeTracks_isMatchedToLowPtEle[nProbeTracks_max_];   //[nProbeTracks]
+   Bool_t          ProbeTracks_isMatchedToMediumMuon[nProbeTracks_max_];   //[nProbeTracks]
+   Bool_t          ProbeTracks_isMatchedToMuon[nProbeTracks_max_];   //[nProbeTracks]
+   Bool_t          ProbeTracks_isMatchedToSoftMuon[nProbeTracks_max_];   //[nProbeTracks]
 
    UChar_t         HLT_Mu7_IP4;
    UChar_t         HLT_Mu8_IP6;
@@ -297,20 +525,19 @@ public :
    UChar_t         L1_SingleMu22;
 
    UInt_t          nTrigObj;
-   Float_t         TrigObj_pt[10];   //[nTrigObj]
-   Float_t         TrigObj_eta[10];   //[nTrigObj]
-   Float_t         TrigObj_phi[10];   //[nTrigObj]
-   Float_t         TrigObj_l1pt[10];   //[nTrigObj]
-   Float_t         TrigObj_l1pt_2[10];   //[nTrigObj]
-   Float_t         TrigObj_l2pt[10];   //[nTrigObj]
-   Int_t           TrigObj_id[10];   //[nTrigObj]
-   Int_t           TrigObj_l1iso[10];   //[nTrigObj]
-   Int_t           TrigObj_l1charge[10];   //[nTrigObj]
-   Int_t           TrigObj_filterBits[10];   //[nTrigObj]
+   Float_t         TrigObj_pt[nTrigObj_max_];   //[nTrigObj]
+   Float_t         TrigObj_eta[nTrigObj_max_];   //[nTrigObj]
+   Float_t         TrigObj_phi[nTrigObj_max_];   //[nTrigObj]
+   Float_t         TrigObj_l1pt[nTrigObj_max_];   //[nTrigObj]
+   Float_t         TrigObj_l1pt_2[nTrigObj_max_];   //[nTrigObj]
+   Float_t         TrigObj_l2pt[nTrigObj_max_];   //[nTrigObj]
+   Int_t           TrigObj_id[nTrigObj_max_];   //[nTrigObj]
+   Int_t           TrigObj_l1iso[nTrigObj_max_];   //[nTrigObj]
+   Int_t           TrigObj_l1charge[nTrigObj_max_];   //[nTrigObj]
+   Int_t           TrigObj_filterBits[nTrigObj_max_];   //[nTrigObj]
 
    UInt_t          nOtherPV;
    Float_t         OtherPV_z[10];   //[nOtherPV]
-
    Float_t         PV_ndof;
    Float_t         PV_x;
    Float_t         PV_y;
@@ -325,11 +552,11 @@ public :
    Float_t         SV_dlenSig[10];   //[nSV]
    Float_t         SV_pAngle[10];   //[nSV]
 
-   Int_t           Electron_genPartIdx[100];   //[nElectron]
-   Int_t           Electron_genPartFlav[100];   //[nElectron]
+   Int_t           Electron_genPartIdx[nElectron_max_];   //[nElectron]
+   Int_t           Electron_genPartFlav[nElectron_max_];   //[nElectron]
 
-   Int_t           Muon_genPartIdx[20];   //[nMuon]
-   Int_t           Muon_genPartFlav[20];   //[nMuon]
+   Int_t           Muon_genPartIdx[nMuon_max_];   //[nMuon]
+   Int_t           Muon_genPartFlav[nMuon_max_];   //[nMuon]
 
    Float_t         SV_chi2[20];   //[nSV]
    Float_t         SV_eta[20];   //[nSV]
@@ -341,13 +568,14 @@ public :
    Float_t         SV_y[20];   //[nSV]
    Float_t         SV_z[20];   //[nSV]
 
-   Int_t           ProbeTracks_genPartIdx[400];   //[nProbeTracks]
-   Int_t           ProbeTracks_genPartFlav[400];   //[nProbeTracks]
+   Int_t           ProbeTracks_genPartIdx[nProbeTracks_max_];   //[nProbeTracks]
+   Int_t           ProbeTracks_genPartFlav[nProbeTracks_max_];   //[nProbeTracks]
 
    // List of branches
    TBranch        *b_run;   //!
    TBranch        *b_luminosityBlock;   //!
    TBranch        *b_event;   //!
+
    TBranch        *b_nBToKEE;   //!
    TBranch        *b_BToKEE_b_iso03;   //!
    TBranch        *b_BToKEE_b_iso03_dca;   //!
@@ -432,6 +660,227 @@ public :
    TBranch        *b_BToKEE_n_l1_used;   //!
    TBranch        *b_BToKEE_n_l2_used;   //!
    TBranch        *b_BToKEE_pdgId;   //!
+
+   TBranch        *b_nBToKMuMu;   //!
+   TBranch        *b_BToKMuMu_b_iso03;   //!
+   TBranch        *b_BToKMuMu_b_iso03_dca;   //!
+   TBranch        *b_BToKMuMu_b_iso03_dca_tight;   //!
+   TBranch        *b_BToKMuMu_b_iso04;   //!
+   TBranch        *b_BToKMuMu_b_iso04_dca;   //!
+   TBranch        *b_BToKMuMu_b_iso04_dca_tight;   //!
+   TBranch        *b_BToKMuMu_cos2D;   //!
+   TBranch        *b_BToKMuMu_eta;   //!
+   TBranch        *b_BToKMuMu_fit_cos2D;   //!
+   TBranch        *b_BToKMuMu_fit_eta;   //!
+   TBranch        *b_BToKMuMu_fit_k_eta;   //!
+   TBranch        *b_BToKMuMu_fit_k_phi;   //!
+   TBranch        *b_BToKMuMu_fit_k_pt;   //!
+   TBranch        *b_BToKMuMu_fit_l1_eta;   //!
+   TBranch        *b_BToKMuMu_fit_l1_phi;   //!
+   TBranch        *b_BToKMuMu_fit_l1_pt;   //!
+   TBranch        *b_BToKMuMu_fit_l2_eta;   //!
+   TBranch        *b_BToKMuMu_fit_l2_phi;   //!
+   TBranch        *b_BToKMuMu_fit_l2_pt;   //!
+   TBranch        *b_BToKMuMu_fit_mass;   //!
+   TBranch        *b_BToKMuMu_fit_massErr;   //!
+   TBranch        *b_BToKMuMu_fit_phi;   //!
+   TBranch        *b_BToKMuMu_fit_pt;   //!
+   TBranch        *b_BToKMuMu_k_iso03;   //!
+   TBranch        *b_BToKMuMu_k_iso03_dca;   //!
+   TBranch        *b_BToKMuMu_k_iso03_dca_tight;   //!
+   TBranch        *b_BToKMuMu_k_iso04;   //!
+   TBranch        *b_BToKMuMu_k_iso04_dca;   //!
+   TBranch        *b_BToKMuMu_k_iso04_dca_tight;   //!
+   TBranch        *b_BToKMuMu_k_svip2d;   //!
+   TBranch        *b_BToKMuMu_k_svip2d_err;   //!
+   TBranch        *b_BToKMuMu_k_svip3d;   //!
+   TBranch        *b_BToKMuMu_k_svip3d_err;   //!
+   TBranch        *b_BToKMuMu_l1_iso03;   //!
+   TBranch        *b_BToKMuMu_l1_iso03_dca;   //!
+   TBranch        *b_BToKMuMu_l1_iso03_dca_tight;   //!
+   TBranch        *b_BToKMuMu_l1_iso04;   //!
+   TBranch        *b_BToKMuMu_l1_iso04_dca;   //!
+   TBranch        *b_BToKMuMu_l1_iso04_dca_tight;   //!
+   TBranch        *b_BToKMuMu_l2_iso03;   //!
+   TBranch        *b_BToKMuMu_l2_iso03_dca;   //!
+   TBranch        *b_BToKMuMu_l2_iso03_dca_tight;   //!
+   TBranch        *b_BToKMuMu_l2_iso04;   //!
+   TBranch        *b_BToKMuMu_l2_iso04_dca;   //!
+   TBranch        *b_BToKMuMu_l2_iso04_dca_tight;   //!
+   TBranch        *b_BToKMuMu_l_xy;   //!
+   TBranch        *b_BToKMuMu_l_xy_unc;   //!
+   TBranch        *b_BToKMuMu_mass;   //!
+   TBranch        *b_BToKMuMu_maxDR;   //!
+   TBranch        *b_BToKMuMu_minDR;   //!
+   TBranch        *b_BToKMuMu_mllErr_llfit;   //!
+   TBranch        *b_BToKMuMu_mll_fullfit;   //!
+   TBranch        *b_BToKMuMu_mll_llfit;   //!
+   TBranch        *b_BToKMuMu_mll_raw;   //!
+   TBranch        *b_BToKMuMu_phi;   //!
+   TBranch        *b_BToKMuMu_pt;   //!
+   TBranch        *b_BToKMuMu_svprob;   //!
+   TBranch        *b_BToKMuMu_vtx_ex;   //!
+   TBranch        *b_BToKMuMu_vtx_ey;   //!
+   TBranch        *b_BToKMuMu_vtx_ez;   //!
+   TBranch        *b_BToKMuMu_vtx_x;   //!
+   TBranch        *b_BToKMuMu_vtx_y;   //!
+   TBranch        *b_BToKMuMu_vtx_z;   //!
+   TBranch        *b_BToKMuMu_b_n_isotrk;   //!
+   TBranch        *b_BToKMuMu_b_n_isotrk_dca;   //!
+   TBranch        *b_BToKMuMu_b_n_isotrk_dca_tight;   //!
+   TBranch        *b_BToKMuMu_charge;   //!
+   TBranch        *b_BToKMuMu_kIdx;   //!
+   TBranch        *b_BToKMuMu_k_n_isotrk;   //!
+   TBranch        *b_BToKMuMu_k_n_isotrk_dca;   //!
+   TBranch        *b_BToKMuMu_k_n_isotrk_dca_tight;   //!
+   TBranch        *b_BToKMuMu_l1Idx;   //!
+   TBranch        *b_BToKMuMu_l1_n_isotrk;   //!
+   TBranch        *b_BToKMuMu_l1_n_isotrk_dca;   //!
+   TBranch        *b_BToKMuMu_l1_n_isotrk_dca_tight;   //!
+   TBranch        *b_BToKMuMu_l2Idx;   //!
+   TBranch        *b_BToKMuMu_l2_n_isotrk;   //!
+   TBranch        *b_BToKMuMu_l2_n_isotrk_dca;   //!
+   TBranch        *b_BToKMuMu_l2_n_isotrk_dca_tight;   //!
+   TBranch        *b_BToKMuMu_n_k_used;   //!
+   TBranch        *b_BToKMuMu_n_l1_used;   //!
+   TBranch        *b_BToKMuMu_n_l2_used;   //!
+   TBranch        *b_BToKMuMu_pdgId;   //!
+
+   // KStar
+   TBranch        *b_nBToKsEE;   //!
+   TBranch        *b_BToKsEE_b_iso03;   //!
+   TBranch        *b_BToKsEE_b_iso04;   //!
+   TBranch        *b_BToKsEE_barMass;   //!
+   TBranch        *b_BToKsEE_chi2;   //!
+   TBranch        *b_BToKsEE_cos2D;   //!
+   TBranch        *b_BToKsEE_eta;   //!
+   TBranch        *b_BToKsEE_fit_barKstar_mass;   //!
+   TBranch        *b_BToKsEE_fit_barMass;   //!
+   TBranch        *b_BToKsEE_fit_cos2D;   //!
+   TBranch        *b_BToKsEE_fit_eta;   //!
+   TBranch        *b_BToKsEE_fit_kstar_eta;   //!
+   TBranch        *b_BToKsEE_fit_kstar_mass;   //!
+   TBranch        *b_BToKsEE_fit_kstar_phi;   //!
+   TBranch        *b_BToKsEE_fit_kstar_pt;   //!
+   TBranch        *b_BToKsEE_fit_l1_eta;   //!
+   TBranch        *b_BToKsEE_fit_l1_phi;   //!
+   TBranch        *b_BToKsEE_fit_l1_pt;   //!
+   TBranch        *b_BToKsEE_fit_l2_eta;   //!
+   TBranch        *b_BToKsEE_fit_l2_phi;   //!
+   TBranch        *b_BToKsEE_fit_l2_pt;   //!
+   TBranch        *b_BToKsEE_fit_mass;   //!
+   TBranch        *b_BToKsEE_fit_massErr;   //!
+   TBranch        *b_BToKsEE_fit_phi;   //!
+   TBranch        *b_BToKsEE_fit_pt;   //!
+   TBranch        *b_BToKsEE_fit_trk1_eta;   //!
+   TBranch        *b_BToKsEE_fit_trk1_phi;   //!
+   TBranch        *b_BToKsEE_fit_trk1_pt;   //!
+   TBranch        *b_BToKsEE_fit_trk2_eta;   //!
+   TBranch        *b_BToKsEE_fit_trk2_phi;   //!
+   TBranch        *b_BToKsEE_fit_trk2_pt;   //!
+   TBranch        *b_BToKsEE_l1_iso03;   //!
+   TBranch        *b_BToKsEE_l1_iso04;   //!
+   TBranch        *b_BToKsEE_l2_iso03;   //!
+   TBranch        *b_BToKsEE_l2_iso04;   //!
+   TBranch        *b_BToKsEE_l_xy;   //!
+   TBranch        *b_BToKsEE_l_xy_unc;   //!
+   TBranch        *b_BToKsEE_mass;   //!
+   TBranch        *b_BToKsEE_max_dr;   //!
+   TBranch        *b_BToKsEE_min_dr;   //!
+   TBranch        *b_BToKsEE_mll_fullfit;   //!
+   TBranch        *b_BToKsEE_mll_llfit;   //!
+   TBranch        *b_BToKsEE_mll_raw;   //!
+   TBranch        *b_BToKsEE_phi;   //!
+   TBranch        *b_BToKsEE_pt;   //!
+   TBranch        *b_BToKsEE_svprob;   //!
+   TBranch        *b_BToKsEE_tk1_iso03;   //!
+   TBranch        *b_BToKsEE_tk1_iso04;   //!
+   TBranch        *b_BToKsEE_tk2_iso03;   //!
+   TBranch        *b_BToKsEE_tk2_iso04;   //!
+   TBranch        *b_BToKsEE_charge;   //!
+   TBranch        *b_BToKsEE_kstar_idx;   //!
+   TBranch        *b_BToKsEE_l1_idx;   //!
+   TBranch        *b_BToKsEE_l2_idx;   //!
+   TBranch        *b_BToKsEE_pdgId;   //!
+   TBranch        *b_BToKsEE_trk1_idx;   //!
+   TBranch        *b_BToKsEE_trk2_idx;   //!
+
+   TBranch        *b_nBToKsMuMu;   //!
+   TBranch        *b_BToKsMuMu_b_iso03;   //!
+   TBranch        *b_BToKsMuMu_b_iso04;   //!
+   TBranch        *b_BToKsMuMu_barMass;   //!
+   TBranch        *b_BToKsMuMu_chi2;   //!
+   TBranch        *b_BToKsMuMu_cos2D;   //!
+   TBranch        *b_BToKsMuMu_eta;   //!
+   TBranch        *b_BToKsMuMu_fit_barKstar_mass;   //!
+   TBranch        *b_BToKsMuMu_fit_barMass;   //!
+   TBranch        *b_BToKsMuMu_fit_cos2D;   //!
+   TBranch        *b_BToKsMuMu_fit_eta;   //!
+   TBranch        *b_BToKsMuMu_fit_kstar_eta;   //!
+   TBranch        *b_BToKsMuMu_fit_kstar_mass;   //!
+   TBranch        *b_BToKsMuMu_fit_kstar_phi;   //!
+   TBranch        *b_BToKsMuMu_fit_kstar_pt;   //!
+   TBranch        *b_BToKsMuMu_fit_l1_eta;   //!
+   TBranch        *b_BToKsMuMu_fit_l1_phi;   //!
+   TBranch        *b_BToKsMuMu_fit_l1_pt;   //!
+   TBranch        *b_BToKsMuMu_fit_l2_eta;   //!
+   TBranch        *b_BToKsMuMu_fit_l2_phi;   //!
+   TBranch        *b_BToKsMuMu_fit_l2_pt;   //!
+   TBranch        *b_BToKsMuMu_fit_mass;   //!
+   TBranch        *b_BToKsMuMu_fit_massErr;   //!
+   TBranch        *b_BToKsMuMu_fit_phi;   //!
+   TBranch        *b_BToKsMuMu_fit_pt;   //!
+   TBranch        *b_BToKsMuMu_fit_trk1_eta;   //!
+   TBranch        *b_BToKsMuMu_fit_trk1_phi;   //!
+   TBranch        *b_BToKsMuMu_fit_trk1_pt;   //!
+   TBranch        *b_BToKsMuMu_fit_trk2_eta;   //!
+   TBranch        *b_BToKsMuMu_fit_trk2_phi;   //!
+   TBranch        *b_BToKsMuMu_fit_trk2_pt;   //!
+   TBranch        *b_BToKsMuMu_l1_iso03;   //!
+   TBranch        *b_BToKsMuMu_l1_iso04;   //!
+   TBranch        *b_BToKsMuMu_l2_iso03;   //!
+   TBranch        *b_BToKsMuMu_l2_iso04;   //!
+   TBranch        *b_BToKsMuMu_l_xy;   //!
+   TBranch        *b_BToKsMuMu_l_xy_unc;   //!
+   TBranch        *b_BToKsMuMu_mass;   //!
+   TBranch        *b_BToKsMuMu_max_dr;   //!
+   TBranch        *b_BToKsMuMu_min_dr;   //!
+   TBranch        *b_BToKsMuMu_mll_fullfit;   //!
+   TBranch        *b_BToKsMuMu_mll_llfit;   //!
+   TBranch        *b_BToKsMuMu_mll_raw;   //!
+   TBranch        *b_BToKsMuMu_phi;   //!
+   TBranch        *b_BToKsMuMu_pt;   //!
+   TBranch        *b_BToKsMuMu_svprob;   //!
+   TBranch        *b_BToKsMuMu_tk1_iso03;   //!
+   TBranch        *b_BToKsMuMu_tk1_iso04;   //!
+   TBranch        *b_BToKsMuMu_tk2_iso03;   //!
+   TBranch        *b_BToKsMuMu_tk2_iso04;   //!
+   TBranch        *b_BToKsMuMu_charge;   //!
+   TBranch        *b_BToKsMuMu_kstar_idx;   //!
+   TBranch        *b_BToKsMuMu_l1_idx;   //!
+   TBranch        *b_BToKsMuMu_l2_idx;   //!
+   TBranch        *b_BToKsMuMu_pdgId;   //!
+   TBranch        *b_BToKsMuMu_trk1_idx;   //!
+   TBranch        *b_BToKsMuMu_trk2_idx;   //!
+
+   TBranch        *b_nKstar;   //!
+   TBranch        *b_Kstar_barMass;   //!
+   TBranch        *b_Kstar_eta;   //!
+   TBranch        *b_Kstar_fitted_barMass;   //!
+   TBranch        *b_Kstar_fitted_eta;   //!
+   TBranch        *b_Kstar_fitted_mass;   //!
+   TBranch        *b_Kstar_fitted_phi;   //!
+   TBranch        *b_Kstar_fitted_pt;   //!
+   TBranch        *b_Kstar_mass;   //!
+   TBranch        *b_Kstar_phi;   //!
+   TBranch        *b_Kstar_pt;   //!
+   TBranch        *b_Kstar_svprob;   //!
+   TBranch        *b_Kstar_trk_deltaR;   //!
+   TBranch        *b_Kstar_charge;   //!
+   TBranch        *b_Kstar_pdgId;   //!
+   TBranch        *b_Kstar_trk1_idx;   //!
+   TBranch        *b_Kstar_trk2_idx;   //!
+   // end KStar
 
    TBranch        *b_nElectron;   //!
    TBranch        *b_Electron_convChi2Prob;   //!
@@ -630,7 +1079,6 @@ public :
 
    TBranch        *b_nOtherPV;   //!
    TBranch        *b_OtherPV_z;   //!
-
    TBranch        *b_PV_ndof;   //!
    TBranch        *b_PV_x;   //!
    TBranch        *b_PV_y;   //!
@@ -678,10 +1126,10 @@ public :
 #endif
 
 #ifdef EfficiencyBase_cxx
-EfficiencyBase::EfficiencyBase(TTree *tree, int isMC ) : fChain(0) 
+EfficiencyBase::EfficiencyBase(TTree *tree, int isMC) : fChain(0) 
 {
-// if parameter tree is not specified (or zero), connect the file
-// used to generate this class and read the Tree.
+  // if parameter tree is not specified (or zero), connect the file
+  // used to generate this class and read the Tree.
   _isMC=0;
   _isKStar=0;
   if(isMC==1||isMC==3) {
@@ -833,6 +1281,228 @@ void EfficiencyBase::Init(TTree *tree)
    fChain->SetBranchAddress("BToKEE_n_l2_used", BToKEE_n_l2_used, &b_BToKEE_n_l2_used);
    fChain->SetBranchAddress("BToKEE_pdgId", BToKEE_pdgId, &b_BToKEE_pdgId);
 
+   if(_isKStar){
+
+   fChain->SetBranchAddress("nBToKMuMu", &nBToKMuMu, &b_nBToKMuMu);
+   fChain->SetBranchAddress("BToKMuMu_b_iso03", BToKMuMu_b_iso03, &b_BToKMuMu_b_iso03);
+   fChain->SetBranchAddress("BToKMuMu_b_iso03_dca", BToKMuMu_b_iso03_dca, &b_BToKMuMu_b_iso03_dca);
+   fChain->SetBranchAddress("BToKMuMu_b_iso03_dca_tight", BToKMuMu_b_iso03_dca_tight, &b_BToKMuMu_b_iso03_dca_tight);
+   fChain->SetBranchAddress("BToKMuMu_b_iso04", BToKMuMu_b_iso04, &b_BToKMuMu_b_iso04);
+   fChain->SetBranchAddress("BToKMuMu_b_iso04_dca", BToKMuMu_b_iso04_dca, &b_BToKMuMu_b_iso04_dca);
+   fChain->SetBranchAddress("BToKMuMu_b_iso04_dca_tight", BToKMuMu_b_iso04_dca_tight, &b_BToKMuMu_b_iso04_dca_tight);
+   fChain->SetBranchAddress("BToKMuMu_cos2D", BToKMuMu_cos2D, &b_BToKMuMu_cos2D);
+   fChain->SetBranchAddress("BToKMuMu_eta", BToKMuMu_eta, &b_BToKMuMu_eta);
+   fChain->SetBranchAddress("BToKMuMu_fit_cos2D", BToKMuMu_fit_cos2D, &b_BToKMuMu_fit_cos2D);
+   fChain->SetBranchAddress("BToKMuMu_fit_eta", BToKMuMu_fit_eta, &b_BToKMuMu_fit_eta);
+   fChain->SetBranchAddress("BToKMuMu_fit_k_eta", BToKMuMu_fit_k_eta, &b_BToKMuMu_fit_k_eta);
+   fChain->SetBranchAddress("BToKMuMu_fit_k_phi", BToKMuMu_fit_k_phi, &b_BToKMuMu_fit_k_phi);
+   fChain->SetBranchAddress("BToKMuMu_fit_k_pt", BToKMuMu_fit_k_pt, &b_BToKMuMu_fit_k_pt);
+   fChain->SetBranchAddress("BToKMuMu_fit_l1_eta", BToKMuMu_fit_l1_eta, &b_BToKMuMu_fit_l1_eta);
+   fChain->SetBranchAddress("BToKMuMu_fit_l1_phi", BToKMuMu_fit_l1_phi, &b_BToKMuMu_fit_l1_phi);
+   fChain->SetBranchAddress("BToKMuMu_fit_l1_pt", BToKMuMu_fit_l1_pt, &b_BToKMuMu_fit_l1_pt);
+   fChain->SetBranchAddress("BToKMuMu_fit_l2_eta", BToKMuMu_fit_l2_eta, &b_BToKMuMu_fit_l2_eta);
+   fChain->SetBranchAddress("BToKMuMu_fit_l2_phi", BToKMuMu_fit_l2_phi, &b_BToKMuMu_fit_l2_phi);
+   fChain->SetBranchAddress("BToKMuMu_fit_l2_pt", BToKMuMu_fit_l2_pt, &b_BToKMuMu_fit_l2_pt);
+   fChain->SetBranchAddress("BToKMuMu_fit_mass", BToKMuMu_fit_mass, &b_BToKMuMu_fit_mass);
+   fChain->SetBranchAddress("BToKMuMu_fit_massErr", BToKMuMu_fit_massErr, &b_BToKMuMu_fit_massErr);
+   fChain->SetBranchAddress("BToKMuMu_fit_phi", BToKMuMu_fit_phi, &b_BToKMuMu_fit_phi);
+   fChain->SetBranchAddress("BToKMuMu_fit_pt", BToKMuMu_fit_pt, &b_BToKMuMu_fit_pt);
+   fChain->SetBranchAddress("BToKMuMu_k_iso03", BToKMuMu_k_iso03, &b_BToKMuMu_k_iso03);
+   fChain->SetBranchAddress("BToKMuMu_k_iso03_dca", BToKMuMu_k_iso03_dca, &b_BToKMuMu_k_iso03_dca);
+   fChain->SetBranchAddress("BToKMuMu_k_iso03_dca_tight", BToKMuMu_k_iso03_dca_tight, &b_BToKMuMu_k_iso03_dca_tight);
+   fChain->SetBranchAddress("BToKMuMu_k_iso04", BToKMuMu_k_iso04, &b_BToKMuMu_k_iso04);
+   fChain->SetBranchAddress("BToKMuMu_k_iso04_dca", BToKMuMu_k_iso04_dca, &b_BToKMuMu_k_iso04_dca);
+   fChain->SetBranchAddress("BToKMuMu_k_iso04_dca_tight", BToKMuMu_k_iso04_dca_tight, &b_BToKMuMu_k_iso04_dca_tight);
+   fChain->SetBranchAddress("BToKMuMu_k_svip2d", BToKMuMu_k_svip2d, &b_BToKMuMu_k_svip2d);
+   fChain->SetBranchAddress("BToKMuMu_k_svip2d_err", BToKMuMu_k_svip2d_err, &b_BToKMuMu_k_svip2d_err);
+   fChain->SetBranchAddress("BToKMuMu_k_svip3d", BToKMuMu_k_svip3d, &b_BToKMuMu_k_svip3d);
+   fChain->SetBranchAddress("BToKMuMu_k_svip3d_err", BToKMuMu_k_svip3d_err, &b_BToKMuMu_k_svip3d_err);
+   fChain->SetBranchAddress("BToKMuMu_l1_iso03", BToKMuMu_l1_iso03, &b_BToKMuMu_l1_iso03);
+   fChain->SetBranchAddress("BToKMuMu_l1_iso03_dca", BToKMuMu_l1_iso03_dca, &b_BToKMuMu_l1_iso03_dca);
+   fChain->SetBranchAddress("BToKMuMu_l1_iso03_dca_tight", BToKMuMu_l1_iso03_dca_tight, &b_BToKMuMu_l1_iso03_dca_tight);
+   fChain->SetBranchAddress("BToKMuMu_l1_iso04", BToKMuMu_l1_iso04, &b_BToKMuMu_l1_iso04);
+   fChain->SetBranchAddress("BToKMuMu_l1_iso04_dca", BToKMuMu_l1_iso04_dca, &b_BToKMuMu_l1_iso04_dca);
+   fChain->SetBranchAddress("BToKMuMu_l1_iso04_dca_tight", BToKMuMu_l1_iso04_dca_tight, &b_BToKMuMu_l1_iso04_dca_tight);
+   fChain->SetBranchAddress("BToKMuMu_l2_iso03", BToKMuMu_l2_iso03, &b_BToKMuMu_l2_iso03);
+   fChain->SetBranchAddress("BToKMuMu_l2_iso03_dca", BToKMuMu_l2_iso03_dca, &b_BToKMuMu_l2_iso03_dca);
+   fChain->SetBranchAddress("BToKMuMu_l2_iso03_dca_tight", BToKMuMu_l2_iso03_dca_tight, &b_BToKMuMu_l2_iso03_dca_tight);
+   fChain->SetBranchAddress("BToKMuMu_l2_iso04", BToKMuMu_l2_iso04, &b_BToKMuMu_l2_iso04);
+   fChain->SetBranchAddress("BToKMuMu_l2_iso04_dca", BToKMuMu_l2_iso04_dca, &b_BToKMuMu_l2_iso04_dca);
+   fChain->SetBranchAddress("BToKMuMu_l2_iso04_dca_tight", BToKMuMu_l2_iso04_dca_tight, &b_BToKMuMu_l2_iso04_dca_tight);
+   fChain->SetBranchAddress("BToKMuMu_l_xy", BToKMuMu_l_xy, &b_BToKMuMu_l_xy);
+   fChain->SetBranchAddress("BToKMuMu_l_xy_unc", BToKMuMu_l_xy_unc, &b_BToKMuMu_l_xy_unc);
+   fChain->SetBranchAddress("BToKMuMu_mass", BToKMuMu_mass, &b_BToKMuMu_mass);
+   fChain->SetBranchAddress("BToKMuMu_maxDR", BToKMuMu_maxDR, &b_BToKMuMu_maxDR);
+   fChain->SetBranchAddress("BToKMuMu_minDR", BToKMuMu_minDR, &b_BToKMuMu_minDR);
+   fChain->SetBranchAddress("BToKMuMu_mllErr_llfit", BToKMuMu_mllErr_llfit, &b_BToKMuMu_mllErr_llfit);
+   fChain->SetBranchAddress("BToKMuMu_mll_fullfit", BToKMuMu_mll_fullfit, &b_BToKMuMu_mll_fullfit);
+   fChain->SetBranchAddress("BToKMuMu_mll_llfit", BToKMuMu_mll_llfit, &b_BToKMuMu_mll_llfit);
+   fChain->SetBranchAddress("BToKMuMu_mll_raw", BToKMuMu_mll_raw, &b_BToKMuMu_mll_raw);
+   fChain->SetBranchAddress("BToKMuMu_phi", BToKMuMu_phi, &b_BToKMuMu_phi);
+   fChain->SetBranchAddress("BToKMuMu_pt", BToKMuMu_pt, &b_BToKMuMu_pt);
+   fChain->SetBranchAddress("BToKMuMu_svprob", BToKMuMu_svprob, &b_BToKMuMu_svprob);
+   fChain->SetBranchAddress("BToKMuMu_vtx_ex", BToKMuMu_vtx_ex, &b_BToKMuMu_vtx_ex);
+   fChain->SetBranchAddress("BToKMuMu_vtx_ey", BToKMuMu_vtx_ey, &b_BToKMuMu_vtx_ey);
+   fChain->SetBranchAddress("BToKMuMu_vtx_ez", BToKMuMu_vtx_ez, &b_BToKMuMu_vtx_ez);
+   fChain->SetBranchAddress("BToKMuMu_vtx_x", BToKMuMu_vtx_x, &b_BToKMuMu_vtx_x);
+   fChain->SetBranchAddress("BToKMuMu_vtx_y", BToKMuMu_vtx_y, &b_BToKMuMu_vtx_y);
+   fChain->SetBranchAddress("BToKMuMu_vtx_z", BToKMuMu_vtx_z, &b_BToKMuMu_vtx_z);
+   fChain->SetBranchAddress("BToKMuMu_b_n_isotrk", BToKMuMu_b_n_isotrk, &b_BToKMuMu_b_n_isotrk);
+   fChain->SetBranchAddress("BToKMuMu_b_n_isotrk_dca", BToKMuMu_b_n_isotrk_dca, &b_BToKMuMu_b_n_isotrk_dca);
+   fChain->SetBranchAddress("BToKMuMu_b_n_isotrk_dca_tight", BToKMuMu_b_n_isotrk_dca_tight, &b_BToKMuMu_b_n_isotrk_dca_tight);
+   fChain->SetBranchAddress("BToKMuMu_charge", BToKMuMu_charge, &b_BToKMuMu_charge);
+   fChain->SetBranchAddress("BToKMuMu_kIdx", BToKMuMu_kIdx, &b_BToKMuMu_kIdx);
+   fChain->SetBranchAddress("BToKMuMu_k_n_isotrk", BToKMuMu_k_n_isotrk, &b_BToKMuMu_k_n_isotrk);
+   fChain->SetBranchAddress("BToKMuMu_k_n_isotrk_dca", BToKMuMu_k_n_isotrk_dca, &b_BToKMuMu_k_n_isotrk_dca);
+   fChain->SetBranchAddress("BToKMuMu_k_n_isotrk_dca_tight", BToKMuMu_k_n_isotrk_dca_tight, &b_BToKMuMu_k_n_isotrk_dca_tight);
+   fChain->SetBranchAddress("BToKMuMu_l1Idx", BToKMuMu_l1Idx, &b_BToKMuMu_l1Idx);
+   fChain->SetBranchAddress("BToKMuMu_l1_n_isotrk", BToKMuMu_l1_n_isotrk, &b_BToKMuMu_l1_n_isotrk);
+   fChain->SetBranchAddress("BToKMuMu_l1_n_isotrk_dca", BToKMuMu_l1_n_isotrk_dca, &b_BToKMuMu_l1_n_isotrk_dca);
+   fChain->SetBranchAddress("BToKMuMu_l1_n_isotrk_dca_tight", BToKMuMu_l1_n_isotrk_dca_tight, &b_BToKMuMu_l1_n_isotrk_dca_tight);
+   fChain->SetBranchAddress("BToKMuMu_l2Idx", BToKMuMu_l2Idx, &b_BToKMuMu_l2Idx);
+   fChain->SetBranchAddress("BToKMuMu_l2_n_isotrk", BToKMuMu_l2_n_isotrk, &b_BToKMuMu_l2_n_isotrk);
+   fChain->SetBranchAddress("BToKMuMu_l2_n_isotrk_dca", BToKMuMu_l2_n_isotrk_dca, &b_BToKMuMu_l2_n_isotrk_dca);
+   fChain->SetBranchAddress("BToKMuMu_l2_n_isotrk_dca_tight", BToKMuMu_l2_n_isotrk_dca_tight, &b_BToKMuMu_l2_n_isotrk_dca_tight);
+   fChain->SetBranchAddress("BToKMuMu_n_k_used", BToKMuMu_n_k_used, &b_BToKMuMu_n_k_used);
+   fChain->SetBranchAddress("BToKMuMu_n_l1_used", BToKMuMu_n_l1_used, &b_BToKMuMu_n_l1_used);
+   fChain->SetBranchAddress("BToKMuMu_n_l2_used", BToKMuMu_n_l2_used, &b_BToKMuMu_n_l2_used);
+   fChain->SetBranchAddress("BToKMuMu_pdgId", BToKMuMu_pdgId, &b_BToKMuMu_pdgId);
+
+   fChain->SetBranchAddress("nBToKsEE", &nBToKsEE, &b_nBToKsEE);
+   fChain->SetBranchAddress("BToKsEE_b_iso03", BToKsEE_b_iso03, &b_BToKsEE_b_iso03);
+   fChain->SetBranchAddress("BToKsEE_b_iso04", BToKsEE_b_iso04, &b_BToKsEE_b_iso04);
+   fChain->SetBranchAddress("BToKsEE_barMass", BToKsEE_barMass, &b_BToKsEE_barMass);
+   fChain->SetBranchAddress("BToKsEE_chi2", BToKsEE_chi2, &b_BToKsEE_chi2);
+   fChain->SetBranchAddress("BToKsEE_cos2D", BToKsEE_cos2D, &b_BToKsEE_cos2D);
+   fChain->SetBranchAddress("BToKsEE_eta", BToKsEE_eta, &b_BToKsEE_eta);
+   fChain->SetBranchAddress("BToKsEE_fit_barKstar_mass", BToKsEE_fit_barKstar_mass, &b_BToKsEE_fit_barKstar_mass);
+   fChain->SetBranchAddress("BToKsEE_fit_barMass", BToKsEE_fit_barMass, &b_BToKsEE_fit_barMass);
+   fChain->SetBranchAddress("BToKsEE_fit_cos2D", BToKsEE_fit_cos2D, &b_BToKsEE_fit_cos2D);
+   fChain->SetBranchAddress("BToKsEE_fit_eta", BToKsEE_fit_eta, &b_BToKsEE_fit_eta);
+   fChain->SetBranchAddress("BToKsEE_fit_kstar_eta", BToKsEE_fit_kstar_eta, &b_BToKsEE_fit_kstar_eta);
+   fChain->SetBranchAddress("BToKsEE_fit_kstar_mass", BToKsEE_fit_kstar_mass, &b_BToKsEE_fit_kstar_mass);
+   fChain->SetBranchAddress("BToKsEE_fit_kstar_phi", BToKsEE_fit_kstar_phi, &b_BToKsEE_fit_kstar_phi);
+   fChain->SetBranchAddress("BToKsEE_fit_kstar_pt", BToKsEE_fit_kstar_pt, &b_BToKsEE_fit_kstar_pt);
+   fChain->SetBranchAddress("BToKsEE_fit_l1_eta", BToKsEE_fit_l1_eta, &b_BToKsEE_fit_l1_eta);
+   fChain->SetBranchAddress("BToKsEE_fit_l1_phi", BToKsEE_fit_l1_phi, &b_BToKsEE_fit_l1_phi);
+   fChain->SetBranchAddress("BToKsEE_fit_l1_pt", BToKsEE_fit_l1_pt, &b_BToKsEE_fit_l1_pt);
+   fChain->SetBranchAddress("BToKsEE_fit_l2_eta", BToKsEE_fit_l2_eta, &b_BToKsEE_fit_l2_eta);
+   fChain->SetBranchAddress("BToKsEE_fit_l2_phi", BToKsEE_fit_l2_phi, &b_BToKsEE_fit_l2_phi);
+   fChain->SetBranchAddress("BToKsEE_fit_l2_pt", BToKsEE_fit_l2_pt, &b_BToKsEE_fit_l2_pt);
+   fChain->SetBranchAddress("BToKsEE_fit_mass", BToKsEE_fit_mass, &b_BToKsEE_fit_mass);
+   fChain->SetBranchAddress("BToKsEE_fit_massErr", BToKsEE_fit_massErr, &b_BToKsEE_fit_massErr);
+   fChain->SetBranchAddress("BToKsEE_fit_phi", BToKsEE_fit_phi, &b_BToKsEE_fit_phi);
+   fChain->SetBranchAddress("BToKsEE_fit_pt", BToKsEE_fit_pt, &b_BToKsEE_fit_pt);
+   fChain->SetBranchAddress("BToKsEE_fit_trk1_eta", BToKsEE_fit_trk1_eta, &b_BToKsEE_fit_trk1_eta);
+   fChain->SetBranchAddress("BToKsEE_fit_trk1_phi", BToKsEE_fit_trk1_phi, &b_BToKsEE_fit_trk1_phi);
+   fChain->SetBranchAddress("BToKsEE_fit_trk1_pt", BToKsEE_fit_trk1_pt, &b_BToKsEE_fit_trk1_pt);
+   fChain->SetBranchAddress("BToKsEE_fit_trk2_eta", BToKsEE_fit_trk2_eta, &b_BToKsEE_fit_trk2_eta);
+   fChain->SetBranchAddress("BToKsEE_fit_trk2_phi", BToKsEE_fit_trk2_phi, &b_BToKsEE_fit_trk2_phi);
+   fChain->SetBranchAddress("BToKsEE_fit_trk2_pt", BToKsEE_fit_trk2_pt, &b_BToKsEE_fit_trk2_pt);
+   fChain->SetBranchAddress("BToKsEE_l1_iso03", BToKsEE_l1_iso03, &b_BToKsEE_l1_iso03);
+   fChain->SetBranchAddress("BToKsEE_l1_iso04", BToKsEE_l1_iso04, &b_BToKsEE_l1_iso04);
+   fChain->SetBranchAddress("BToKsEE_l2_iso03", BToKsEE_l2_iso03, &b_BToKsEE_l2_iso03);
+   fChain->SetBranchAddress("BToKsEE_l2_iso04", BToKsEE_l2_iso04, &b_BToKsEE_l2_iso04);
+   fChain->SetBranchAddress("BToKsEE_l_xy", BToKsEE_l_xy, &b_BToKsEE_l_xy);
+   fChain->SetBranchAddress("BToKsEE_l_xy_unc", BToKsEE_l_xy_unc, &b_BToKsEE_l_xy_unc);
+   fChain->SetBranchAddress("BToKsEE_mass", BToKsEE_mass, &b_BToKsEE_mass);
+   fChain->SetBranchAddress("BToKsEE_max_dr", BToKsEE_max_dr, &b_BToKsEE_max_dr);
+   fChain->SetBranchAddress("BToKsEE_min_dr", BToKsEE_min_dr, &b_BToKsEE_min_dr);
+   fChain->SetBranchAddress("BToKsEE_mll_fullfit", BToKsEE_mll_fullfit, &b_BToKsEE_mll_fullfit);
+   fChain->SetBranchAddress("BToKsEE_mll_llfit", BToKsEE_mll_llfit, &b_BToKsEE_mll_llfit);
+   fChain->SetBranchAddress("BToKsEE_mll_raw", BToKsEE_mll_raw, &b_BToKsEE_mll_raw);
+   fChain->SetBranchAddress("BToKsEE_phi", BToKsEE_phi, &b_BToKsEE_phi);
+   fChain->SetBranchAddress("BToKsEE_pt", BToKsEE_pt, &b_BToKsEE_pt);
+   fChain->SetBranchAddress("BToKsEE_svprob", BToKsEE_svprob, &b_BToKsEE_svprob);
+   fChain->SetBranchAddress("BToKsEE_tk1_iso03", BToKsEE_tk1_iso03, &b_BToKsEE_tk1_iso03);
+   fChain->SetBranchAddress("BToKsEE_tk1_iso04", BToKsEE_tk1_iso04, &b_BToKsEE_tk1_iso04);
+   fChain->SetBranchAddress("BToKsEE_tk2_iso03", BToKsEE_tk2_iso03, &b_BToKsEE_tk2_iso03);
+   fChain->SetBranchAddress("BToKsEE_tk2_iso04", BToKsEE_tk2_iso04, &b_BToKsEE_tk2_iso04);
+   fChain->SetBranchAddress("BToKsEE_charge", BToKsEE_charge, &b_BToKsEE_charge);
+   fChain->SetBranchAddress("BToKsEE_kstar_idx", BToKsEE_kstar_idx, &b_BToKsEE_kstar_idx);
+   fChain->SetBranchAddress("BToKsEE_l1_idx", BToKsEE_l1_idx, &b_BToKsEE_l1_idx);
+   fChain->SetBranchAddress("BToKsEE_l2_idx", BToKsEE_l2_idx, &b_BToKsEE_l2_idx);
+   fChain->SetBranchAddress("BToKsEE_pdgId", BToKsEE_pdgId, &b_BToKsEE_pdgId);
+   fChain->SetBranchAddress("BToKsEE_trk1_idx", BToKsEE_trk1_idx, &b_BToKsEE_trk1_idx);
+   fChain->SetBranchAddress("BToKsEE_trk2_idx", BToKsEE_trk2_idx, &b_BToKsEE_trk2_idx);
+
+   fChain->SetBranchAddress("nBToKsMuMu", &nBToKsMuMu, &b_nBToKsMuMu);
+   fChain->SetBranchAddress("BToKsMuMu_b_iso03", BToKsMuMu_b_iso03, &b_BToKsMuMu_b_iso03);
+   fChain->SetBranchAddress("BToKsMuMu_b_iso04", BToKsMuMu_b_iso04, &b_BToKsMuMu_b_iso04);
+   fChain->SetBranchAddress("BToKsMuMu_barMass", BToKsMuMu_barMass, &b_BToKsMuMu_barMass);
+   fChain->SetBranchAddress("BToKsMuMu_chi2", BToKsMuMu_chi2, &b_BToKsMuMu_chi2);
+   fChain->SetBranchAddress("BToKsMuMu_cos2D", BToKsMuMu_cos2D, &b_BToKsMuMu_cos2D);
+   fChain->SetBranchAddress("BToKsMuMu_eta", BToKsMuMu_eta, &b_BToKsMuMu_eta);
+   fChain->SetBranchAddress("BToKsMuMu_fit_barKstar_mass", BToKsMuMu_fit_barKstar_mass, &b_BToKsMuMu_fit_barKstar_mass);
+   fChain->SetBranchAddress("BToKsMuMu_fit_barMass", BToKsMuMu_fit_barMass, &b_BToKsMuMu_fit_barMass);
+   fChain->SetBranchAddress("BToKsMuMu_fit_cos2D", BToKsMuMu_fit_cos2D, &b_BToKsMuMu_fit_cos2D);
+   fChain->SetBranchAddress("BToKsMuMu_fit_eta", BToKsMuMu_fit_eta, &b_BToKsMuMu_fit_eta);
+   fChain->SetBranchAddress("BToKsMuMu_fit_kstar_eta", BToKsMuMu_fit_kstar_eta, &b_BToKsMuMu_fit_kstar_eta);
+   fChain->SetBranchAddress("BToKsMuMu_fit_kstar_mass", BToKsMuMu_fit_kstar_mass, &b_BToKsMuMu_fit_kstar_mass);
+   fChain->SetBranchAddress("BToKsMuMu_fit_kstar_phi", BToKsMuMu_fit_kstar_phi, &b_BToKsMuMu_fit_kstar_phi);
+   fChain->SetBranchAddress("BToKsMuMu_fit_kstar_pt", BToKsMuMu_fit_kstar_pt, &b_BToKsMuMu_fit_kstar_pt);
+   fChain->SetBranchAddress("BToKsMuMu_fit_l1_eta", BToKsMuMu_fit_l1_eta, &b_BToKsMuMu_fit_l1_eta);
+   fChain->SetBranchAddress("BToKsMuMu_fit_l1_phi", BToKsMuMu_fit_l1_phi, &b_BToKsMuMu_fit_l1_phi);
+   fChain->SetBranchAddress("BToKsMuMu_fit_l1_pt", BToKsMuMu_fit_l1_pt, &b_BToKsMuMu_fit_l1_pt);
+   fChain->SetBranchAddress("BToKsMuMu_fit_l2_eta", BToKsMuMu_fit_l2_eta, &b_BToKsMuMu_fit_l2_eta);
+   fChain->SetBranchAddress("BToKsMuMu_fit_l2_phi", BToKsMuMu_fit_l2_phi, &b_BToKsMuMu_fit_l2_phi);
+   fChain->SetBranchAddress("BToKsMuMu_fit_l2_pt", BToKsMuMu_fit_l2_pt, &b_BToKsMuMu_fit_l2_pt);
+   fChain->SetBranchAddress("BToKsMuMu_fit_mass", BToKsMuMu_fit_mass, &b_BToKsMuMu_fit_mass);
+   fChain->SetBranchAddress("BToKsMuMu_fit_massErr", BToKsMuMu_fit_massErr, &b_BToKsMuMu_fit_massErr);
+   fChain->SetBranchAddress("BToKsMuMu_fit_phi", BToKsMuMu_fit_phi, &b_BToKsMuMu_fit_phi);
+   fChain->SetBranchAddress("BToKsMuMu_fit_pt", BToKsMuMu_fit_pt, &b_BToKsMuMu_fit_pt);
+   fChain->SetBranchAddress("BToKsMuMu_fit_trk1_eta", BToKsMuMu_fit_trk1_eta, &b_BToKsMuMu_fit_trk1_eta);
+   fChain->SetBranchAddress("BToKsMuMu_fit_trk1_phi", BToKsMuMu_fit_trk1_phi, &b_BToKsMuMu_fit_trk1_phi);
+   fChain->SetBranchAddress("BToKsMuMu_fit_trk1_pt", BToKsMuMu_fit_trk1_pt, &b_BToKsMuMu_fit_trk1_pt);
+   fChain->SetBranchAddress("BToKsMuMu_fit_trk2_eta", BToKsMuMu_fit_trk2_eta, &b_BToKsMuMu_fit_trk2_eta);
+   fChain->SetBranchAddress("BToKsMuMu_fit_trk2_phi", BToKsMuMu_fit_trk2_phi, &b_BToKsMuMu_fit_trk2_phi);
+   fChain->SetBranchAddress("BToKsMuMu_fit_trk2_pt", BToKsMuMu_fit_trk2_pt, &b_BToKsMuMu_fit_trk2_pt);
+   fChain->SetBranchAddress("BToKsMuMu_l1_iso03", BToKsMuMu_l1_iso03, &b_BToKsMuMu_l1_iso03);
+   fChain->SetBranchAddress("BToKsMuMu_l1_iso04", BToKsMuMu_l1_iso04, &b_BToKsMuMu_l1_iso04);
+   fChain->SetBranchAddress("BToKsMuMu_l2_iso03", BToKsMuMu_l2_iso03, &b_BToKsMuMu_l2_iso03);
+   fChain->SetBranchAddress("BToKsMuMu_l2_iso04", BToKsMuMu_l2_iso04, &b_BToKsMuMu_l2_iso04);
+   fChain->SetBranchAddress("BToKsMuMu_l_xy", BToKsMuMu_l_xy, &b_BToKsMuMu_l_xy);
+   fChain->SetBranchAddress("BToKsMuMu_l_xy_unc", BToKsMuMu_l_xy_unc, &b_BToKsMuMu_l_xy_unc);
+   fChain->SetBranchAddress("BToKsMuMu_mass", BToKsMuMu_mass, &b_BToKsMuMu_mass);
+   fChain->SetBranchAddress("BToKsMuMu_max_dr", BToKsMuMu_max_dr, &b_BToKsMuMu_max_dr);
+   fChain->SetBranchAddress("BToKsMuMu_min_dr", BToKsMuMu_min_dr, &b_BToKsMuMu_min_dr);
+   fChain->SetBranchAddress("BToKsMuMu_mll_fullfit", BToKsMuMu_mll_fullfit, &b_BToKsMuMu_mll_fullfit);
+   fChain->SetBranchAddress("BToKsMuMu_mll_llfit", BToKsMuMu_mll_llfit, &b_BToKsMuMu_mll_llfit);
+   fChain->SetBranchAddress("BToKsMuMu_mll_raw", BToKsMuMu_mll_raw, &b_BToKsMuMu_mll_raw);
+   fChain->SetBranchAddress("BToKsMuMu_phi", BToKsMuMu_phi, &b_BToKsMuMu_phi);
+   fChain->SetBranchAddress("BToKsMuMu_pt", BToKsMuMu_pt, &b_BToKsMuMu_pt);
+   fChain->SetBranchAddress("BToKsMuMu_svprob", BToKsMuMu_svprob, &b_BToKsMuMu_svprob);
+   fChain->SetBranchAddress("BToKsMuMu_tk1_iso03", BToKsMuMu_tk1_iso03, &b_BToKsMuMu_tk1_iso03);
+   fChain->SetBranchAddress("BToKsMuMu_tk1_iso04", BToKsMuMu_tk1_iso04, &b_BToKsMuMu_tk1_iso04);
+   fChain->SetBranchAddress("BToKsMuMu_tk2_iso03", BToKsMuMu_tk2_iso03, &b_BToKsMuMu_tk2_iso03);
+   fChain->SetBranchAddress("BToKsMuMu_tk2_iso04", BToKsMuMu_tk2_iso04, &b_BToKsMuMu_tk2_iso04);
+   fChain->SetBranchAddress("BToKsMuMu_charge", BToKsMuMu_charge, &b_BToKsMuMu_charge);
+   fChain->SetBranchAddress("BToKsMuMu_kstar_idx", BToKsMuMu_kstar_idx, &b_BToKsMuMu_kstar_idx);
+   fChain->SetBranchAddress("BToKsMuMu_l1_idx", BToKsMuMu_l1_idx, &b_BToKsMuMu_l1_idx);
+   fChain->SetBranchAddress("BToKsMuMu_l2_idx", BToKsMuMu_l2_idx, &b_BToKsMuMu_l2_idx);
+   fChain->SetBranchAddress("BToKsMuMu_pdgId", BToKsMuMu_pdgId, &b_BToKsMuMu_pdgId);
+   fChain->SetBranchAddress("BToKsMuMu_trk1_idx", BToKsMuMu_trk1_idx, &b_BToKsMuMu_trk1_idx);
+   fChain->SetBranchAddress("BToKsMuMu_trk2_idx", BToKsMuMu_trk2_idx, &b_BToKsMuMu_trk2_idx);
+   fChain->SetBranchAddress("nKstar", &nKstar, &b_nKstar);
+   fChain->SetBranchAddress("Kstar_barMass", Kstar_barMass, &b_Kstar_barMass);
+   fChain->SetBranchAddress("Kstar_eta", Kstar_eta, &b_Kstar_eta);
+   fChain->SetBranchAddress("Kstar_fitted_barMass", Kstar_fitted_barMass, &b_Kstar_fitted_barMass);
+   fChain->SetBranchAddress("Kstar_fitted_eta", Kstar_fitted_eta, &b_Kstar_fitted_eta);
+   fChain->SetBranchAddress("Kstar_fitted_mass", Kstar_fitted_mass, &b_Kstar_fitted_mass);
+   fChain->SetBranchAddress("Kstar_fitted_phi", Kstar_fitted_phi, &b_Kstar_fitted_phi);
+   fChain->SetBranchAddress("Kstar_fitted_pt", Kstar_fitted_pt, &b_Kstar_fitted_pt);
+   fChain->SetBranchAddress("Kstar_mass", Kstar_mass, &b_Kstar_mass);
+   fChain->SetBranchAddress("Kstar_phi", Kstar_phi, &b_Kstar_phi);
+   fChain->SetBranchAddress("Kstar_pt", Kstar_pt, &b_Kstar_pt);
+   fChain->SetBranchAddress("Kstar_svprob", Kstar_svprob, &b_Kstar_svprob);
+   fChain->SetBranchAddress("Kstar_trk_deltaR", Kstar_trk_deltaR, &b_Kstar_trk_deltaR);
+   fChain->SetBranchAddress("Kstar_charge", Kstar_charge, &b_Kstar_charge);
+   fChain->SetBranchAddress("Kstar_pdgId", Kstar_pdgId, &b_Kstar_pdgId);
+   fChain->SetBranchAddress("Kstar_trk1_idx", Kstar_trk1_idx, &b_Kstar_trk1_idx);
+   fChain->SetBranchAddress("Kstar_trk2_idx", Kstar_trk2_idx, &b_Kstar_trk2_idx);
+
+   }
+
    fChain->SetBranchAddress("nElectron", &nElectron, &b_nElectron);
    fChain->SetBranchAddress("Electron_convChi2Prob", Electron_convChi2Prob, &b_Electron_convChi2Prob);
    fChain->SetBranchAddress("Electron_convDeltaCotFromPin", Electron_convDeltaCotFromPin, &b_Electron_convDeltaCotFromPin);
@@ -889,6 +1559,7 @@ void EfficiencyBase::Init(TTree *tree)
    fChain->SetBranchAddress("Electron_isPFoverlap", Electron_isPFoverlap, &b_Electron_isPFoverlap);
 
    if(_isMC){
+
      fChain->SetBranchAddress("nGenPart", &nGenPart, &b_nGenPart);
      fChain->SetBranchAddress("GenPart_eta", GenPart_eta, &b_GenPart_eta);
      fChain->SetBranchAddress("GenPart_mass", GenPart_mass, &b_GenPart_mass);
@@ -911,10 +1582,10 @@ void EfficiencyBase::Init(TTree *tree)
      fChain->SetBranchAddress("Generator_xpdf2", &Generator_xpdf2, &b_Generator_xpdf2);
      fChain->SetBranchAddress("Generator_id1", &Generator_id1, &b_Generator_id1);
      fChain->SetBranchAddress("Generator_id2", &Generator_id2, &b_Generator_id2);
-
      fChain->SetBranchAddress("genWeight", &genWeight, &b_genWeight);
      fChain->SetBranchAddress("nPSWeight", &nPSWeight, &b_nPSWeight);
      fChain->SetBranchAddress("PSWeight", PSWeight, &b_PSWeight);
+
    }
 
    fChain->SetBranchAddress("nMuon", &nMuon, &b_nMuon);
@@ -962,12 +1633,14 @@ void EfficiencyBase::Init(TTree *tree)
    fChain->SetBranchAddress("Muon_triggerIdLoose", Muon_triggerIdLoose, &b_Muon_triggerIdLoose);
 
    if(_isMC){
+
      fChain->SetBranchAddress("Pileup_nTrueInt", &Pileup_nTrueInt, &b_Pileup_nTrueInt);
      fChain->SetBranchAddress("Pileup_pudensity", &Pileup_pudensity, &b_Pileup_pudensity);
      fChain->SetBranchAddress("Pileup_gpudensity", &Pileup_gpudensity, &b_Pileup_gpudensity);
      fChain->SetBranchAddress("Pileup_nPU", &Pileup_nPU, &b_Pileup_nPU);
      fChain->SetBranchAddress("Pileup_sumEOOT", &Pileup_sumEOOT, &b_Pileup_sumEOOT);
      fChain->SetBranchAddress("Pileup_sumLOOT", &Pileup_sumLOOT, &b_Pileup_sumLOOT);
+
    }
 
    fChain->SetBranchAddress("fixedGridRhoFastjetAll", &fixedGridRhoFastjetAll, &b_fixedGridRhoFastjetAll);
@@ -1034,7 +1707,6 @@ void EfficiencyBase::Init(TTree *tree)
 
    fChain->SetBranchAddress("nOtherPV", &nOtherPV, &b_nOtherPV);
    fChain->SetBranchAddress("OtherPV_z", OtherPV_z, &b_OtherPV_z);
-
    fChain->SetBranchAddress("PV_ndof", &PV_ndof, &b_PV_ndof);
    fChain->SetBranchAddress("PV_x", &PV_x, &b_PV_x);
    fChain->SetBranchAddress("PV_y", &PV_y, &b_PV_y);
@@ -1043,17 +1715,19 @@ void EfficiencyBase::Init(TTree *tree)
    fChain->SetBranchAddress("PV_score", &PV_score, &b_PV_score);
    fChain->SetBranchAddress("PV_npvs", &PV_npvs, &b_PV_npvs);
    fChain->SetBranchAddress("PV_npvsGood", &PV_npvsGood, &b_PV_npvsGood);
+
    fChain->SetBranchAddress("nSV", &nSV, &b_nSV);
    fChain->SetBranchAddress("SV_dlen", SV_dlen, &b_SV_dlen);
    fChain->SetBranchAddress("SV_dlenSig", SV_dlenSig, &b_SV_dlenSig);
    fChain->SetBranchAddress("SV_pAngle", SV_pAngle, &b_SV_pAngle);
 
    if(_isMC){
+
      fChain->SetBranchAddress("Electron_genPartIdx", Electron_genPartIdx, &b_Electron_genPartIdx);
      fChain->SetBranchAddress("Electron_genPartFlav", Electron_genPartFlav, &b_Electron_genPartFlav);
-
      fChain->SetBranchAddress("Muon_genPartIdx", Muon_genPartIdx, &b_Muon_genPartIdx);
      fChain->SetBranchAddress("Muon_genPartFlav", Muon_genPartFlav, &b_Muon_genPartFlav);
+
    }
 
    fChain->SetBranchAddress("SV_chi2", SV_chi2, &b_SV_chi2);
@@ -1067,8 +1741,10 @@ void EfficiencyBase::Init(TTree *tree)
    fChain->SetBranchAddress("SV_z", SV_z, &b_SV_z);
 
    if(_isMC){
+
      fChain->SetBranchAddress("ProbeTracks_genPartIdx", ProbeTracks_genPartIdx, &b_ProbeTracks_genPartIdx);
      fChain->SetBranchAddress("ProbeTracks_genPartFlav", ProbeTracks_genPartFlav, &b_ProbeTracks_genPartFlav);
+
    }
 
    Notify();
@@ -1100,6 +1776,3 @@ Int_t EfficiencyBase::Cut(Long64_t entry)
    return 1;
 }
 #endif // #ifdef EfficiencyBase_cxx
-
-
-
