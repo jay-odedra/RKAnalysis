@@ -27,6 +27,7 @@ OUTLIB	         = $(INCLUDEDIR)/lib/
 
 $(OUTLIB)BParkBase.o: $(INCLUDEDIR)/src/BParkBase.C \
 	$(INCLUDEDIR)/src/BPark.cc \
+	$(INCLUDEDIR)/src/Efficiency.cc \
 	$(INCLUDEDIR)/src/TestMva.cc 
 	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)BParkBase.o $<
 $(OUTLIB)BPark.o: $(INCLUDEDIR)/src/BPark.cc 
@@ -68,6 +69,7 @@ Efficiency:  $(INCLUDEDIR)/src/BParkApp.C \
 	$(OUTLIB)BParkBase.o \
 	$(OUTLIB)BPark.o \
 	$(OUTLIB)TestMva.o \
+	$(OUTLIB)BParkBaseNew.o \
 	$(OUTLIB)EfficiencyBase.o \
 	$(OUTLIB)Efficiency.o \
 	$(OUTLIB)main.o 
