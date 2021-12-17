@@ -1,6 +1,7 @@
 #ifndef Efficiency_h
 #define Efficiency_h
 
+#include "../FastForest/include/fastforest.h"
 #include "EfficiencyBase.h"
 #include "TROOT.h"
 #include "TChain.h"
@@ -38,14 +39,25 @@ public:
 		   float& e1_gen_eta,
 		   int& e2_gen_idx,
 		   float& e2_gen_pt,
-		   float& e2_gen_eta);
+		   float& e2_gen_eta,
+		   float& e12_gen_dr);
   bool recoCand(int theB,
 		int& e1_gen_idx,int& e2_gen_idx,
 		int& e1_reco_idx,float& e1_reco_pt,float& e1_reco_eta,
 		int& e1_reco_pf,int& e1_reco_lowpt,int& e1_reco_overlap,
 		int& e2_reco_idx,float& e2_reco_pt,float& e2_reco_eta,
-		int& e2_reco_pf,int& e2_reco_lowpt,int& e2_reco_overlap);
-    
+		int& e2_reco_pf,int& e2_reco_lowpt,int& e2_reco_overlap,
+		float& e12_reco_dr);
+  float DeltaR(float eta1,
+	       float phi1,
+	       float eta2,
+	       float phi2);
+  void loadModels(fastforest::FastForest& fastForestOttoPFPF,
+		  fastforest::FastForest& fastForestOttoPFLP);
+  float evaluateModels(u_int thisB,
+		       fastforest::FastForest& fastForestOttoPFPF,
+		       fastforest::FastForest& fastForestOttoPFLP);
+  
 private:
   
   // Misc
@@ -83,12 +95,14 @@ private:
   float e2_gen_pt_;
   float e1_gen_eta_;
   float e2_gen_eta_;
+  float e12_gen_dr_;
 
   // RECO pt,eta
   float e1_reco_pt_;
   float e2_reco_pt_;
   float e1_reco_eta_;
   float e2_reco_eta_;
+  float e12_reco_dr_;
 
   // RECO algo
   int e1_reco_pf_;
@@ -102,6 +116,7 @@ private:
   float ip3d_;
   float cos2d_;
   float bdt_;
+  float mll_;
 
 };
 

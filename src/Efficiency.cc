@@ -1,5 +1,4 @@
 #include "../include/Efficiency.hh"
-#include "../FastForest/include/fastforest.h"
 #include "TLorentzVector.h"
 #include <chrono>
 #include <ctime>
@@ -12,29 +11,27 @@ void Efficiency::Loop() {
 
   if (fChain == 0) return;
 
-  // Otto's BDT
-//  std::cout << "Loading BDT model ..." << std::endl;
-//  std::string bdtfileOttoPFPF = "./data/otto_model.txt";
-//  std::vector<std::string> featOttoPFPF = {"f0","f1", "f2","f3","f4","f5","f6","f7","f8","f9","f10",
-//					   "f11","f12","f13","f14","f15","f16","f17","f18","f19","f20",
-//					   "f21", "f22","f23","f24","f25"};
-//  const auto fastForestOttoPFPF = fastforest::load_txt(bdtfileOttoPFPF.c_str(), featOttoPFPF);
-
+  fastforest::FastForest fastForestOttoPFPF;
+  fastforest::FastForest fastForestOttoPFLP;
+  loadModels(fastForestOttoPFPF,fastForestOttoPFLP);
+  
   // Some init
   auto start = std::chrono::system_clock::now();
   Long64_t nentries = fChain->GetEntries();
   std::cout << "Starting event loop with " << nentries << " entries ..."<< std::endl;
 
   // Event loop 
-  //nentries=1000;
   int cntr1 = 0;
   int cntr2 = 0;
   int cntr3 = 0;
   Long64_t jentry=0;
   for (; jentry<nentries; ++jentry) {
 
+    std::vector<float> analysisBdtO;
+    std::vector<float> analysisBdtG;
+
     // Limit events to process
-    if (jentry>5000) break;
+    //if (jentry>5000) break;
 
     // Limit to event range
     //if (jentry<19181) continue; if (jentry>19181) break;
@@ -92,7 +89,8 @@ void Efficiency::Loop() {
     int e2_gen_idx = -1;
     bool ok = setElePtEta(daughters,
 			  e1_gen_idx,e1_gen_pt_,e1_gen_eta_,
-			  e2_gen_idx,e2_gen_pt_,e2_gen_eta_);
+			  e2_gen_idx,e2_gen_pt_,e2_gen_eta_,
+			  e12_gen_dr_);
 
     // If GEN electrons not found, continue (shouldn't happen, skip event?!)
     if (!ok) { std::cout << "ERROR!" << std::endl; continue; } // outTree_->Fill();
@@ -119,6 +117,7 @@ void Efficiency::Loop() {
       e2_reco_pt_ = -10.;
       e1_reco_eta_ = -10.;
       e2_reco_eta_ = -10.;
+      e12_reco_dr_ = -10.;
       e1_reco_pf_ = 0;
       e2_reco_pf_ = 0;
       e1_reco_lowpt_ = 0;
@@ -130,7 +129,14 @@ void Efficiency::Loop() {
 		    e1_reco_idx,e1_reco_pt_,e1_reco_eta_,
 		    e1_reco_pf_,e1_reco_lowpt_,e1_reco_overlap_,
 		    e2_reco_idx,e2_reco_pt_,e2_reco_eta_,
-		    e2_reco_pf_,e2_reco_lowpt_,e2_reco_overlap_) ) {
+		    e2_reco_pf_,e2_reco_lowpt_,e2_reco_overlap_,
+		    e12_reco_dr_) ) {
+	// Pre-selection and BDT
+	ip3d_ = BToKEE_k_svip3d[iB];
+	cos2d_ = BToKEE_fit_cos2D[iB];
+	bdt_ = evaluateModels(iB,fastForestOttoPFPF,fastForestOttoPFLP);
+	mll_ = BToKEE_mll_fullfit[iB];
+	// Mark if matched and break loop
 	isMatched_ = 1;
 	h_cand_->Fill(iB<1000?iB:1000,1.); // overflows into final bin
 	break;
@@ -140,7 +146,7 @@ void Efficiency::Loop() {
     // Fill the output tree
     cntr2++;
     outTree_->Fill();
-    
+
   } // Event loop
 
   // Final timing
@@ -170,6 +176,10 @@ Efficiency::~Efficiency() {
   h_selection_->Write();
   h_cand_->Write();
   outTree_->Write();
+  std::cout << "Written TTree '" << outTree_->GetName()
+	    << "' to file '" << outFile_->GetName() 
+	    << "' ..."
+	    << std::endl;
   outFile_->Close();
 }     
 
@@ -217,12 +227,14 @@ void Efficiency::initVars() {
   e2_gen_pt_=-10.;
   e1_gen_eta_=-10.;
   e2_gen_eta_=-10.;
+  e12_gen_dr_=-10.;
 
   // RECO pt,eta
   e1_reco_pt_=-10.;
   e2_reco_pt_=-10.;
   e1_reco_eta_=-10.;
   e2_reco_eta_=-10.;
+  e12_reco_dr_=-10.;
 
   // RECO algo
   e1_reco_pf_=0;
@@ -232,10 +244,11 @@ void Efficiency::initVars() {
   e1_reco_overlap_=0;
   e2_reco_overlap_=0;
 
-  // Pre-selection andBDT
+  // Pre-selection and BDT
   ip3d_=-10.;
   cos2d_=-10.;
   bdt_=-10.;
+  mll_=0.;
 
 }
 
@@ -286,12 +299,14 @@ void Efficiency::bookOutputTree() {
   outTree_->Branch("e2_gen_pt", &e2_gen_pt_, "e2_gen_pt/F");
   outTree_->Branch("e1_gen_eta", &e1_gen_eta_, "e1_gen_eta/F");
   outTree_->Branch("e2_gen_eta", &e2_gen_eta_, "e2_gen_eta/F");
+  outTree_->Branch("e12_gen_dr", &e12_gen_dr_, "e12_gen_dr/F");
 
   //RECO pt,eta
   outTree_->Branch("e1_reco_pt", &e1_reco_pt_, "e1_reco_pt/F");
   outTree_->Branch("e2_reco_pt", &e2_reco_pt_, "e2_reco_pt/F");
   outTree_->Branch("e1_reco_eta", &e1_reco_eta_, "e1_reco_eta/F");
   outTree_->Branch("e2_reco_eta", &e2_reco_eta_, "e2_reco_eta/F");
+  outTree_->Branch("e12_reco_dr", &e12_reco_dr_, "e12_reco_dr/F");
 
   //RECO algo
   outTree_->Branch("e1_reco_pf", &e1_reco_pf_, "e1_reco_pf/I");
@@ -305,6 +320,7 @@ void Efficiency::bookOutputTree() {
   outTree_->Branch("ip3d", &ip3d_, "ip3d/F");
   outTree_->Branch("cos2d", &cos2d_, "cos2d/F");
   outTree_->Branch("bdt", &bdt_, "bdt/F");
+  outTree_->Branch("mll", &mll_, "mll/F");
 
 }
 
@@ -408,7 +424,8 @@ bool Efficiency::setElePtEta(Efficiency::Daughters& daughters,
 			     float& e1_gen_eta,
 			     int& e2_gen_idx,
 			     float& e2_gen_pt,
-			     float& e2_gen_eta) {
+			     float& e2_gen_eta,
+			     float& e12_gen_dr) {
   Ints indices;
   for ( int i = 0; i < daughters.first.size(); ++i ) {
     int d_idx = daughters.first[i];
@@ -430,6 +447,12 @@ bool Efficiency::setElePtEta(Efficiency::Daughters& daughters,
   e2_gen_pt = GenPart_pt[e2_gen_idx];
   e1_gen_eta = GenPart_eta[e1_gen_idx];
   e2_gen_eta = GenPart_eta[e2_gen_idx];
+  float e1_gen_phi = GenPart_phi[e1_gen_idx];
+  float e2_gen_phi = GenPart_phi[e2_gen_idx];
+  e12_gen_dr = DeltaR(e1_gen_eta,
+		      e1_gen_phi,
+		      e2_gen_eta,
+		      e2_gen_phi);
   return true;
 }
 
@@ -440,7 +463,8 @@ bool Efficiency::recoCand(int theB,
 			  int& e1_reco_idx,float& e1_reco_pt,float& e1_reco_eta,
 			  int& e1_reco_pf,int& e1_reco_lowpt,int& e1_reco_overlap,
 			  int& e2_reco_idx,float& e2_reco_pt,float& e2_reco_eta,
-			  int& e2_reco_pf,int& e2_reco_lowpt,int& e2_reco_overlap
+			  int& e2_reco_pf,int& e2_reco_lowpt,int& e2_reco_overlap,
+			  float& e12_reco_dr
 			  ) {
   if (verbose_>4) std::cout << "Efficiency::recoCand:" 
 			    << " e1_gen_idx: " << e1_gen_idx
@@ -551,6 +575,8 @@ bool Efficiency::recoCand(int theB,
 		   ) );
   
   if (found) {
+    float e1_reco_phi = 0.;
+    float e2_reco_phi = 0.;
     if (verbose_>4) std::cout << "FOUND " 
 			      << e1_gen_idx << " " 
 			      << ele1_genPartIdx << " " 
@@ -561,6 +587,7 @@ bool Efficiency::recoCand(int theB,
       e1_reco_idx = ele1_idx;
       e1_reco_pt  = Electron_pt[ele1_idx];
       e1_reco_eta = Electron_eta[ele1_idx];
+      e1_reco_phi = Electron_phi[ele1_idx];
       e1_reco_pf  = Electron_isPF[ele1_idx];
       e1_reco_lowpt = Electron_isLowPt[ele1_idx];
       e1_reco_overlap = Electron_isPFoverlap[ele1_idx];
@@ -569,6 +596,7 @@ bool Efficiency::recoCand(int theB,
       e1_reco_idx = ele2_idx;
       e1_reco_pt  = Electron_pt[ele2_idx];
       e1_reco_eta = Electron_eta[ele2_idx];
+      e1_reco_phi = Electron_phi[ele2_idx];
       e1_reco_pf  = Electron_isPF[ele2_idx];
       e1_reco_lowpt = Electron_isLowPt[ele2_idx];
       e1_reco_overlap = Electron_isPFoverlap[ele2_idx];
@@ -577,21 +605,177 @@ bool Efficiency::recoCand(int theB,
       e2_reco_idx = ele1_idx;
       e2_reco_pt  = Electron_pt[ele1_idx];
       e2_reco_eta = Electron_eta[ele1_idx];
+      e2_reco_phi = Electron_phi[ele1_idx];
       e2_reco_pf  = Electron_isPF[ele1_idx];
-      e1_reco_lowpt = Electron_isLowPt[ele1_idx];
+      e2_reco_lowpt = Electron_isLowPt[ele1_idx]; //@@ was e1_reco_lowpt (bug!)
       e2_reco_overlap = Electron_isPFoverlap[ele1_idx];
     }
     if (e2_gen_idx==ele2_genPartIdx){
       e2_reco_idx = ele2_idx;
       e2_reco_pt  = Electron_pt[ele2_idx];
       e2_reco_eta = Electron_eta[ele2_idx];
+      e2_reco_phi = Electron_phi[ele2_idx];
       e2_reco_pf  = Electron_isPF[ele2_idx];
       e2_reco_lowpt = Electron_isLowPt[ele2_idx];
       e2_reco_overlap = Electron_isPFoverlap[ele2_idx];
     }
+    e12_reco_dr = DeltaR(e1_reco_eta,
+			 e1_reco_phi,
+			 e2_reco_eta,
+			 e2_reco_phi);
   }
 
   if (verbose_>4) std::cout << "recoCand: " << found <<  std::endl;
   return found;
 
 }
+
+////////////////////////////////////////////////////////////////////////////////
+//
+float Efficiency::DeltaR(float eta1,
+			 float phi1,
+			 float eta2,
+			 float phi2) {
+  float PI=3.1415972;
+  float deta=eta1-eta2;
+  float dphi=phi1-phi2;
+  if(dphi>PI){ dphi-=2.0*PI; }
+  else if(dphi<=-PI){ dphi+=2.0*PI; }
+  return TMath::Sqrt(deta*deta+dphi*dphi);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//
+void Efficiency::loadModels(fastforest::FastForest& fastForestOttoPFPF,
+			    fastforest::FastForest& fastForestOttoPFLP) {
+  std::cout << "Efficiency::loadModels ..." << std::endl;
+  
+  // PFPF
+  std::string bdtfileOttoPFPF = "./data/otto_model.txt";
+  std::vector<std::string> featOttoPFPF = {
+    "f0","f1", "f2","f3","f4","f5","f6","f7","f8","f9","f10","f11","f12","f13",
+    "f14","f15","f16","f17","f18","f19","f20","f21", "f22","f23","f24","f25"
+  };
+  fastForestOttoPFPF = fastforest::load_txt(bdtfileOttoPFPF.c_str(), featOttoPFPF);
+
+  // PFLP
+  std::string bdtfileOttoPFLP = "./data/otto_model_pflp.txt";
+  std::vector<std::string> featOttoPFLP = {
+    "f0","f1", "f2","f3","f4","f5","f6","f7","f8","f9","f10","f11","f12","f13",
+    "f14","f15","f16","f17","f18","f19","f20","f21", "f22","f23","f24","f25","f26","f27"
+  };
+  fastForestOttoPFLP = fastforest::load_txt(bdtfileOttoPFLP.c_str(), featOttoPFLP);
+
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//
+float Efficiency::evaluateModels(u_int thisB,
+				 fastforest::FastForest& fastForestOttoPFPF,
+				 fastforest::FastForest& fastForestOttoPFLP) {
+  //std::cout << "Efficiency::evaluateModels ..." << std::endl;
+  
+  int ele1_idx = BToKEE_l1Idx[thisB];
+  int ele2_idx = BToKEE_l2Idx[thisB];
+  int k_idx    = BToKEE_kIdx[thisB];
+  
+  float k_pt     = BToKEE_fit_k_pt[thisB];   
+  float ele1_pt  = BToKEE_fit_l1_pt[thisB];
+  float ele2_pt  = BToKEE_fit_l2_pt[thisB];
+
+  float k_eta    = BToKEE_fit_k_eta[thisB];   
+  float ele1_eta = BToKEE_fit_l1_eta[thisB];
+  float ele2_eta = BToKEE_fit_l2_eta[thisB];
+
+  float k_phi    = BToKEE_fit_k_phi[thisB];   
+  float ele1_phi = BToKEE_fit_l1_phi[thisB];
+  float ele2_phi = BToKEE_fit_l2_phi[thisB];
+  
+  TLorentzVector ele1TLV(0,0,0,0);
+  ele1TLV.SetPtEtaPhiM(ele1_pt,ele1_eta,ele1_phi,0.000511);
+  TLorentzVector ele2TLV(0,0,0,0);
+  ele2TLV.SetPtEtaPhiM(ele2_pt,ele2_eta,ele2_phi,0.000511);
+  TLorentzVector kTLV(0,0,0,0);
+  kTLV.SetPtEtaPhiM(k_pt,k_eta,k_phi,0.493677);
+  
+  float thisBmass   = BToKEE_fit_mass[thisB];
+  float thisBpt     = BToKEE_fit_pt[thisB];
+  float thisBcos    = BToKEE_fit_cos2D[thisB];
+  float thisBsvprob = BToKEE_svprob[thisB];
+  float thisBxysig  = BToKEE_l_xy[thisB]/BToKEE_l_xy_unc[thisB];
+  
+  float BToKEE_fit_l1_normpt=BToKEE_fit_l1_pt[thisB]/BToKEE_fit_mass[thisB];
+  float BToKEE_fit_l2_normpt=BToKEE_fit_l2_pt[thisB]/BToKEE_fit_mass[thisB];
+  float BToKEE_l1_dxy_sig=(Electron_dxy[ele1_idx]) /Electron_dxyErr[ele1_idx];
+  float BToKEE_l2_dxy_sig=(Electron_dxy[ele2_idx]) /Electron_dxyErr[ele2_idx];
+  float BToKEE_fit_k_normpt=BToKEE_fit_k_pt[thisB] /BToKEE_fit_mass[thisB];
+  float BToKEE_k_DCASig=ProbeTracks_DCASig[k_idx];
+  float BToKEE_k_dxy_sig=ProbeTracks_dxyS[k_idx];
+  float BToKEE_fit_normpt=BToKEE_fit_pt[thisB] /BToKEE_fit_mass[thisB];
+  float BToKEE_l_xy_sig = (BToKEE_l_xy[thisB]) /BToKEE_l_xy_unc[thisB];
+  float BToKEE_eleDR= DeltaR(ele1_eta,ele1_phi,ele2_eta,ele2_phi);
+  TLorentzVector dll=ele1TLV+ele2TLV;
+  
+  float BToKEE_llkDR=dll.DeltaR(kTLV);
+  float BToKEE_l1_iso04_rel=BToKEE_l1_iso04[thisB]/BToKEE_fit_l1_pt[thisB];
+  float BToKEE_l2_iso04_rel=BToKEE_l2_iso04[thisB]/BToKEE_fit_l2_pt[thisB];
+  float BToKEE_k_iso04_rel = BToKEE_k_iso04[thisB] / BToKEE_fit_k_pt[thisB];
+  float BToKEE_b_iso04_rel =BToKEE_b_iso04[thisB]/BToKEE_fit_pt[thisB];
+  TVector3 diele_p3 = dll.Vect();
+  TVector3 k_p3 = kTLV.Vect();
+  TVector3 pv2sv_p3(PV_x-BToKEE_vtx_x[thisB], PV_y-BToKEE_vtx_y[thisB], PV_z-BToKEE_vtx_z[thisB]);
+  
+  float BToKEE_ptAsym = ( (diele_p3.Cross(pv2sv_p3)).Mag() - (k_p3.Cross(pv2sv_p3)).Mag() ) 
+    / ( (diele_p3.Cross(pv2sv_p3)).Mag() + (k_p3.Cross(pv2sv_p3)).Mag() );
+  
+  float BToKEE_l1_dzTrg=Electron_dzTrg[ele1_idx];
+  float BToKEE_l2_dzTrg=Electron_dzTrg[ele2_idx];
+  float BToKEE_k_dzTrg=ProbeTracks_dzTrg[k_idx];
+  
+  float BToKEE_l1_pfmvaId_lowPt=Electron_pfmvaId[ele1_idx];
+  if(ele1_pt>5) BToKEE_l1_pfmvaId_lowPt=20;
+  
+  float BToKEE_l2_pfmvaId_lowPt=Electron_pfmvaId[ele2_idx];
+  if(ele2_pt>5) BToKEE_l2_pfmvaId_lowPt=20;
+  
+  float BToKEE_l1_pfmvaId_highPt=Electron_pfmvaId[ele1_idx];
+  if(ele1_pt<=5) BToKEE_l1_pfmvaId_highPt=20;
+  
+  float BToKEE_l2_pfmvaId_highPt=Electron_pfmvaId[ele2_idx];
+  if(ele2_pt<=5) BToKEE_l2_pfmvaId_highPt=20;
+  
+  float scoreBdtOtto=0.;
+  if(Electron_isPF[ele1_idx]&&Electron_isPF[ele2_idx]){
+    std::vector<float> vecBdtOtto = {BToKEE_b_iso04_rel, BToKEE_eleDR, thisBcos, BToKEE_fit_k_normpt,
+				     BToKEE_fit_l1_normpt,BToKEE_fit_l2_normpt, BToKEE_fit_normpt,
+				     BToKEE_k_DCASig, BToKEE_k_dzTrg, BToKEE_k_iso04_rel, 
+				     BToKEE_k_svip2d[thisB], BToKEE_k_svip3d[thisB],
+				     BToKEE_l1_dxy_sig, BToKEE_l1_dzTrg, BToKEE_l1_iso04_rel, 
+				     //l1_mvaId,
+				     BToKEE_l1_pfmvaId_highPt, BToKEE_l1_pfmvaId_lowPt,
+				     BToKEE_l2_dxy_sig,BToKEE_l2_dzTrg,BToKEE_l2_iso04_rel,
+				     // l2_mvaId,
+				     BToKEE_l2_pfmvaId_highPt, BToKEE_l2_pfmvaId_lowPt, 
+				     thisBxysig,BToKEE_llkDR, BToKEE_ptAsym, thisBsvprob};
+    return fastForestOttoPFPF(vecBdtOtto.data());
+  } else {
+    std::vector<float> vecBdtOtto = {BToKEE_b_iso04_rel, BToKEE_eleDR, thisBcos, BToKEE_fit_k_normpt,
+				     BToKEE_fit_l1_normpt,BToKEE_fit_l2_normpt, BToKEE_fit_normpt,
+				     BToKEE_k_DCASig, BToKEE_k_dzTrg, BToKEE_k_iso04_rel, 
+				     BToKEE_k_svip2d[thisB], BToKEE_k_svip3d[thisB],
+				     BToKEE_l1_dxy_sig, BToKEE_l1_dzTrg, BToKEE_l1_iso04_rel, 
+				     Electron_mvaId[ele1_idx],
+				     BToKEE_l1_pfmvaId_highPt, BToKEE_l1_pfmvaId_lowPt,
+				     BToKEE_l2_dxy_sig,BToKEE_l2_dzTrg,BToKEE_l2_iso04_rel,
+				     Electron_mvaId[ele2_idx],
+				     BToKEE_l2_pfmvaId_highPt, BToKEE_l2_pfmvaId_lowPt, 
+				     thisBxysig,BToKEE_llkDR, BToKEE_ptAsym, thisBsvprob};
+    return fastForestOttoPFLP(vecBdtOtto.data());
+  }
+
+  return -10.;
+  
+}
+
