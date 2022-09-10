@@ -1,3 +1,6 @@
+# Example test file from BuToKJpsi_Toee sample
+/afs/cern.ch/user/b/bainbrid/public/Trigger/BParkingNANO/CMSSW_10_2_15/src/PhysicsTools/BParkingNano/test/BParkNANO_mc_10215-2022Jul04.root
+
 # Debugging ...
 #/afs/cern.ch/user/b/bainbrid/public/Trigger/BParkingNANO/CMSSW_10_2_15/src/PhysicsTools/BParkingNano/test/BParkNANO_mc_10215_DEV.root
 #/afs/cern.ch/user/b/bainbrid/public/Trigger/BParkingNANO/CMSSW_10_2_15/src/PhysicsTools/BParkingNano/test/BParkNANO_mc_10215.root
@@ -10,7 +13,7 @@
 #/eos/cms/store/group/phys_bphys/bpark/nanoaod_Run3/BParkingNANO_2021Dec01/BuToKee_Mufilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/crab_BuToKee_v3/211201_204808/0000/BParkNANO_mc_2021Dec01_171.root
 
 # Example file from 2021Dec16 production
-/eos/cms/store/group/phys_bphys/bpark/nanoaod_Run3/BParkingNANO_2021Dec16/BuToKee_Mufilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/crab_BuToKee_v3/211216_125811/0000/BParkNANO_mc_2021Dec16_130.root
+#/eos/cms/store/group/phys_bphys/bpark/nanoaod_Run3/BParkingNANO_2021Dec16/BuToKee_Mufilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/crab_BuToKee_v3/211216_125811/0000/BParkNANO_mc_2021Dec16_130.root
 
 # Giorgos ...
 #/afs/cern.ch/user/g/gmelachr/public/forRob/BParkNANO_mc_10215.root
