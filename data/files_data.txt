@@ -1,0 +1,2 @@
+#../../../../CMSSW_10_2_15/src/PhysicsTools/BParkingNano/test/BParkNANO_data_10215.root
+/afs/cern.ch/user/b/bainbrid/public/Trigger/DiElectronX/test/CMSSW_12_4_0_pre3/src/PhysicsTools/BParkingNano/test/BParkNANO_data_124X.root
