@@ -1,5 +1,13 @@
+# Latest misc
+#/eos/cms/store/group/phys_bphys/DiElectronX/test/samples/BParkingNANO_2022Sep05/BuToKee/crab_BuToKee/220905_212233/0000/BParkNANO_mc_2022Sep05_1.root
+#/eos/cms/store/group/phys_bphys/DiElectronX/test/samples/BParkingNANO_2022Sep05/BuToKJpsi_Toee/crab_BuToKJpsi_Toee/220905_212304/0000/BParkNANO_mc_2022Sep05_1.root
+#/eos/cms/store/group/phys_bphys/DiElectronX/test/samples/BParkingNANO_2022Sep05/BuToKPsi2S_Toee/crab_BuToKPsi2S_Toee/220905_212325/0000/BParkNANO_mc_2022Sep05_1.root
+#/eos/cms/store/group/phys_bphys/DiElectronX/test/samples/BParkingNANO_2022Sep05/ParkingDoubleElectronLowMass0/crab_data_Run2022C_part0/220905_205606/0000/BParkNANO_data_2022Sep05_1.root
+#/eos/cms/store/group/phys_bphys/DiElectronX/test/samples/BParkingNANO_2022Sep09/ParkingDoubleElectronLowMass0/crab_Run2022Dv1_part0/220909_193450/0000/BParkNANO_data_2022Sep09_1.root
+#/eos/cms/store/group/phys_bphys/DiElectronX/test/samples/BParkingNANO_2022Sep05/ParkingDoubleElectronLowMass0/crab_data_Run2022D_part0/220905_205806/0000/BParkNANO_data_2022Sep05_1.root
+
 # Example test file from BuToKJpsi_Toee sample
-/afs/cern.ch/user/b/bainbrid/public/Trigger/BParkingNANO/CMSSW_10_2_15/src/PhysicsTools/BParkingNano/test/BParkNANO_mc_10215-2022Jul04.root
+#/afs/cern.ch/user/b/bainbrid/public/Trigger/BParkingNANO/CMSSW_10_2_15/src/PhysicsTools/BParkingNano/test/BParkNANO_mc_10215-2022Jul04.root
 
 # Debugging ...
 #/afs/cern.ch/user/b/bainbrid/public/Trigger/BParkingNANO/CMSSW_10_2_15/src/PhysicsTools/BParkingNano/test/BParkNANO_mc_10215_DEV.root
