@@ -1,6 +1,5 @@
 # RK analysis tools
 
-
 cmsrel CMSSW_10_2_15
 cd CMSSW_10_2_15/src
 cmsenv
@@ -13,10 +12,15 @@ mkdir build
 cd build
 cmake ..
 make
-
-# Compilation errors in Test can be ignored
-
 cd ../../
+# ^^^ Compilation errors in Test can be ignored
+
+# Checkout "trigger lumi" package
+git clone git@github.com:bainbrid/TriggerLuminosity.git PhysicsTools/TriggerLuminosity
+cd PhysicsTools/TriggerLuminosity
+# In plugins/MiniAODTriggerAnalyzer.cc, uncomment the line: #define CMSSW_10_2_X
+scram b
+cd ../..
 
 # Checkout the analysis code
 git clone git@github.com:crovelli/RKAnalysis.git 
