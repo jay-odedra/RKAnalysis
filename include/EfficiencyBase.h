@@ -21,18 +21,18 @@ public :
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
-   static const int nBToKEE_max_ = 3000;
-   static const int nGenPart_max_ = 200;
-   static const int nElectron_max_ = 100;
+   static const int nBToKEE_max_ = 400;
+   static const int nGenPart_max_ = 200; //??
+   static const int nElectron_max_ = 40;
    static const int nMuon_max_ = 20;
-   static const int nProbeTracks_max_ = 400;
+   static const int nProbeTracks_max_ = 500;
    static const int nTrigObj_max_ = 10;
 
    // Declaration of leaf types
    int _isMC;
    int _isKStar;
    UInt_t          run;
-   UInt_t          luminosityBlock;
+   UInt_t          lumi;
    ULong64_t       event;
 
    UInt_t          nBToKEE;
@@ -396,6 +396,10 @@ public :
    Bool_t          Electron_isPF[nElectron_max_];   //[nElectron]
    Bool_t          Electron_isPFoverlap[nElectron_max_];   //[nElectron]
 
+   Bool_t Electron_LooseID[nElectron_max_];   //[nElectron]
+   Bool_t Electron_MediumID[nElectron_max_];   //[nElectron]
+   Bool_t Electron_TightID[nElectron_max_];   //[nElectron]
+
    UInt_t          nGenPart;
    Float_t         GenPart_eta[nGenPart_max_];   //[nGenPart]
    Float_t         GenPart_mass[nGenPart_max_];   //[nGenPart]
@@ -524,6 +528,36 @@ public :
    UChar_t         L1_SingleMu12er1p5;
    UChar_t         L1_SingleMu22;
 
+   UChar_t HLT_DoubleEle10_eta1p22_mMax6;
+   UChar_t HLT_DoubleEle9p5_eta1p22_mMax6;
+   UChar_t HLT_DoubleEle9_eta1p22_mMax6;
+   UChar_t HLT_DoubleEle8p5_eta1p22_mMax6;
+   UChar_t HLT_DoubleEle8_eta1p22_mMax6;
+   UChar_t HLT_DoubleEle7p5_eta1p22_mMax6;
+   UChar_t HLT_DoubleEle7_eta1p22_mMax6;
+   UChar_t HLT_DoubleEle6p5_eta1p22_mMax6;
+   UChar_t HLT_DoubleEle6_eta1p22_mMax6;
+   UChar_t HLT_DoubleEle5p5_eta1p22_mMax6;
+   UChar_t HLT_DoubleEle5_eta1p22_mMax6;
+   UChar_t HLT_DoubleEle4p5_eta1p22_mMax6;
+   UChar_t HLT_DoubleEle4_eta1p22_mMax6;
+
+   UChar_t L1_DoubleEG11_er1p2_dR_Max0p6;
+   UChar_t L1_DoubleEG10p5_er1p2_dR_Max0p6;
+   UChar_t L1_DoubleEG10_er1p2_dR_Max0p6;
+   UChar_t L1_DoubleEG9p5_er1p2_dR_Max0p6;
+   UChar_t L1_DoubleEG9_er1p2_dR_Max0p7;
+   UChar_t L1_DoubleEG8p5_er1p2_dR_Max0p7;
+   UChar_t L1_DoubleEG8_er1p2_dR_Max0p7;
+   UChar_t L1_DoubleEG7p5_er1p2_dR_Max0p7;
+   UChar_t L1_DoubleEG7_er1p2_dR_Max0p8;
+   UChar_t L1_DoubleEG6p5_er1p2_dR_Max0p8;
+   UChar_t L1_DoubleEG6_er1p2_dR_Max0p8;
+   UChar_t L1_DoubleEG5p5_er1p2_dR_Max0p8;
+   UChar_t L1_DoubleEG5_er1p2_dR_Max0p9;
+   UChar_t L1_DoubleEG4p5_er1p2_dR_Max0p9;
+   UChar_t L1_DoubleEG4_er1p2_dR_Max0p9;
+
    UInt_t          nTrigObj;
    Float_t         TrigObj_pt[nTrigObj_max_];   //[nTrigObj]
    Float_t         TrigObj_eta[nTrigObj_max_];   //[nTrigObj]
@@ -555,8 +589,8 @@ public :
    Int_t           Electron_genPartIdx[nElectron_max_];   //[nElectron]
    Int_t           Electron_genPartFlav[nElectron_max_];   //[nElectron]
 
-   Int_t           Muon_genPartIdx[nMuon_max_];   //[nMuon]
-   Int_t           Muon_genPartFlav[nMuon_max_];   //[nMuon]
+//   Int_t           Muon_genPartIdx[nMuon_max_];   //[nMuon]
+//   Int_t           Muon_genPartFlav[nMuon_max_];   //[nMuon]
 
    Float_t         SV_chi2[20];   //[nSV]
    Float_t         SV_eta[20];   //[nSV]
@@ -936,6 +970,9 @@ public :
    TBranch        *b_Electron_isLowPt;   //!
    TBranch        *b_Electron_isPF;   //!
    TBranch        *b_Electron_isPFoverlap;   //!
+   TBranch        *b_Electron_LooseID;
+   TBranch        *b_Electron_MediumID;
+   TBranch        *b_Electron_TightID;
 
    TBranch        *b_nGenPart;   //!
    TBranch        *b_GenPart_eta;   //!
@@ -1058,6 +1095,36 @@ public :
    TBranch        *b_HLT_Mu10p5_IP3p5;   //!
    TBranch        *b_HLT_Mu12_IP6;   //!
 
+   TBranch *b_HLT_DoubleEle10_eta1p22_mMax6;
+   TBranch *b_HLT_DoubleEle9p5_eta1p22_mMax6;
+   TBranch *b_HLT_DoubleEle9_eta1p22_mMax6;
+   TBranch *b_HLT_DoubleEle8p5_eta1p22_mMax6;
+   TBranch *b_HLT_DoubleEle8_eta1p22_mMax6;
+   TBranch *b_HLT_DoubleEle7p5_eta1p22_mMax6;
+   TBranch *b_HLT_DoubleEle7_eta1p22_mMax6;
+   TBranch *b_HLT_DoubleEle6p5_eta1p22_mMax6;
+   TBranch *b_HLT_DoubleEle6_eta1p22_mMax6;
+   TBranch *b_HLT_DoubleEle5p5_eta1p22_mMax6;
+   TBranch *b_HLT_DoubleEle5_eta1p22_mMax6;
+   TBranch *b_HLT_DoubleEle4p5_eta1p22_mMax6;
+   TBranch *b_HLT_DoubleEle4_eta1p22_mMax6;
+
+   TBranch *b_L1_DoubleEG11_er1p2_dR_Max0p6;
+   TBranch *b_L1_DoubleEG10p5_er1p2_dR_Max0p6;
+   TBranch *b_L1_DoubleEG10_er1p2_dR_Max0p6;
+   TBranch *b_L1_DoubleEG9p5_er1p2_dR_Max0p6;
+   TBranch *b_L1_DoubleEG9_er1p2_dR_Max0p7;
+   TBranch *b_L1_DoubleEG8p5_er1p2_dR_Max0p7;
+   TBranch *b_L1_DoubleEG8_er1p2_dR_Max0p7;
+   TBranch *b_L1_DoubleEG7p5_er1p2_dR_Max0p7;
+   TBranch *b_L1_DoubleEG7_er1p2_dR_Max0p8;
+   TBranch *b_L1_DoubleEG6p5_er1p2_dR_Max0p8;
+   TBranch *b_L1_DoubleEG6_er1p2_dR_Max0p8;
+   TBranch *b_L1_DoubleEG5p5_er1p2_dR_Max0p8;
+   TBranch *b_L1_DoubleEG5_er1p2_dR_Max0p9;
+   TBranch *b_L1_DoubleEG4p5_er1p2_dR_Max0p9;
+   TBranch *b_L1_DoubleEG4_er1p2_dR_Max0p9;
+
    TBranch        *b_L1_SingleMu7er1p5;   //!
    TBranch        *b_L1_SingleMu8er1p5;   //!
    TBranch        *b_L1_SingleMu9er1p5;   //!
@@ -1096,8 +1163,8 @@ public :
    TBranch        *b_Electron_genPartIdx;   //!
    TBranch        *b_Electron_genPartFlav;   //!
 
-   TBranch        *b_Muon_genPartIdx;   //!
-   TBranch        *b_Muon_genPartFlav;   //!
+//   TBranch        *b_Muon_genPartIdx;   //!
+//   TBranch        *b_Muon_genPartFlav;   //!
 
    TBranch        *b_SV_chi2;   //!
    TBranch        *b_SV_eta;   //!
@@ -1193,7 +1260,7 @@ void EfficiencyBase::Init(TTree *tree)
    fChain->SetMakeClass(1);
 
    fChain->SetBranchAddress("run", &run, &b_run);
-   fChain->SetBranchAddress("luminosityBlock", &luminosityBlock, &b_luminosityBlock);
+   fChain->SetBranchAddress("luminosityBlock", &lumi, &b_luminosityBlock);
    fChain->SetBranchAddress("event", &event, &b_event);
 
    fChain->SetBranchAddress("nBToKEE", &nBToKEE, &b_nBToKEE);
@@ -1557,6 +1624,10 @@ void EfficiencyBase::Init(TTree *tree)
    fChain->SetBranchAddress("Electron_isLowPt", Electron_isLowPt, &b_Electron_isLowPt);
    fChain->SetBranchAddress("Electron_isPF", Electron_isPF, &b_Electron_isPF);
    fChain->SetBranchAddress("Electron_isPFoverlap", Electron_isPFoverlap, &b_Electron_isPFoverlap);
+   fChain->SetBranchAddress("Electron_LooseID", Electron_LooseID, &b_Electron_LooseID);
+   fChain->SetBranchAddress("Electron_MediumID", Electron_MediumID, &b_Electron_MediumID);
+   fChain->SetBranchAddress("Electron_TightID", Electron_TightID, &b_Electron_TightID);
+
 
    if(_isMC){
 
@@ -1693,6 +1764,38 @@ void EfficiencyBase::Init(TTree *tree)
 //   fChain->SetBranchAddress("L1_SingleMu12er1p5", &L1_SingleMu12er1p5, &b_L1_SingleMu12er1p5);
 //   fChain->SetBranchAddress("L1_SingleMu22", &L1_SingleMu22, &b_L1_SingleMu22);
 
+//   fChain->SetBranchAddress("HLT_Mu7_IP4", &HLT_Mu7_IP4, &b_HLT_Mu7_IP4);
+
+   fChain->SetBranchAddress("HLT_DoubleEle10_eta1p22_mMax6", &HLT_DoubleEle10_eta1p22_mMax6, &b_HLT_DoubleEle10_eta1p22_mMax6);
+   fChain->SetBranchAddress("HLT_DoubleEle9p5_eta1p22_mMax6",&HLT_DoubleEle9p5_eta1p22_mMax6,&b_HLT_DoubleEle9p5_eta1p22_mMax6);
+   fChain->SetBranchAddress("HLT_DoubleEle9_eta1p22_mMax6",  &HLT_DoubleEle9_eta1p22_mMax6,  &b_HLT_DoubleEle9_eta1p22_mMax6);
+   fChain->SetBranchAddress("HLT_DoubleEle8p5_eta1p22_mMax6",&HLT_DoubleEle8p5_eta1p22_mMax6,&b_HLT_DoubleEle8p5_eta1p22_mMax6);
+   fChain->SetBranchAddress("HLT_DoubleEle8_eta1p22_mMax6",  &HLT_DoubleEle8_eta1p22_mMax6,  &b_HLT_DoubleEle8_eta1p22_mMax6);
+   fChain->SetBranchAddress("HLT_DoubleEle7p5_eta1p22_mMax6",&HLT_DoubleEle7p5_eta1p22_mMax6,&b_HLT_DoubleEle7p5_eta1p22_mMax6);
+   fChain->SetBranchAddress("HLT_DoubleEle7_eta1p22_mMax6",  &HLT_DoubleEle7_eta1p22_mMax6,  &b_HLT_DoubleEle7_eta1p22_mMax6);
+   fChain->SetBranchAddress("HLT_DoubleEle6p5_eta1p22_mMax6",&HLT_DoubleEle6p5_eta1p22_mMax6,&b_HLT_DoubleEle6p5_eta1p22_mMax6);
+   fChain->SetBranchAddress("HLT_DoubleEle6_eta1p22_mMax6",  &HLT_DoubleEle6_eta1p22_mMax6,  &b_HLT_DoubleEle6_eta1p22_mMax6);
+   fChain->SetBranchAddress("HLT_DoubleEle5p5_eta1p22_mMax6",&HLT_DoubleEle5p5_eta1p22_mMax6,&b_HLT_DoubleEle5p5_eta1p22_mMax6);
+   fChain->SetBranchAddress("HLT_DoubleEle5_eta1p22_mMax6",  &HLT_DoubleEle5_eta1p22_mMax6,  &b_HLT_DoubleEle5_eta1p22_mMax6);
+   fChain->SetBranchAddress("HLT_DoubleEle4p5_eta1p22_mMax6",&HLT_DoubleEle4p5_eta1p22_mMax6,&b_HLT_DoubleEle4p5_eta1p22_mMax6);
+   fChain->SetBranchAddress("HLT_DoubleEle4_eta1p22_mMax6",  &HLT_DoubleEle4_eta1p22_mMax6,  &b_HLT_DoubleEle4_eta1p22_mMax6);
+
+   fChain->SetBranchAddress("L1_DoubleEG11_er1p2_dR_Max0p6",  &L1_DoubleEG11_er1p2_dR_Max0p6,  &b_L1_DoubleEG11_er1p2_dR_Max0p6);
+   fChain->SetBranchAddress("L1_DoubleEG10p5_er1p2_dR_Max0p6",&L1_DoubleEG10p5_er1p2_dR_Max0p6,&b_L1_DoubleEG10p5_er1p2_dR_Max0p6);
+   fChain->SetBranchAddress("L1_DoubleEG10_er1p2_dR_Max0p6",  &L1_DoubleEG10_er1p2_dR_Max0p6,  &b_L1_DoubleEG10_er1p2_dR_Max0p6);
+   fChain->SetBranchAddress("L1_DoubleEG9p5_er1p2_dR_Max0p6", &L1_DoubleEG9p5_er1p2_dR_Max0p6, &b_L1_DoubleEG9p5_er1p2_dR_Max0p6);
+   fChain->SetBranchAddress("L1_DoubleEG9_er1p2_dR_Max0p7",   &L1_DoubleEG9_er1p2_dR_Max0p7,   &b_L1_DoubleEG9_er1p2_dR_Max0p7);
+   fChain->SetBranchAddress("L1_DoubleEG8p5_er1p2_dR_Max0p7", &L1_DoubleEG8p5_er1p2_dR_Max0p7, &b_L1_DoubleEG8p5_er1p2_dR_Max0p7);
+   fChain->SetBranchAddress("L1_DoubleEG8_er1p2_dR_Max0p7",   &L1_DoubleEG8_er1p2_dR_Max0p7,   &b_L1_DoubleEG8_er1p2_dR_Max0p7);
+   fChain->SetBranchAddress("L1_DoubleEG7p5_er1p2_dR_Max0p7", &L1_DoubleEG7p5_er1p2_dR_Max0p7, &b_L1_DoubleEG7p5_er1p2_dR_Max0p7);
+   fChain->SetBranchAddress("L1_DoubleEG7_er1p2_dR_Max0p8",   &L1_DoubleEG7_er1p2_dR_Max0p8,   &b_L1_DoubleEG7_er1p2_dR_Max0p8);
+   fChain->SetBranchAddress("L1_DoubleEG6p5_er1p2_dR_Max0p8", &L1_DoubleEG6p5_er1p2_dR_Max0p8, &b_L1_DoubleEG6p5_er1p2_dR_Max0p8);
+   fChain->SetBranchAddress("L1_DoubleEG6_er1p2_dR_Max0p8",   &L1_DoubleEG6_er1p2_dR_Max0p8,   &b_L1_DoubleEG6_er1p2_dR_Max0p8);
+   fChain->SetBranchAddress("L1_DoubleEG5p5_er1p2_dR_Max0p8", &L1_DoubleEG5p5_er1p2_dR_Max0p8, &b_L1_DoubleEG5p5_er1p2_dR_Max0p8);
+   fChain->SetBranchAddress("L1_DoubleEG5_er1p2_dR_Max0p9",   &L1_DoubleEG5_er1p2_dR_Max0p9,   &b_L1_DoubleEG5_er1p2_dR_Max0p9);
+   fChain->SetBranchAddress("L1_DoubleEG4p5_er1p2_dR_Max0p9", &L1_DoubleEG4p5_er1p2_dR_Max0p9, &b_L1_DoubleEG4p5_er1p2_dR_Max0p9);
+   fChain->SetBranchAddress("L1_DoubleEG4_er1p2_dR_Max0p9",   &L1_DoubleEG4_er1p2_dR_Max0p9,   &b_L1_DoubleEG4_er1p2_dR_Max0p9);
+
    fChain->SetBranchAddress("nTrigObj", &nTrigObj, &b_nTrigObj);
    fChain->SetBranchAddress("TrigObj_pt", TrigObj_pt, &b_TrigObj_pt);
    fChain->SetBranchAddress("TrigObj_eta", TrigObj_eta, &b_TrigObj_eta);
@@ -1725,8 +1828,8 @@ void EfficiencyBase::Init(TTree *tree)
 
      fChain->SetBranchAddress("Electron_genPartIdx", Electron_genPartIdx, &b_Electron_genPartIdx);
      fChain->SetBranchAddress("Electron_genPartFlav", Electron_genPartFlav, &b_Electron_genPartFlav);
-     fChain->SetBranchAddress("Muon_genPartIdx", Muon_genPartIdx, &b_Muon_genPartIdx);
-     fChain->SetBranchAddress("Muon_genPartFlav", Muon_genPartFlav, &b_Muon_genPartFlav);
+//     fChain->SetBranchAddress("Muon_genPartIdx", Muon_genPartIdx, &b_Muon_genPartIdx);
+//     fChain->SetBranchAddress("Muon_genPartFlav", Muon_genPartFlav, &b_Muon_genPartFlav);
 
    }
 
