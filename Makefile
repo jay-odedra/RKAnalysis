@@ -49,6 +49,8 @@ $(OUTLIB)SkimmerWithKStar.o: $(INCLUDEDIR)/src/SkimmerWithKStar.cc
 	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -L../FastForest/build/ -lfastforest -o $(OUTLIB)SkimmerWithKStar.o $<
 $(OUTLIB)Efficiency.o: $(INCLUDEDIR)/src/Efficiency.cc 
 	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -L../FastForest/build/ -lfastforest -o $(OUTLIB)Efficiency.o $<
+$(OUTLIB)JsonFilter.o: $(INCLUDEDIR)/../PhysicsTools/TriggerLuminosity/src/JsonFilter.cc
+	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)JsonFilter.o $<
 $(OUTLIB)main.o: $(INCLUDEDIR)/src/main.cc 
 	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -L../FastForest/build/ -lfastforest -o $(OUTLIB)main.o $<
 
@@ -70,6 +72,7 @@ Efficiency:  $(INCLUDEDIR)/src/BParkApp.C \
 	$(OUTLIB)TestMva.o \
 	$(OUTLIB)EfficiencyBase.o \
 	$(OUTLIB)Efficiency.o \
+	$(OUTLIB)JsonFilter.o \
 	$(OUTLIB)main.o 
 	$(CXX) $(CXXFLAGS) -ldl -L../FastForest/build/ -lfastforest -o Efficiency.exe $(OUTLIB)/*.o $(GLIBS) $(LDFLAGS) $ $<
 Efficiency.clean:
