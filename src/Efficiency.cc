@@ -9,6 +9,8 @@
 void Efficiency::Loop() {
   std::cout << "Loop ..." << std::endl;
 
+  //bool resonant = true;
+
   if (fChain == 0) return;
 
   fastforest::FastForest fastForestOttoPFPF;
@@ -31,10 +33,14 @@ void Efficiency::Loop() {
     std::vector<float> analysisBdtG;
 
     // Limit events to process
-    //if (jentry>5000) break;
+    //if (jentry>1000) break;
 
     // Limit to event range
-    //if (jentry<19181) continue; if (jentry>19181) break;
+    //if (jentry>19181) break; if (jentry<19181) continue;
+    //if (jentry>4) break; if (jentry!=4) continue;
+
+    // Debug
+    //std::cout << std::endl << "##### Event number: " << jentry << std::endl;
 
     // Initialise variables
     initVars();
@@ -51,49 +57,133 @@ void Efficiency::Loop() {
     
     // Scalars
     theRun_ = run;
+    theLumi_ = lumi;
     theEvent_ = event;
     
-    // Triggering muon pT
-    int nTriggerMuon=0;
-    int idTrgMu=-1;
-    float ptTrgMu=0.;
-    if(nMuon>0){
-      for (u_int iM=0; iM<nMuon; iM++) {
-	if(Muon_isTriggering[iM]) {
-	  nTriggerMuon=nTriggerMuon+1;
-	  if(Muon_pt[iM]>ptTrgMu) {
-	    ptTrgMu=Muon_pt[iM];
-	    idTrgMu=iM;
-	  }
-	}
-      }
-    }
-    trg_muon_pt_ = ptTrgMu;
+//    // Triggering muon pT
+//    int nTriggerMuon=0;
+//    int idTrgMu=-1;
+//    float ptTrgMu=0.;
+//    float etaTrgMu=-10.;
+//    if(nMuon>0){
+//      for (u_int iM=0; iM<nMuon; iM++) {
+//	if(Muon_isTriggering[iM]) {
+//	  nTriggerMuon=nTriggerMuon+1;
+//	  if(Muon_pt[iM]>ptTrgMu) {
+//	    ptTrgMu=Muon_pt[iM];
+//	    etaTrgMu=Muon_eta[iM];
+//	    idTrgMu=iM;
+//	  }
+//	}
+//      }
+//    }
+//    trg_muon_pt_ = ptTrgMu;
+//    trg_muon_eta_ = etaTrgMu;
     
     // Trigger HLT paths
-    hlt7_ip4_  = (int)HLT_Mu7_IP4;
-    hlt8_ip3_  = (int)HLT_Mu8_IP3;
-    hlt9_ip6_  = (int)HLT_Mu9_IP6;
-    hlt12_ip6_ = (int)HLT_Mu12_IP6;
-    
-    // Find B->Kee decay 
-    Daughters daughters;
-    bool found = isBToKEE(daughters);
-    is_bkee_ = found;
-    
-    // Determine if B->Kee decay in acceptance
-    in_acc_ = inAcceptance(daughters.first) ? 1 : 0;
+//    hlt7_ip4_  = (int)HLT_Mu7_IP4;
+//    hlt8_ip3_  = (int)HLT_Mu8_IP3;
+//    hlt9_ip6_  = (int)HLT_Mu9_IP6;
+//    hlt12_ip6_ = (int)HLT_Mu12_IP6;
 
-    // Set (by reference) the GEN pt,eta
+    hlt_10p0_ = (int)HLT_DoubleEle10_eta1p22_mMax6;
+    hlt_9p5_ = (int)HLT_DoubleEle9p5_eta1p22_mMax6;
+    hlt_9p0_ = (int)HLT_DoubleEle9_eta1p22_mMax6;
+    hlt_8p5_ = (int)HLT_DoubleEle8p5_eta1p22_mMax6;
+    hlt_8p0_ = (int)HLT_DoubleEle8_eta1p22_mMax6;
+    hlt_7p5_ = (int)HLT_DoubleEle7p5_eta1p22_mMax6;
+    hlt_7p0_ = (int)HLT_DoubleEle7_eta1p22_mMax6;
+    hlt_6p5_ = (int)HLT_DoubleEle6p5_eta1p22_mMax6;
+    hlt_6p0_ = (int)HLT_DoubleEle6_eta1p22_mMax6;
+    hlt_5p5_ = (int)HLT_DoubleEle5p5_eta1p22_mMax6;
+    hlt_5p0_ = (int)HLT_DoubleEle5_eta1p22_mMax6;
+    hlt_4p5_ = (int)HLT_DoubleEle4p5_eta1p22_mMax6;
+    hlt_4p0_ = (int)HLT_DoubleEle4_eta1p22_mMax6;
+    
+    l1_11p0_ = (int)L1_DoubleEG11_er1p2_dR_Max0p6;
+    l1_10p5_ = (int)L1_DoubleEG10p5_er1p2_dR_Max0p6;
+    l1_10p0_ = (int)L1_DoubleEG10_er1p2_dR_Max0p6;
+    l1_9p5_ = (int)L1_DoubleEG9p5_er1p2_dR_Max0p6;
+    l1_9p0_ = (int)L1_DoubleEG9_er1p2_dR_Max0p7;
+    l1_8p5_ = (int)L1_DoubleEG8p5_er1p2_dR_Max0p7;
+    l1_8p0_ = (int)L1_DoubleEG8_er1p2_dR_Max0p7;
+    l1_7p5_ = (int)L1_DoubleEG7p5_er1p2_dR_Max0p7;
+    l1_7p0_ = (int)L1_DoubleEG7_er1p2_dR_Max0p8;
+    l1_6p5_ = (int)L1_DoubleEG6p5_er1p2_dR_Max0p8;
+    l1_6p0_ = (int)L1_DoubleEG6_er1p2_dR_Max0p8;
+    l1_5p5_ = (int)L1_DoubleEG5p5_er1p2_dR_Max0p8;
+    l1_5p0_ = (int)L1_DoubleEG5_er1p2_dR_Max0p9;
+    l1_4p5_ = (int)L1_DoubleEG4p5_er1p2_dR_Max0p9;
+    l1_4p0_ = (int)L1_DoubleEG4_er1p2_dR_Max0p9;
+
+    // JSON filters
+    if (verbose_>1) {
+      std::cout << "[Efficiency::Loop]"
+		<< " Run: " << theRun_
+		<< " LS: " << theLumi_
+		<< " Event: " << theEvent_ << std::endl;
+    }
+    if (verbose_>2) {
+      std::cout << "[Efficiency::Loop]"
+		<< " The following JSONs identify a valid run/lumi: " << std::endl;
+    }
+//      int idx = 0;
+//      for ( auto& filter : jsonFilters_ ) {
+//	bool ok = filter.isGoodRunLS(theRun_,theLumi_);
+//	if (ok) jsonFlags_[idx] = true;
+//	idx++;
+//      }
+    for ( auto& filter : jsonFilters_ ) {
+      bool ok = filter.isGoodRunLS(theRun_,theLumi_);
+      if (ok) {
+	std::string name = JsonFilter::jsonFileName( filter.jsonFilePath() );
+	if      (name == "TOTAL")                 { tmp0 = 1; }
+	else if (name == "L1_11p0_HLT_6p5_final") { tmp1 = 1; }
+	else if (name == "L1_10p5_HLT_6p5_final") { tmp2 = 1; }
+	else if (name == "L1_10p5_HLT_5p0_final") { tmp3 = 1; }
+	else if (name == "L1_8p5_HLT_5p0_final")  { tmp4 = 1; }
+	else if (name == "L1_8p0_HLT_5p0_final")  { tmp5 = 1; }
+	else if (name == "L1_7p0_HLT_5p0_final")  { tmp6 = 1; }
+	else if (name == "L1_6p5_HLT_4p5_final")  { tmp7 = 1; }
+	else if (name == "L1_6p0_HLT_4p0_final")  { tmp8 = 1; }
+	else if (name == "L1_5p5_HLT_6p0_final")  { tmp9 = 1; }
+	else if (name == "L1_5p5_HLT_4p0_final")  { tmp10 = 1; }
+	//else { std::cout << "FILTER NOT FOUND!!!" << name << std::endl; }
+      }
+    }
+
     int e1_gen_idx = -1;
     int e2_gen_idx = -1;
-    bool ok = setElePtEta(daughters,
-			  e1_gen_idx,e1_gen_pt_,e1_gen_eta_,
-			  e2_gen_idx,e2_gen_pt_,e2_gen_eta_,
-			  e12_gen_dr_);
+    if (_isMC) {
+    
+      // Find B->Kee decay
+      Daughters daughters;
+      bool found = isBToKEE(daughters);//, resonant);
+      is_bkee_ = found;
+      
+      // Determine if B->Kee decay in acceptance
+      in_acc_ = inAcceptance(daughters.first) ? 1 : 0;
+      
+      // Set (by reference) the GEN pt,eta
+      bool ok = setElePtEta(daughters,
+			    e1_gen_idx,e1_gen_pt_,e1_gen_eta_,
+			    e2_gen_idx,e2_gen_pt_,e2_gen_eta_,
+			    e12_gen_dr_);
 
-    // If GEN electrons not found, continue (shouldn't happen, skip event?!)
-    if (!ok) { std::cout << "ERROR!" << std::endl; continue; } // outTree_->Fill();
+      // If GEN electrons not found, continue (shouldn't happen, skip event?!)
+      if (!ok) { 
+	std::cout << "ERROR!"
+		  << " daughters.second.size(): " << daughters.second.size()
+		  << ", ";
+	for ( const auto& d : daughters.second ) { std::cout << d << " "; }
+	std::cout << std::endl; 
+	continue; 
+      } // outTree_->Fill();
+
+    } else { // is data ...
+      is_bkee_ = true;
+      in_acc_ = true;
+    }
 
     // Safety limit on number of BToKEE candidates
     int maxBToKEE = EfficiencyBase::nBToKEE_max_;
@@ -118,30 +208,58 @@ void Efficiency::Loop() {
       e1_reco_eta_ = -10.;
       e2_reco_eta_ = -10.;
       e12_reco_dr_ = -10.;
-      e1_reco_pf_ = 0;
-      e2_reco_pf_ = 0;
-      e1_reco_lowpt_ = 0;
-      e2_reco_lowpt_ = 0;
-      e1_reco_overlap_ = 0;
-      e2_reco_overlap_ = 0;
-      if ( recoCand(iB,
-		    e1_gen_idx,e2_gen_idx,
-		    e1_reco_idx,e1_reco_pt_,e1_reco_eta_,
-		    e1_reco_pf_,e1_reco_lowpt_,e1_reco_overlap_,
-		    e2_reco_idx,e2_reco_pt_,e2_reco_eta_,
-		    e2_reco_pf_,e2_reco_lowpt_,e2_reco_overlap_,
-		    e12_reco_dr_) ) {
+      e1_reco_pf_ = -10;
+      e2_reco_pf_ = -10;
+      e1_reco_lowpt_ = -10;
+      e2_reco_lowpt_ = -10;
+      e1_reco_overlap_ = -10;
+      e2_reco_overlap_ = -10;
+      e1_reco_loose_ = -10;
+      e2_reco_loose_ = -10;
+      e1_reco_medium_ = -10;
+      e2_reco_medium_ = -10;
+      e1_reco_tight_ = -10;
+      e2_reco_tight_ = -10;
+
+      bool found = recoCand(iB,
+			    e1_gen_idx,e2_gen_idx,
+			    e1_reco_idx,e1_reco_pt_,e1_reco_eta_,
+			    e1_reco_pf_,e1_reco_lowpt_,e1_reco_overlap_,
+			    e1_reco_loose_,e1_reco_medium_,e1_reco_tight_,
+			    e2_reco_idx,e2_reco_pt_,e2_reco_eta_,
+			    e2_reco_pf_,e2_reco_lowpt_,e2_reco_overlap_,
+			    e2_reco_loose_,e2_reco_medium_,e2_reco_tight_,
+			    e12_reco_dr_);//, resonant);
+      //std::cout << "TEST " << _isMC << " " << found << std::endl;
+      if ( found ) {
 	// Pre-selection and BDT
 	ip3d_ = BToKEE_k_svip3d[iB];
 	cos2d_ = BToKEE_fit_cos2D[iB];
 	bdt_ = evaluateModels(iB,fastForestOttoPFPF,fastForestOttoPFLP);
 	mll_ = BToKEE_mll_fullfit[iB];
+	// B candidates
+	b_mass_ = BToKEE_fit_mass[iB];
+	b_mass_err_ = BToKEE_fit_massErr[iB];
+	b_pt_ = BToKEE_fit_pt[iB];
+	b_l1_pt_ = BToKEE_fit_l1_pt[iB];
+	b_l2_pt_ = BToKEE_fit_l2_pt[iB];
+	b_k_pt_ = BToKEE_fit_k_pt[iB];
+	b_cos2D_ = BToKEE_fit_cos2D[iB];
+	b_lxy_ = BToKEE_l_xy[iB];
+	b_lxyerr_ = BToKEE_l_xy_unc[iB];
+	b_svprob_ = BToKEE_svprob[iB];
 	// Mark if matched and break loop
 	isMatched_ = 1;
 	h_cand_->Fill(iB<1000?iB:1000,1.); // overflows into final bin
 	break;
       }
     }
+
+//    std::cout << "TEST jsonNames_.size(): " << jsonNames_.size()
+//	      << " jsonFlags_.size(): " << jsonFlags_.size()
+//	      << " flags: ";
+//    for ( auto const& flag : jsonFlags_ ) { std::cout << flag << " "; }
+//    std::cout << std::endl;
 
     // Fill the output tree
     cntr2++;
@@ -161,11 +279,81 @@ void Efficiency::Loop() {
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-Efficiency::Efficiency(TChain* tree, int isMC, std::string output) :
-  EfficiencyBase((TTree*)tree, isMC)
+Efficiency::Efficiency(TChain* tree, int isMC, int mode, std::string output) :
+  EfficiencyBase((TTree*)tree, isMC),
+  _mode(mode),
+  jsonFilters_(),
+  jsonNames_(),
+  jsonFlags_(),
+  jsonPtrs_(),
+  tmp0(0),
+  tmp1(0),
+  tmp2(0),
+  tmp3(0),
+  tmp4(0),
+  tmp5(0),
+  tmp6(0),
+  tmp7(0),
+  tmp8(0),
+  tmp9(0),
+  tmp10(0)
 {
-  prepareOutputs(output);   
+
+  // Obtain JSON file paths (hacked for now!)
+  std::string json_path = "/eos/cms/store/group/phys_bphys/DiElectronX/test/trigger/JSON/";
+  std::vector<std::string> json_files;
+  if (!_isMC) {
+    json_files.push_back(json_path+"TOTAL.json");                 // tmp0
+    json_files.push_back(json_path+"L1_11p0_HLT_6p5_final.json"); // tmp1
+    json_files.push_back(json_path+"L1_10p5_HLT_6p5_final.json"); // tmp2
+    json_files.push_back(json_path+"L1_10p5_HLT_5p0_final.json"); // tmp3
+    json_files.push_back(json_path+"L1_8p5_HLT_5p0_final.json");  // tmp4
+    json_files.push_back(json_path+"L1_8p0_HLT_5p0_final.json");  // tmp5
+    json_files.push_back(json_path+"L1_7p0_HLT_5p0_final.json");  // tmp6
+    json_files.push_back(json_path+"L1_6p5_HLT_4p5_final.json");  // tmp7
+    json_files.push_back(json_path+"L1_6p0_HLT_4p0_final.json");  // tmp8
+    json_files.push_back(json_path+"L1_5p5_HLT_6p0_final.json");  // tmp9
+    json_files.push_back(json_path+"L1_5p5_HLT_4p0_final.json");  // tmp10
+  }
+
+  // Initialise JSON filters, etc
+  if (verbose_>0) {
+    std::cout << "[Efficiency::Efficiency]"
+	      << " Found " << json_files.size()
+	      << " JSON file paths..." << std::endl;
+  }
+  for ( auto const& file : json_files ) {
+    if (verbose_>0) {
+      std::cout << "  [Efficiency::Efficiency]"
+		<< " Parsing JSON file path: " << file << std::endl;
+    }
+    JsonFilter filter(file,verbose_);
+    filter.fillRunLSMap();
+    jsonFilters_.push_back(filter);
+    std::string name = JsonFilter::jsonFileName( filter.jsonFilePath() );
+    jsonNames_.push_back(name);
+    if (verbose_>0) {
+      std::cout << "  [Efficiency::Efficiency]"
+		<< "Parsed JSON file name: " << name << std::endl;
+    }
+  }
+//  std::vector<bool>::iterator iter = jsonFlags_.begin();
+//  for ( auto const& name : jsonNames_ ) {
+//    std::advance(iter,1);
+//    jsonPtrs_.push_back(&*iter);
+//  }
+  jsonFlags_.clear();
+  jsonFlags_.resize(jsonNames_.size(),false);
+//  for ( auto& flag : jsonFlags_ ) {
+//    jsonPtrs_.push_back(&flag);
+//  }
+
+  // Output trees (after JSON file parsing!)
+  prepareOutputs(output);
+  
+  // Initialise vars (after JSON file parsing!)
   initVars();
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -193,9 +381,10 @@ void Efficiency::timing( int nentries, int jentry, auto start ) {
   std::time_t end_time = std::chrono::system_clock::to_time_t(end);
   std::string tmp = std::ctime(&end_time); 
   tmp.resize(tmp.length()-1); // remove trailing \n
-  std::cout << "Event: " << jentry
-	    << " Elapsed: " << elapsed_seconds.count() << "s "
-	    << " ETA: " << tmp
+  std::cout << "Processed event " << jentry << " out of " << nentries << " (" << int(100.*jentry/nentries) << "%). "
+	    << "Time elapsed: " << elapsed_seconds.count() << " s. "
+	    << "Time remaining: " << (predicted_duration.count() - elapsed_seconds.count() ) << " s. "
+	    << "Predicted finish time: " << tmp
 	    << std::endl;
 }
 
@@ -203,18 +392,65 @@ void Efficiency::timing( int nentries, int jentry, auto start ) {
 //
 void Efficiency::initVars() {
 
+  // JSON flags
+  jsonFlags_.clear();
+  jsonFlags_.resize(jsonNames_.size(),false);
+  tmp0=0;
+  tmp1=0;
+  tmp2=0;
+  tmp3=0;
+  tmp4=0;
+  tmp5=0;
+  tmp6=0;
+  tmp7=0;
+  tmp8=0;
+  tmp9=0;
+  tmp10=0;
+
   // Scalars
   theRun_=0;
+  theLumi_=0;
   theEvent_=0;
   nvtx_=0;
 
   // Trigger
-  trg_muon_pt_=0.;
-  hlt7_ip4_=0;
-  hlt8_ip3_=0;
-  hlt9_ip6_=0;
-  hlt12_ip6_=0;
+//  trg_muon_pt_=0.;
+//  trg_muon_eta_=-10.;
+//  hlt7_ip4_=0;
+//  hlt8_ip3_=0;
+//  hlt9_ip6_=0;
+//  hlt12_ip6_=0;
 
+  hlt_10p0_=0;
+  hlt_9p5_=0;
+  hlt_9p0_=0;
+  hlt_8p5_=0;
+  hlt_8p0_=0;
+  hlt_7p5_=0;
+  hlt_7p0_=0;
+  hlt_6p5_=0;
+  hlt_6p0_=0;
+  hlt_5p5_=0;
+  hlt_5p0_=0;
+  hlt_4p5_=0;
+  hlt_4p0_=0;
+  
+  l1_11p0_=0;
+  l1_10p5_=0;
+  l1_10p0_=0;
+  l1_9p5_=0;
+  l1_9p0_=0;
+  l1_8p5_=0;
+  l1_8p0_=0;
+  l1_7p5_=0;
+  l1_7p0_=0;
+  l1_6p5_=0;
+  l1_6p0_=0;
+  l1_5p5_=0;
+  l1_5p0_=0;
+  l1_4p5_=0;
+  l1_4p0_=0;
+  
   // Decay and acceptance
   is_bkee_=0;
   in_acc_=0;
@@ -244,11 +480,31 @@ void Efficiency::initVars() {
   e1_reco_overlap_=0;
   e2_reco_overlap_=0;
 
+  // RECO ID
+  e1_reco_loose_=0;
+  e1_reco_medium_=0;
+  e1_reco_tight_=0;
+  e2_reco_loose_=0;
+  e2_reco_medium_=0;
+  e2_reco_tight_=0;
+
   // Pre-selection and BDT
   ip3d_=-10.;
   cos2d_=-10.;
   bdt_=-10.;
   mll_=0.;
+
+  // B candidates
+  b_mass_ = -10.;
+  b_mass_err_ = -10.;
+  b_pt_ = -10.;
+  b_l1_pt_ = -10.;
+  b_l2_pt_ = -10.;
+  b_k_pt_ = -10.;
+  b_cos2D_ = -10.;
+  b_lxy_ = -10.;
+  b_lxyerr_ = -10.;
+  b_svprob_ = -10.;
 
 }
 
@@ -278,14 +534,79 @@ void Efficiency::bookOutputTree() {
 
   // Scalars
   outTree_->Branch("theRun", &theRun_, "theRun/I");
+  outTree_->Branch("theLumi", &theLumi_, "theLumi/I");
   outTree_->Branch("theEvent", &theEvent_, "theEvent/I");
 
+//  int idx = 0;
+//  for ( auto const& name : jsonNames_ ) {
+//    if (verbose_>1) std::cout << "[Efficiency::bookOutputTree]"
+//			      << " Adding branch " << name << std::endl;
+//    outTree_->Branch(name.c_str(),
+//		     &(jsonFlags_[idx]),
+//		     std::string(name+"/O").c_str());
+//    idx++;
+//  }
+
+//  int idx = 0;
+//  for ( auto const& flag : jsonFlags_ ) {
+//    std::string name = jsonNames_[idx];
+//    if (verbose_>1) std::cout << "[Efficiency::bookOutputTree]"
+//			      << " Adding branch " << name << std::endl;
+//    outTree_->Branch("JSON_"+name).c_str(),
+//		     &flag,
+//		     std::string("JSON_"+name+"/O").c_str());
+//    idx++;
+//  }
+
+  outTree_->Branch("JSON_TOTAL",&tmp0,"JSON_TOTAL/I");
+  outTree_->Branch("JSON_L1_11p0_HLT_6p5_final",&tmp1,"JSON_L1_11p0_HLT_6p5_final/I");
+  outTree_->Branch("JSON_L1_10p5_HLT_6p5_final",&tmp2,"JSON_L1_10p5_HLT_6p5_final/I");
+  outTree_->Branch("JSON_L1_10p5_HLT_5p0_final",&tmp3,"JSON_L1_10p5_HLT_5p0_final/I");
+  outTree_->Branch("JSON_L1_8p5_HLT_5p0_final",&tmp4,"JSON_L1_8p5_HLT_5p0_final/I");
+  outTree_->Branch("JSON_L1_8p0_HLT_5p0_final",&tmp5,"JSON_L1_8p0_HLT_5p0_final/I");
+  outTree_->Branch("JSON_L1_7p0_HLT_5p0_final",&tmp6,"JSON_L1_7p0_HLT_5p0_final/I");
+  outTree_->Branch("JSON_L1_6p5_HLT_4p5_final",&tmp7,"JSON_L1_6p5_HLT_4p5_final/I");
+  outTree_->Branch("JSON_L1_6p0_HLT_4p0_final",&tmp8,"JSON_L1_6p0_HLT_4p0_final/I");
+  outTree_->Branch("JSON_L1_5p5_HLT_6p0_final",&tmp9,"JSON_L1_5p5_HLT_6p0_final/I");
+  outTree_->Branch("JSON_L1_5p5_HLT_4p0_final",&tmp10,"JSON_L1_5p5_HLT_4p0_final/I");
+  
   // Trigger
-  outTree_->Branch("trg_muon_pt", &trg_muon_pt_, "trg_muon_pt/F");
-  outTree_->Branch("HLT_Mu7_IP4", &hlt7_ip4_, "HLT_Mu7_IP4/I");
-  outTree_->Branch("HLT_Mu8_IP3", &hlt8_ip3_, "HLT_Mu8_IP3/I");
-  outTree_->Branch("HLT_Mu9_IP6", &hlt9_ip6_, "HLT_Mu9_IP6/I");
-  outTree_->Branch("HLT_Mu12_IP6", &hlt12_ip6_, "HLT_Mu12_IP6/I");
+//  outTree_->Branch("trg_muon_pt", &trg_muon_pt_, "trg_muon_pt/F");
+//  outTree_->Branch("trg_muon_eta", &trg_muon_eta_, "trg_muon_eta/F");
+//  outTree_->Branch("HLT_Mu7_IP4", &hlt7_ip4_, "HLT_Mu7_IP4/I");
+//  outTree_->Branch("HLT_Mu8_IP3", &hlt8_ip3_, "HLT_Mu8_IP3/I");
+//  outTree_->Branch("HLT_Mu9_IP6", &hlt9_ip6_, "HLT_Mu9_IP6/I");
+//  outTree_->Branch("HLT_Mu12_IP6", &hlt12_ip6_, "HLT_Mu12_IP6/I");
+
+  outTree_->Branch("HLT_DoubleEle10p0", &hlt_10p0_, "HLT_DoubleEle10p0/I");
+  outTree_->Branch("HLT_DoubleEle9p5", &hlt_9p5_, "HLT_DoubleEle9p5/I");
+  outTree_->Branch("HLT_DoubleEle9p0", &hlt_9p0_, "HLT_DoubleEle9p0/I");
+  outTree_->Branch("HLT_DoubleEle8p5", &hlt_8p5_, "HLT_DoubleEle8p5/I");
+  outTree_->Branch("HLT_DoubleEle8p0", &hlt_8p0_, "HLT_DoubleEle8p0/I");
+  outTree_->Branch("HLT_DoubleEle7p5", &hlt_7p5_, "HLT_DoubleEle7p5/I");
+  outTree_->Branch("HLT_DoubleEle7p0", &hlt_7p0_, "HLT_DoubleEle7p0/I");
+  outTree_->Branch("HLT_DoubleEle6p5", &hlt_6p5_, "HLT_DoubleEle6p5/I");
+  outTree_->Branch("HLT_DoubleEle6p0", &hlt_6p0_, "HLT_DoubleEle6p0/I");
+  outTree_->Branch("HLT_DoubleEle5p5", &hlt_5p5_, "HLT_DoubleEle5p5/I");
+  outTree_->Branch("HLT_DoubleEle5p0", &hlt_5p0_, "HLT_DoubleEle5p0/I");
+  outTree_->Branch("HLT_DoubleEle4p5", &hlt_4p5_, "HLT_DoubleEle4p5/I");
+  outTree_->Branch("HLT_DoubleEle4p0", &hlt_4p0_, "HLT_DoubleEle4p0/I");
+
+  outTree_->Branch("L1_DoubleEG11p0", &l1_11p0_, "L1_DoubleEG11p0/I");
+  outTree_->Branch("L1_DoubleEG10p5", &l1_10p5_, "L1_DoubleEG10p5/I");
+  outTree_->Branch("L1_DoubleEG10p0", &l1_10p0_, "L1_DoubleEG10p0/I");
+  outTree_->Branch("L1_DoubleEG9p5", &l1_9p5_, "L1_DoubleEG9p5/I");
+  outTree_->Branch("L1_DoubleEG9p0", &l1_9p0_, "L1_DoubleEG9p0/I");
+  outTree_->Branch("L1_DoubleEG8p5", &l1_8p5_, "L1_DoubleEG8p5/I");
+  outTree_->Branch("L1_DoubleEG8p0", &l1_8p0_, "L1_DoubleEG8p0/I");
+  outTree_->Branch("L1_DoubleEG7p5", &l1_7p5_, "L1_DoubleEG7p5/I");
+  outTree_->Branch("L1_DoubleEG7p0", &l1_7p0_, "L1_DoubleEG7p0/I");
+  outTree_->Branch("L1_DoubleEG6p5", &l1_6p5_, "L1_DoubleEG6p5/I");
+  outTree_->Branch("L1_DoubleEG6p0", &l1_6p0_, "L1_DoubleEG6p0/I");
+  outTree_->Branch("L1_DoubleEG5p5", &l1_5p5_, "L1_DoubleEG5p5/I");
+  outTree_->Branch("L1_DoubleEG5p0", &l1_5p0_, "L1_DoubleEG5p0/I");
+  outTree_->Branch("L1_DoubleEG4p5", &l1_4p5_, "L1_DoubleEG4p5/I");
+  outTree_->Branch("L1_DoubleEG4p0", &l1_4p0_, "L1_DoubleEG4p0/I");
 
   // Decay and acceptance
   outTree_->Branch("isBToKEE", &is_bkee_, "isBToKEE/I");
@@ -309,18 +630,38 @@ void Efficiency::bookOutputTree() {
   outTree_->Branch("e12_reco_dr", &e12_reco_dr_, "e12_reco_dr/F");
 
   //RECO algo
-  outTree_->Branch("e1_reco_pf", &e1_reco_pf_, "e1_reco_pf/I");
-  outTree_->Branch("e2_reco_pf", &e2_reco_pf_, "e2_reco_pf/I");
-  outTree_->Branch("e1_reco_lowpt", &e1_reco_lowpt_, "e1_reco_lowpt/I");
-  outTree_->Branch("e2_reco_lowpt", &e2_reco_lowpt_, "e2_reco_lowpt/I");
-  outTree_->Branch("e1_reco_overlap", &e1_reco_overlap_, "e1_reco_overlap/I");
-  outTree_->Branch("e2_reco_overlap", &e2_reco_overlap_, "e2_reco_overlap/I");
+//  outTree_->Branch("e1_reco_pf", &e1_reco_pf_, "e1_reco_pf/I");
+//  outTree_->Branch("e2_reco_pf", &e2_reco_pf_, "e2_reco_pf/I");
+//  outTree_->Branch("e1_reco_lowpt", &e1_reco_lowpt_, "e1_reco_lowpt/I");
+//  outTree_->Branch("e2_reco_lowpt", &e2_reco_lowpt_, "e2_reco_lowpt/I");
+//  outTree_->Branch("e1_reco_overlap", &e1_reco_overlap_, "e1_reco_overlap/I");
+//  outTree_->Branch("e2_reco_overlap", &e2_reco_overlap_, "e2_reco_overlap/I");
+
+  //RECO ID
+  outTree_->Branch("e1_reco_loose", &e1_reco_loose_, "e1_reco_loose/I");
+  outTree_->Branch("e2_reco_loose", &e2_reco_loose_, "e2_reco_loose/I");
+  outTree_->Branch("e1_reco_medium", &e1_reco_medium_, "e1_reco_medium/I");
+  outTree_->Branch("e2_reco_medium", &e2_reco_medium_, "e2_reco_medium/I");
+  outTree_->Branch("e1_reco_tight", &e1_reco_tight_, "e1_reco_tight/I");
+  outTree_->Branch("e2_reco_tight", &e2_reco_tight_, "e2_reco_tight/I");
 
   // Pre-selection and BDT
   outTree_->Branch("ip3d", &ip3d_, "ip3d/F");
   outTree_->Branch("cos2d", &cos2d_, "cos2d/F");
   outTree_->Branch("bdt", &bdt_, "bdt/F");
   outTree_->Branch("mll", &mll_, "mll/F");
+
+  // B candidates
+  outTree_->Branch("b_mass", &b_mass_, "b_mass/F");
+  outTree_->Branch("b_mass_err", &b_mass_err_, "b_mass_err/F");
+  outTree_->Branch("b_pt", &b_pt_, "b_pt/F");
+  outTree_->Branch("b_l1_pt", &b_l1_pt_, "b_l1_pt/F");
+  outTree_->Branch("b_l2_pt", &b_l2_pt_, "b_l2_pt/F");
+  outTree_->Branch("b_k_pt", &b_k_pt_, "b_k_pt/F");
+  outTree_->Branch("b_cos2D", &b_cos2D_, "b_cos2D/F");
+  outTree_->Branch("b_lxy", &b_lxy_, "b_lxy/F");
+  outTree_->Branch("b_lxyerr", &b_lxyerr_, "b_lxyerr/F");
+  outTree_->Branch("b_svprob", &b_svprob_, "b_svprob/F");
 
 }
 
@@ -335,29 +676,98 @@ void Efficiency::bookOutputHistos() {
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-bool Efficiency::isBToKEE(Efficiency::Daughters& daughters) {
+bool Efficiency::isBToKEE(Efficiency::Daughters& daughters) { //, bool resonant) {
   daughters = Daughters();
   Cands cands;
-  if (verbose_>3) std::cout << "### isBToKEE: find daughters to Bs ... " << std::endl;
+  if (verbose_>3) std::cout << "### isBToKEE: find daughters to Bs for mode " << _mode << "... " << std::endl;
   for ( int idx = 0; idx < nGenPart; ++idx ) {
     int d_idx = idx;
     int d_pdg = GenPart_pdgId[d_idx];
     int m_idx = GenPart_genPartIdxMother[d_idx];
     int m_pdg = GenPart_pdgId[m_idx];
-    if ( ( abs(m_pdg) == 521 && abs(d_pdg) == 11 ) ||   // find daughter electrons
-	 ( abs(m_pdg) == 521 && abs(d_pdg) == 321 ) ) { // find daughter kaon
+    int g_idx = GenPart_genPartIdxMother[m_idx];
+    int g_pdg = GenPart_pdgId[g_idx];
+    int gg_idx = GenPart_genPartIdxMother[g_idx];
+    int gg_pdg = GenPart_pdgId[gg_idx];
+    if (verbose_>3) std::cout << " GEN particle provenance:"
+			      << " idx: " << idx
+			      << " d_idx: " << d_idx
+			      << " (d_pdg: " << d_pdg
+			      << ") m_idx: " << m_idx
+			      << " (m_pdg: " << m_pdg
+			      << ") g_idx: " << g_idx
+			      << " (g_pdg: " << g_pdg
+			      << ") gg_idx: " << gg_idx
+			      << " (gg_pdg: " << gg_pdg
+			      << ")"
+			      << std::endl;
+    if ( abs(m_pdg) == 521 && abs(d_pdg) == 321 ) { // find daughter kaon
       if ( cands.find(m_idx) == cands.end() ) {
-	cands[m_idx] = std::make_pair(Ints(),Ints());//Daughters();//
+	cands[m_idx] = std::make_pair(Ints(),Ints());
       }
       cands[m_idx].first.push_back(d_idx);
       cands[m_idx].second.push_back(d_pdg);
-      if (verbose_>3) std::cout << " d_idx: " << d_idx 
+      if (verbose_>3) std::cout << " Kaon provenance:"
+				<< " d_idx: " << d_idx
 				<< " d_pdg: " << d_pdg
 				<< " m_idx: " << m_idx
 				<< " m_pdg: " << m_pdg
 				<< std::endl;
     }
+    if ( _mode == 1 ) {
+      if ( abs(m_pdg) == 521 && abs(d_pdg) == 11 ) { // find daughter electrons
+	if ( cands.find(m_idx) == cands.end() ) {
+	  cands[m_idx] = std::make_pair(Ints(),Ints());
+	}
+	cands[m_idx].first.push_back(d_idx);
+	cands[m_idx].second.push_back(d_pdg);
+	if (verbose_>3) std::cout << " Electron provenance:"
+				  << " d_idx: " << d_idx
+				  << " d_pdg: " << d_pdg
+				  << " m_idx: " << m_idx
+				  << " m_pdg: " << m_pdg
+				  << std::endl;
+      }
+    } else if ( _mode == 2 ) {
+      if ( abs(g_pdg) == 521 && abs(m_pdg) == 443 && abs(d_pdg) == 11 ) { // find daughter eles via J/psi
+	if ( cands.find(g_idx) == cands.end() ) {
+	  cands[g_idx] = std::make_pair(Ints(),Ints());
+	}
+	cands[g_idx].first.push_back(d_idx);
+	cands[g_idx].second.push_back(d_pdg);
+	if (verbose_>3) std::cout << " Electron provenance:"
+				  << " d_idx: " << d_idx
+				  << " d_pdg: " << d_pdg
+				  << " m_idx: " << m_idx
+				  << " m_pdg: " << m_pdg
+				  << " g_idx: " << g_idx
+				  << " g_pdg: " << g_pdg
+				  << std::endl;
+      }
+    } else if ( _mode == 3 ) {
+      //std::cout << "B --> K Psi2S --> K ee: not implemented yet!" << std::endl;
+      if ( abs(g_pdg) == 521 && abs(m_pdg) == 100443 && abs(d_pdg) == 11 ) { // find daughter eles via Psi(2D) and J/psi
+	if ( cands.find(g_idx) == cands.end() ) {
+	  cands[g_idx] = std::make_pair(Ints(),Ints());
+	}
+	cands[g_idx].first.push_back(d_idx);
+	cands[g_idx].second.push_back(d_pdg);
+	if (verbose_>3) std::cout << " Electron provenance:"
+				  << " d_idx: " << d_idx
+				  << " d_pdg: " << d_pdg
+				  << " m_idx: " << m_idx
+				  << " m_pdg: " << m_pdg
+				  << " g_idx: " << g_idx
+				  << " g_pdg: " << g_pdg
+				  << " gg_idx: " << gg_idx
+				  << " gg_pdg: " << gg_pdg
+				  << std::endl;
+      }
+    } else {
+      std::cout << "Mode not known!" << std::endl;
+    }
   }
+
   Cands::iterator iter;
   if (verbose_>3) std::cout << "### isBToKEE: loop through Bs and their daughters ... " << std::endl;
   for (iter = cands.begin(); iter != cands.end(); ++iter) {
@@ -372,7 +782,7 @@ bool Efficiency::isBToKEE(Efficiency::Daughters& daughters) {
       int d_pdg = iter->second.second[i];
       int m_idx = GenPart_genPartIdxMother[d_idx];
       int m_pdg = GenPart_pdgId[m_idx];
-      if (verbose_>3) std::cout << "  d_idx: " << d_idx
+      if (verbose_>3) std::cout << " d_idx: " << d_idx
 				<< " d_pdg: " << d_pdg
 				<< " m_idx: " << m_idx
 				<< " m_pdg: " << m_pdg
@@ -462,14 +872,16 @@ bool Efficiency::recoCand(int theB,
 			  int& e1_gen_idx,int& e2_gen_idx,
 			  int& e1_reco_idx,float& e1_reco_pt,float& e1_reco_eta,
 			  int& e1_reco_pf,int& e1_reco_lowpt,int& e1_reco_overlap,
+			  int& e1_reco_loose,int& e1_reco_medium,int& e1_reco_tight,
 			  int& e2_reco_idx,float& e2_reco_pt,float& e2_reco_eta,
 			  int& e2_reco_pf,int& e2_reco_lowpt,int& e2_reco_overlap,
-			  float& e12_reco_dr
+			  int& e2_reco_loose,int& e2_reco_medium,int& e2_reco_tight,
+			  float& e12_reco_dr //, bool resonant
 			  ) {
-  if (verbose_>4) std::cout << "Efficiency::recoCand:" 
-			    << " e1_gen_idx: " << e1_gen_idx
-			    << " e2_gen_idx: " << e2_gen_idx
-			    << std::endl;
+  if (_isMC && verbose_>4) std::cout << "Efficiency::recoCand:" 
+				     << " e1_gen_idx: " << e1_gen_idx
+				     << " e2_gen_idx: " << e2_gen_idx
+				     << std::endl;
   
   int ele1_idx = BToKEE_l1Idx[theB];
   int ele2_idx = BToKEE_l2Idx[theB];
@@ -501,132 +913,221 @@ bool Efficiency::recoCand(int theB,
 			    << " ele1_isPFoverlap: " << ele1_isPFoverlap
 			    << " ele2_isPFoverlap: " << ele2_isPFoverlap
 			    << std::endl;
-  
-  int ele1_genPartIdx = Electron_genPartIdx[ele1_idx];
-  int ele2_genPartIdx = Electron_genPartIdx[ele2_idx];
-  int kaon_genPartIdx = ProbeTracks_genPartIdx[kaon_idx];
-  if (verbose_>4) std::cout << " ele1_genPartIdx: " << ele1_genPartIdx
-			    << " ele2_genPartIdx: " << ele2_genPartIdx
-			    << " kaon_genPartIdx: " << kaon_genPartIdx
-			    << std::endl;
-  if (ele1_genPartIdx >= EfficiencyBase::nGenPart_max_ || 
-      ele2_genPartIdx >= EfficiencyBase::nGenPart_max_ || 
-      kaon_genPartIdx >= EfficiencyBase::nGenPart_max_ ) {
-    if (verbose_>4) std::cout << "Incorrect GenPart index!!!"
-			      << " ele1_genPartIdx: " << ele1_genPartIdx
+
+  if (_isMC) {
+
+    int ele1_genPartIdx = Electron_genPartIdx[ele1_idx];
+    int ele2_genPartIdx = Electron_genPartIdx[ele2_idx];
+    int kaon_genPartIdx = ProbeTracks_genPartIdx[kaon_idx];
+    if (verbose_>4) std::cout << " ele1_genPartIdx: " << ele1_genPartIdx
 			      << " ele2_genPartIdx: " << ele2_genPartIdx
 			      << " kaon_genPartIdx: " << kaon_genPartIdx
-			      << std::endl; 
-    return false;
-  }
-
-  int ele1_genMotherIdx = GenPart_genPartIdxMother[ele1_genPartIdx];
-  int ele2_genMotherIdx = GenPart_genPartIdxMother[ele2_genPartIdx];
-  int kaon_genMotherIdx = GenPart_genPartIdxMother[kaon_genPartIdx];
-  if (verbose_>4) std::cout << " ele1_genMotherIdx: " << ele1_genMotherIdx
-			    << " ele2_genMotherIdx: " << ele2_genMotherIdx
-			    << " kaon_genMotherIdx: " << kaon_genMotherIdx
-			    << std::endl;
-  
-  int ele1_genGMotherIdx = GenPart_genPartIdxMother[ele1_genMotherIdx];
-  int ele2_genGMotherIdx = GenPart_genPartIdxMother[ele2_genMotherIdx];
-  int kaon_genGMotherIdx = GenPart_genPartIdxMother[kaon_genMotherIdx];
-  if (verbose_>4) std::cout << " ele1_genGMotherIdx: " << ele1_genGMotherIdx
-			    << " ele2_genGMotherIdx: " << ele2_genGMotherIdx
-			    << " kaon_genGMotherIdx: " << kaon_genGMotherIdx
-			    << std::endl;
-  
-  int ele1_genPdgId = GenPart_pdgId[ele1_genPartIdx];
-  int ele2_genPdgId = GenPart_pdgId[ele2_genPartIdx];
-  int kaon_genPdgId = GenPart_pdgId[kaon_genPartIdx];
-  if (verbose_>4) std::cout << " ele1_genPdgId: " << ele1_genPdgId
-			    << " ele2_genPdgId: " << ele2_genPdgId
-			    << " kaon_genPdgId: " << kaon_genPdgId
-			    << std::endl;
-  
-  int ele1_genMotherPdgId = GenPart_pdgId[ele1_genMotherIdx];
-  int ele2_genMotherPdgId = GenPart_pdgId[ele2_genMotherIdx];
-  int kaon_genMotherPdgId = GenPart_pdgId[kaon_genMotherIdx];
-  if (verbose_>4) std::cout << " ele1_genMotherPdgId: " << ele1_genMotherPdgId
-			    << " ele2_genMotherPdgId: " << ele2_genMotherPdgId
-			    << " kaon_genMotherPdgId: " << kaon_genMotherPdgId
-			    << std::endl;
-  
-  int ele1_genGMotherPdgId = GenPart_pdgId[ele1_genGMotherIdx];
-  int ele2_genGMotherPdgId = GenPart_pdgId[ele2_genGMotherIdx];
-  int kaon_genGMotherPdgId = GenPart_pdgId[kaon_genGMotherIdx];
-  if (verbose_>4) std::cout << " ele1_genGMotherPdgId: " << ele1_genGMotherPdgId
-			    << " ele2_genGMotherPdgId: " << ele2_genGMotherPdgId
-			    << " kaon_genGMotherPdgId: " << kaon_genGMotherPdgId
-			    << std::endl;
-  
-  bool found = ( ( ele1_genPartIdx >= 0
-		   && ele2_genPartIdx >= 0
-		   && kaon_genPartIdx >= 0
-		   ) &&
-		 ( abs(ele1_genPdgId) == 11
-		   && abs(ele2_genPdgId) == 11
-		   && abs(kaon_genPdgId) == 321 
-		   ) &&
-		 //( ele1_genPdgId * ele1_genPdgId < 0 ) &&
-		 ( abs(ele1_genMotherPdgId) == 521
-		   && abs(ele2_genMotherPdgId) == 521
-		   && abs(kaon_genMotherPdgId) == 521
-		   ) );
-  
-  if (found) {
-    float e1_reco_phi = 0.;
-    float e2_reco_phi = 0.;
-    if (verbose_>4) std::cout << "FOUND " 
-			      << e1_gen_idx << " " 
-			      << ele1_genPartIdx << " " 
-			      << e2_gen_idx << " " 
-			      << ele2_genPartIdx << " " 
 			      << std::endl;
-    if (e1_gen_idx==ele1_genPartIdx){
-      e1_reco_idx = ele1_idx;
-      e1_reco_pt  = Electron_pt[ele1_idx];
-      e1_reco_eta = Electron_eta[ele1_idx];
-      e1_reco_phi = Electron_phi[ele1_idx];
-      e1_reco_pf  = Electron_isPF[ele1_idx];
-      e1_reco_lowpt = Electron_isLowPt[ele1_idx];
-      e1_reco_overlap = Electron_isPFoverlap[ele1_idx];
-    } 
-    if (e1_gen_idx==ele2_genPartIdx){
-      e1_reco_idx = ele2_idx;
-      e1_reco_pt  = Electron_pt[ele2_idx];
-      e1_reco_eta = Electron_eta[ele2_idx];
-      e1_reco_phi = Electron_phi[ele2_idx];
-      e1_reco_pf  = Electron_isPF[ele2_idx];
-      e1_reco_lowpt = Electron_isLowPt[ele2_idx];
-      e1_reco_overlap = Electron_isPFoverlap[ele2_idx];
+    if (ele1_genPartIdx >= EfficiencyBase::nGenPart_max_ || 
+	ele2_genPartIdx >= EfficiencyBase::nGenPart_max_ || 
+	kaon_genPartIdx >= EfficiencyBase::nGenPart_max_ ) {
+      if (verbose_>4) std::cout << "Incorrect GenPart index!!!"
+				<< " ele1_genPartIdx: " << ele1_genPartIdx
+				<< " ele2_genPartIdx: " << ele2_genPartIdx
+				<< " kaon_genPartIdx: " << kaon_genPartIdx
+				<< std::endl; 
+      return false;
     }
-    if (e2_gen_idx==ele1_genPartIdx){
-      e2_reco_idx = ele1_idx;
-      e2_reco_pt  = Electron_pt[ele1_idx];
-      e2_reco_eta = Electron_eta[ele1_idx];
-      e2_reco_phi = Electron_phi[ele1_idx];
-      e2_reco_pf  = Electron_isPF[ele1_idx];
-      e2_reco_lowpt = Electron_isLowPt[ele1_idx]; //@@ was e1_reco_lowpt (bug!)
-      e2_reco_overlap = Electron_isPFoverlap[ele1_idx];
+
+    int ele1_genMotherIdx = GenPart_genPartIdxMother[ele1_genPartIdx];
+    int ele2_genMotherIdx = GenPart_genPartIdxMother[ele2_genPartIdx];
+    int kaon_genMotherIdx = GenPart_genPartIdxMother[kaon_genPartIdx];
+    if (verbose_>4) std::cout << " ele1_genMotherIdx: " << ele1_genMotherIdx
+			      << " ele2_genMotherIdx: " << ele2_genMotherIdx
+			      << " kaon_genMotherIdx: " << kaon_genMotherIdx
+			      << std::endl;
+    
+    int ele1_genGMotherIdx = GenPart_genPartIdxMother[ele1_genMotherIdx];
+    int ele2_genGMotherIdx = GenPart_genPartIdxMother[ele2_genMotherIdx];
+    int kaon_genGMotherIdx = GenPart_genPartIdxMother[kaon_genMotherIdx];
+    if (verbose_>4) std::cout << " ele1_genGMotherIdx: " << ele1_genGMotherIdx
+			      << " ele2_genGMotherIdx: " << ele2_genGMotherIdx
+			      << " kaon_genGMotherIdx: " << kaon_genGMotherIdx
+			      << std::endl;
+    
+    int ele1_genPdgId = GenPart_pdgId[ele1_genPartIdx];
+    int ele2_genPdgId = GenPart_pdgId[ele2_genPartIdx];
+    int kaon_genPdgId = GenPart_pdgId[kaon_genPartIdx];
+    if (verbose_>4) std::cout << " ele1_genPdgId: " << ele1_genPdgId
+			      << " ele2_genPdgId: " << ele2_genPdgId
+			      << " kaon_genPdgId: " << kaon_genPdgId
+			      << std::endl;
+    
+    int ele1_genMotherPdgId = GenPart_pdgId[ele1_genMotherIdx];
+    int ele2_genMotherPdgId = GenPart_pdgId[ele2_genMotherIdx];
+    int kaon_genMotherPdgId = GenPart_pdgId[kaon_genMotherIdx];
+    if (verbose_>4) std::cout << " ele1_genMotherPdgId: " << ele1_genMotherPdgId
+			      << " ele2_genMotherPdgId: " << ele2_genMotherPdgId
+			      << " kaon_genMotherPdgId: " << kaon_genMotherPdgId
+			      << std::endl;
+    
+    int ele1_genGMotherPdgId = GenPart_pdgId[ele1_genGMotherIdx];
+    int ele2_genGMotherPdgId = GenPart_pdgId[ele2_genGMotherIdx];
+    int kaon_genGMotherPdgId = GenPart_pdgId[kaon_genGMotherIdx];
+    if (verbose_>4) std::cout << " ele1_genGMotherPdgId: " << ele1_genGMotherPdgId
+			      << " ele2_genGMotherPdgId: " << ele2_genGMotherPdgId
+			      << " kaon_genGMotherPdgId: " << kaon_genGMotherPdgId
+			      << std::endl;
+
+    bool found = false;
+    if ( _mode == 1 ) { 
+      found = ( ( ele1_genPartIdx >= 0 &&
+		  ele2_genPartIdx >= 0 &&
+		  kaon_genPartIdx >= 0
+		  ) &&
+		( abs(ele1_genPdgId) == 11 &&
+		  abs(ele2_genPdgId) == 11 &&
+		  abs(kaon_genPdgId) == 321 
+		  ) &&
+		//( ele1_genPdgId * ele1_genPdgId < 0 ) &&
+		( abs(ele1_genMotherPdgId) == 521 &&
+		  abs(ele2_genMotherPdgId) == 521 &&
+		  abs(kaon_genMotherPdgId) == 521
+		  ) );
+    } else if ( _mode == 2 ) { 
+      found = ( ( ele1_genPartIdx >= 0 &&
+		  ele2_genPartIdx >= 0 &&
+		  kaon_genPartIdx >= 0
+		  ) &&
+		( abs(ele1_genPdgId) == 11 &&
+		  abs(ele2_genPdgId) == 11 &&
+		  abs(kaon_genPdgId) == 321 
+		  ) &&
+		//( ele1_genPdgId * ele1_genPdgId < 0 ) &&
+		( abs(ele1_genGMotherPdgId) == 521 &&
+		  abs(ele2_genGMotherPdgId) == 521 &&
+		  abs(ele1_genMotherPdgId) == 443 && // via J/psi
+		  abs(ele2_genMotherPdgId) == 443 && // via J/psi
+		  abs(kaon_genMotherPdgId) == 521
+		  ) );
+    } else if ( _mode == 3 ) {
+      //std::cout << "B --> K Psi2S --> K ee: not implemented yet!" << std::endl;
+      found = ( ( ele1_genPartIdx >= 0 &&
+		  ele2_genPartIdx >= 0 &&
+		  kaon_genPartIdx >= 0
+		  ) &&
+		( abs(ele1_genPdgId) == 11 &&
+		  abs(ele2_genPdgId) == 11 &&
+		  abs(kaon_genPdgId) == 321 
+		  ) &&
+		//( ele1_genPdgId * ele1_genPdgId < 0 ) &&
+		( abs(ele1_genGMotherPdgId) == 521 &&
+		  abs(ele2_genGMotherPdgId) == 521 &&
+		  abs(ele1_genMotherPdgId) == 100443 && // via Psi(2S)
+		  abs(ele2_genMotherPdgId) == 100443 && // via Psi(2S)
+		  abs(kaon_genMotherPdgId) == 521
+		  ) );
+    } else {
+      std::cout << "Mode not known!!" << std::endl;
     }
-    if (e2_gen_idx==ele2_genPartIdx){
-      e2_reco_idx = ele2_idx;
-      e2_reco_pt  = Electron_pt[ele2_idx];
-      e2_reco_eta = Electron_eta[ele2_idx];
-      e2_reco_phi = Electron_phi[ele2_idx];
-      e2_reco_pf  = Electron_isPF[ele2_idx];
-      e2_reco_lowpt = Electron_isLowPt[ele2_idx];
-      e2_reco_overlap = Electron_isPFoverlap[ele2_idx];
+    
+    if (found) {
+      float e1_reco_phi = 0.;
+      float e2_reco_phi = 0.;
+      if (verbose_>4) std::cout << "FOUND " 
+				<< e1_gen_idx << " " 
+				<< ele1_genPartIdx << " " 
+				<< e2_gen_idx << " " 
+				<< ele2_genPartIdx << " " 
+				<< std::endl;
+      if (e1_gen_idx==ele1_genPartIdx){
+	e1_reco_idx = ele1_idx;
+	e1_reco_pt  = Electron_pt[ele1_idx];
+	e1_reco_eta = Electron_eta[ele1_idx];
+	e1_reco_phi = Electron_phi[ele1_idx];
+	e1_reco_pf  = Electron_isPF[ele1_idx];
+	e1_reco_lowpt = Electron_isLowPt[ele1_idx];
+	e1_reco_overlap = Electron_isPFoverlap[ele1_idx];
+	e1_reco_loose = (int)Electron_LooseID[ele1_idx];
+	e1_reco_medium = (int)Electron_MediumID[ele1_idx];
+	e1_reco_tight = (int)Electron_TightID[ele1_idx];
+      } 
+      if (e1_gen_idx==ele2_genPartIdx){
+	e1_reco_idx = ele2_idx;
+	e1_reco_pt  = Electron_pt[ele2_idx];
+	e1_reco_eta = Electron_eta[ele2_idx];
+	e1_reco_phi = Electron_phi[ele2_idx];
+	e1_reco_pf  = Electron_isPF[ele2_idx];
+	e1_reco_lowpt = Electron_isLowPt[ele2_idx];
+	e1_reco_overlap = Electron_isPFoverlap[ele2_idx];
+	e1_reco_loose = (int)Electron_LooseID[ele2_idx];
+	e1_reco_medium = (int)Electron_MediumID[ele2_idx];
+	e1_reco_tight = (int)Electron_TightID[ele2_idx];
+      }
+      if (e2_gen_idx==ele1_genPartIdx){
+	e2_reco_idx = ele1_idx;
+	e2_reco_pt  = Electron_pt[ele1_idx];
+	e2_reco_eta = Electron_eta[ele1_idx];
+	e2_reco_phi = Electron_phi[ele1_idx];
+	e2_reco_pf  = Electron_isPF[ele1_idx];
+	e2_reco_lowpt = Electron_isLowPt[ele1_idx]; //@@ was e1_reco_lowpt (bug!)
+	e2_reco_overlap = Electron_isPFoverlap[ele1_idx];
+	e2_reco_loose = (int)Electron_LooseID[ele1_idx];
+	e2_reco_medium = (int)Electron_MediumID[ele1_idx];
+	e2_reco_tight = (int)Electron_TightID[ele1_idx];
+      }
+      if (e2_gen_idx==ele2_genPartIdx){
+	e2_reco_idx = ele2_idx;
+	e2_reco_pt  = Electron_pt[ele2_idx];
+	e2_reco_eta = Electron_eta[ele2_idx];
+	e2_reco_phi = Electron_phi[ele2_idx];
+	e2_reco_pf  = Electron_isPF[ele2_idx];
+	e2_reco_lowpt = Electron_isLowPt[ele2_idx];
+	e2_reco_overlap = Electron_isPFoverlap[ele2_idx];
+	e2_reco_loose = (int)Electron_LooseID[ele2_idx];
+	e2_reco_medium = (int)Electron_MediumID[ele2_idx];
+	e2_reco_tight = (int)Electron_TightID[ele2_idx];
+      }
+      e12_reco_dr = DeltaR(e1_reco_eta,
+			   e1_reco_phi,
+			   e2_reco_eta,
+			   e2_reco_phi);
     }
+
+    if (verbose_>4) std::cout << "recoCand found: " << found <<  std::endl;
+    return found;
+    
+  } else { // is data
+
+    e1_reco_idx = ele1_idx;
+    e1_reco_pt  = Electron_pt[ele1_idx];
+    e1_reco_eta = Electron_eta[ele1_idx];
+    float e1_reco_phi = Electron_phi[ele1_idx];
+    e1_reco_pf  = Electron_isPF[ele1_idx];
+    e1_reco_lowpt = Electron_isLowPt[ele1_idx];
+    e1_reco_overlap = Electron_isPFoverlap[ele1_idx];
+    e1_reco_loose = (int)Electron_LooseID[ele1_idx];
+    e1_reco_medium = (int)Electron_MediumID[ele1_idx];
+    e1_reco_tight = (int)Electron_TightID[ele1_idx];
+    
+    e2_reco_idx = ele2_idx;
+    e2_reco_pt  = Electron_pt[ele2_idx];
+    e2_reco_eta = Electron_eta[ele2_idx];
+    float e2_reco_phi = Electron_phi[ele2_idx];
+    e2_reco_pf  = Electron_isPF[ele2_idx];
+    e2_reco_lowpt = Electron_isLowPt[ele2_idx];
+    e2_reco_overlap = Electron_isPFoverlap[ele2_idx];
+    e2_reco_loose = (int)Electron_LooseID[ele2_idx];
+    e2_reco_medium = (int)Electron_MediumID[ele2_idx];
+    e2_reco_tight = (int)Electron_TightID[ele2_idx];
+    
     e12_reco_dr = DeltaR(e1_reco_eta,
 			 e1_reco_phi,
 			 e2_reco_eta,
 			 e2_reco_phi);
-  }
 
-  if (verbose_>4) std::cout << "recoCand: " << found <<  std::endl;
-  return found;
+    if (verbose_>4) std::cout << "recoCand found: " << true <<  std::endl;
+    return true;
+    
+  }
+  
+  std::cerr << "recoCand: shouldn't get here!!!" <<  std::endl;
+  return true;
 
 }
 
