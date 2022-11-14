@@ -12,7 +12,7 @@ int main(int argc,
   if (argc <2 ) {
     std::cerr << "Usage: "
 	      << argv[0]
-	      << " [file_list.txt] [outputFile] [1=MC,0=data] [nmin] [nmax] [ptB] [svprob] [co2D]"
+	      << " [file_list.txt] [outputFile] [1=MC,0=data] [1=Kee, 2=KJpsi, 3=KPsi(2S)] [nmin] [nmax] [ptB] [svprob] [co2D]"
 	      << std::endl;
     return 1;
   }
@@ -25,25 +25,29 @@ int main(int argc,
   else strcpy(outputFileName,argv[2]);
 
   int isMC=1;
-  isMC=atoi(argv[3]);
+  if (argc>3) isMC=atoi(argv[3]);
+
+  int mode=0;
+  if (argc>4) mode=atoi(argv[4]);
 
   int nmin=0;
   int nmax=10000;
-  if(argc>4){
-    nmin=atoi(argv[4]);
-    nmax=atoi(argv[5]);
+  if(argc>6){
+    nmin=atoi(argv[5]);
+    nmax=atoi(argv[6]);
   }
 
   float ptB=0.;
   float svprob=0.;
   float cos2D=0.;
-  if(argc>6){
-    ptB=atof(argv[6]);
-    svprob=atof(argv[7]);
-    cos2D=atof(argv[8]);
+  if(argc>9){
+    ptB=atof(argv[7]);
+    svprob=atof(argv[8]);
+    cos2D=atof(argv[9]);
   }
 
   std::cout << " your request: isMC=" << isMC
+	    << " mode=" << mode
 	    << " nmin=" << nmin
 	    << " nmax=" << nmax
 	    << " cuts ptb=" << ptB
@@ -81,7 +85,7 @@ int main(int argc,
   std::cout << "we will process " << nfiles << " files"
 	    << std::endl;
   
-  Efficiency tnp(theChain, isMC, outputFileName);
+  Efficiency tnp(theChain, isMC, mode, outputFileName);
   //tnp.SetCuts(ptB,svprob,cos2D);
   tnp.Loop();
   
