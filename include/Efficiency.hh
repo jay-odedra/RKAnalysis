@@ -103,12 +103,9 @@ private:
   int theLumi_;
   int theEvent_;
   int nvtx_;
-  float Rho_fixedGridRhoAll_ ;
-  float Rho_fixedGridRhoFastjetAll_ ;
-  float Rho_fixedGridRhoFastjetCentral_ ;
-  float Rho_fixedGridRhoFastjetCentralCalo_ ;
-  float Rho_fixedGridRhoFastjetCentralChargedPileUp_ ;
-  float Rho_fixedGridRhoFastjetCentralNeutral_ ;
+  int  theMCPU_;
+  int PV_npvs_; 
+
 
   // Trigger
 //  float trg_muon_pt_;
