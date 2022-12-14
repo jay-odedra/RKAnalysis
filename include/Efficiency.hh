@@ -85,6 +85,11 @@ private:
   int tmp8;
   int tmp9;
   int tmp10;
+  int tmp11;
+  int tmp12;
+  int tmp13;
+  int tmp14;
+  int tmp15;
 
   // Output
   TFile* outFile_=nullptr;
@@ -98,6 +103,12 @@ private:
   int theLumi_;
   int theEvent_;
   int nvtx_;
+  float Rho_fixedGridRhoAll_ ;
+  float Rho_fixedGridRhoFastjetAll_ ;
+  float Rho_fixedGridRhoFastjetCentral_ ;
+  float Rho_fixedGridRhoFastjetCentralCalo_ ;
+  float Rho_fixedGridRhoFastjetCentralChargedPileUp_ ;
+  float Rho_fixedGridRhoFastjetCentralNeutral_ ;
 
   // Trigger
 //  float trg_muon_pt_;
@@ -192,7 +203,86 @@ private:
   float b_lxy_;
   float b_lxyerr_;
   float b_svprob_;
-
+  //bdt vars
+  float BToKEE_fit_l1_normpt_;
+  float BToKEE_fit_l2_normpt_;
+  float BToKEE_l1_dxy_sig_;
+  float BToKEE_l2_dxy_sig_;
+  float BToKEE_fit_k_normpt_;
+  float BToKEE_k_DCASig_;
+  float BToKEE_k_dxy_sig_;
+  float BToKEE_fit_normpt_;
+  float BToKEE_l_xy_sig_;
+  float BToKEE_eleDR_;
+  float BToKEE_llkDR_;
+  float BToKEE_l1_iso04_rel_;
+  float BToKEE_l2_iso04_rel_;
+  float BToKEE_k_iso04_rel_;
+  float BToKEE_b_iso04_rel_;
+  float BToKEE_ptAsym_;
+  float BToKEE_l1_dzTrg_;
+  float BToKEE_l2_dzTrg_;
+  float BToKEE_k_dzTrg_;
+  float BToKEE_l1_pfmvaId_lowPt_;
+  float BToKEE_l2_pfmvaId_lowPt_;
+  float BToKEE_l1_pfmvaId_highPt_;
+  float BToKEE_l2_pfmvaId_highPt_;
+  //new vars
+  float BToKEE_b_iso03_;
+  float BToKEE_b_iso03_dca_;
+  float BToKEE_b_iso03_dca_tight_;
+  float BToKEE_b_iso04_dca_ ;
+  float BToKEE_b_iso04_dca_tight_ ;
+  float BToKEE_fit_eta_ ;
+  float BToKEE_fit_k_eta_ ;
+  float BToKEE_fit_k_phi_ ;
+  float BToKEE_fit_phi_ ;
+  float BToKEE_k_iso03_ ;
+  float BToKEE_k_iso03_dca_ ;
+  float BToKEE_k_iso03_dca_tight_ ;
+  float BToKEE_k_iso04_dca_ ;
+  float BToKEE_k_iso04_dca_tight_ ;
+  float BToKEE_k_svip2d_ ;
+  float BToKEE_k_svip2d_err_;
+  float BToKEE_k_svip3d_err_;
+  float BToKEE_l1_iso03_dca_ ;
+  float BToKEE_l1_iso03_dca_tight_ ;
+  float BToKEE_l1_iso04_ ;
+  float BToKEE_l1_iso04_dca_ ;
+  float BToKEE_l1_iso04_dca_tight_ ;
+  float BToKEE_l2_iso03_;
+  float BToKEE_l2_iso03_dca_ ;
+  float BToKEE_l2_iso03_dca_tight_ ;
+  float BToKEE_l2_iso04_ ;
+  float BToKEE_l2_iso04_dca_ ;
+  float BToKEE_l2_iso04_dca_tight_;
+  float BToKEE_maxDR_ ;
+  float BToKEE_minDR_ ;
+  float BToKEE_b_n_isotrk_ ;
+  float BToKEE_b_n_isotrk_dca_ ;
+  float BToKEE_b_n_isotrk_dca_tight_ ;
+  float BToKEE_k_n_isotrk_ ;
+  float BToKEE_k_n_isotrk_dca_;
+  float BToKEE_k_n_isotrk_dca_tight_ ;
+  float BToKEE_l1_n_isotrk_ ;
+  float BToKEE_l1_n_isotrk_dca_ ;
+  float BToKEE_l1_n_isotrk_dca_tight_ ;
+  float BToKEE_l2_n_isotrk_ ;
+  float BToKEE_l2_n_isotrk_dca_;
+  float BToKEE_l2_n_isotrk_dca_tight_ ;
+  float Electron_fBrem_l1_ ;
+  float Electron_fBrem_l2_ ;
+  float Electron_ip3d_l1_ ;
+  float Electron_ip3d_l2_ ;
+  float Electron_pfRelIso_l1_ ;
+  float Electron_pfRelIso_l2_ ;
+  float Electron_sip3d_l1_;
+  float Electron_sip3d_l2_ ;
+  float Electron_trkRelIso_l1_ ;
+  float Electron_trkRelIso_l2_ ;
+  float ProbeTracks_dzS_;
+  float ProbeTracks_eta_; 
+  float ProbeTracks_nValidHits_;
 };
 
 #endif

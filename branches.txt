@@ -1,0 +1,232 @@
+*Br    0 :run       : run/i
+*Br    1 :luminosityBlock : luminosityBlock/i
+*Br    2 :event     : event/l
+*Br    3 :bunchCrossing : bunchCrossing/i
+*Br    4 :nBToKEE   : UInt_t BToKEE Variable
+*Br    5 :BToKEE_b_iso03 : Float_t userFloat("b_iso03")
+*Br    6 :BToKEE_b_iso03_dca : Float_t userFloat("b_iso03_dca")
+*Br    7 :BToKEE_b_iso03_dca_tight : Float_t
+*Br    8 :BToKEE_b_iso04 : Float_t userFloat("b_iso04")
+*Br    9 :BToKEE_b_iso04_dca : Float_t userFloat("b_iso04_dca")
+*Br   10 :BToKEE_b_iso04_dca_tight : Float_t
+*Br   11 :BToKEE_cos2D : Float_t userFloat("cos_theta_2D")
+*Br   12 :BToKEE_eta : Float_t eta
+*Br   13 :BToKEE_fit_cos2D : Float_t userFloat("fitted_cos_theta_2D")
+*Br   14 :BToKEE_fit_eta : Float_t userFloat("fitted_eta")
+*Br   15 :BToKEE_fit_k_eta : Float_t userFloat("fitted_k_eta")
+*Br   16 :BToKEE_fit_k_phi : Float_t userFloat("fitted_k_phi")
+*Br   17 :BToKEE_fit_k_pt : Float_t userFloat("fitted_k_pt")
+*Br   18 :BToKEE_fit_l1_eta : Float_t userFloat("fitted_l1_eta")
+*Br   19 :BToKEE_fit_l1_phi : Float_t userFloat("fitted_l1_phi")
+*Br   20 :BToKEE_fit_l1_pt : Float_t userFloat("fitted_l1_pt")
+*Br   21 :BToKEE_fit_l2_eta : Float_t userFloat("fitted_l2_eta")
+*Br   22 :BToKEE_fit_l2_phi : Float_t userFloat("fitted_l2_phi")
+*Br   23 :BToKEE_fit_l2_pt : Float_t userFloat("fitted_l2_pt")
+*Br   24 :BToKEE_fit_mass : Float_t userFloat("fitted_mass")
+*Br   25 :BToKEE_fit_massErr : Float_t userFloat("fitted_massErr")
+*Br   26 :BToKEE_fit_phi : Float_t userFloat("fitted_phi")
+*Br   27 :BToKEE_fit_pt : Float_t userFloat("fitted_pt")
+*Br   28 :BToKEE_k_iso03 : Float_t userFloat("k_iso03")
+*Br   29 :BToKEE_k_iso03_dca : Float_t userFloat("k_iso03_dca")
+*Br   30 :BToKEE_k_iso03_dca_tight : Float_t
+*Br   31 :BToKEE_k_iso04 : Float_t userFloat("k_iso04")
+*Br   32 :BToKEE_k_iso04_dca : Float_t userFloat("k_iso04_dca")
+*Br   33 :BToKEE_k_iso04_dca_tight : Float_t
+*Br   34 :BToKEE_k_svip2d : Float_t userFloat("k_svip2d")
+*Br   35 :BToKEE_k_svip2d_err : Float_t userFloat("k_svip2d_err")
+*Br   36 :BToKEE_k_svip3d : Float_t userFloat("k_svip3d")
+*Br   37 :BToKEE_k_svip3d_err : Float_t userFloat("k_svip3d_err")
+*Br   38 :BToKEE_l1_iso03 : Float_t userFloat("l1_iso03")
+*Br   39 :BToKEE_l1_iso03_dca : Float_t userFloat("l1_iso03_dca")
+*Br   40 :BToKEE_l1_iso03_dca_tight : Float_t
+*Br   41 :BToKEE_l1_iso04 : Float_t userFloat("l1_iso04")
+*Br   42 :BToKEE_l1_iso04_dca : Float_t userFloat("l1_iso04_dca")
+*Br   43 :BToKEE_l1_iso04_dca_tight : Float_t
+*Br   44 :BToKEE_l2_iso03 : Float_t userFloat("l2_iso03")
+*Br   45 :BToKEE_l2_iso03_dca : Float_t userFloat("l2_iso03_dca")
+*Br   46 :BToKEE_l2_iso03_dca_tight : Float_t
+*Br   47 :BToKEE_l2_iso04 : Float_t userFloat("l2_iso04")
+*Br   48 :BToKEE_l2_iso04_dca : Float_t userFloat("l2_iso04_dca")
+*Br   49 :BToKEE_l2_iso04_dca_tight : Float_t
+*Br   50 :BToKEE_l_xy : Float_t userFloat("l_xy")
+*Br   51 :BToKEE_l_xy_unc : Float_t userFloat("l_xy_unc")
+*Br   52 :BToKEE_mass : Float_t mass
+*Br   53 :BToKEE_maxDR : Float_t userFloat("max_dr")
+*Br   54 :BToKEE_minDR : Float_t userFloat("min_dr")
+*Br   55 :BToKEE_mllErr_llfit :
+*Br   56 :BToKEE_mll_fullfit : Float_t userFloat("fitted_mll")
+*Br   57 :BToKEE_mll_llfit :
+*Br   58 :BToKEE_mll_raw : Float_t userCand("dilepton").mass()
+*Br   59 :BToKEE_phi : Float_t phi
+*Br   60 :BToKEE_pt : Float_t pt
+*Br   61 :BToKEE_svprob : Float_t userFloat("sv_prob")
+*Br   62 :BToKEE_vtx_ex : Float_t userFloat("vtx_ex")
+*Br   63 :BToKEE_vtx_ey : Float_t userFloat("vtx_ey")
+*Br   64 :BToKEE_vtx_ez : Float_t userFloat("vtx_ez")
+*Br   65 :BToKEE_vtx_x : Float_t userFloat("vtx_x")
+*Br   66 :BToKEE_vtx_y : Float_t userFloat("vtx_y")
+*Br   67 :BToKEE_vtx_z : Float_t userFloat("vtx_z")
+*Br   68 :BToKEE_b_n_isotrk : Int_t userInt("b_n_isotrk")
+*Br   69 :BToKEE_b_n_isotrk_dca : Int_t userInt("b_n_isotrk_dca")
+*Br   70 :BToKEE_b_n_isotrk_dca_tight : Int_t
+*Br   71 :BToKEE_charge : Int_t electric charge
+*Br   72 :BToKEE_kIdx : Int_t userInt("k_idx")
+*Br   73 :BToKEE_k_n_isotrk : Int_t userInt("k_n_isotrk")
+*Br   74 :BToKEE_k_n_isotrk_dca : Int_t userInt("k_n_isotrk_dca")
+*Br   75 :BToKEE_k_n_isotrk_dca_tight : Int_t
+*Br   76 :BToKEE_l1Idx : Int_t userInt("l1_idx")
+*Br   77 :BToKEE_l1_n_isotrk : Int_t userInt("l1_n_isotrk")
+*Br   78 :BToKEE_l1_n_isotrk_dca : Int_t userInt("l1_n_isotrk_dca")
+*Br   79 :BToKEE_l1_n_isotrk_dca_tight :
+*Br   80 :BToKEE_l2Idx : Int_t userInt("l2_idx")
+*Br   81 :BToKEE_l2_n_isotrk : Int_t userInt("l2_n_isotrk")
+*Br   82 :BToKEE_l2_n_isotrk_dca : Int_t userInt("l2_n_isotrk_dca")
+*Br   83 :BToKEE_l2_n_isotrk_dca_tight :
+*Br   84 :BToKEE_n_k_used : Int_t userInt("n_k_used")
+*Br   85 :BToKEE_n_l1_used : Int_t userInt("n_l1_used")
+*Br   86 :BToKEE_n_l2_used : Int_t userInt("n_l2_used")
+*Br   87 :BToKEE_pdgId :
+*Br   88 :BToKEE_post_vtx_sel : Bool_t Satisfies post-vertexing
+*Br   89 :BToKEE_pre_vtx_sel : Bool_t Satisfies pre-vertexing
+*Br   90 :BeamSpot_sigmaZ : Float_t Width of BeamSpot in z (cm)
+*Br   91 :BeamSpot_sigmaZError : Float_t Error on width of BeamSpot in
+*Br   92 :BeamSpot_z : Float_t BeamSpot center, z coordinate (cm)
+*Br   93 :BeamSpot_zError :
+*Br   94 :BeamSpot_type :
+*Br   95 :nElectron : UInt_t slimmedElectrons for BPark after basic
+*Br   96 :Electron_LooseID :
+*Br   97 :Electron_MediumID :
+*Br   98 :Electron_TightID :
+*Br   99 :Electron_dxy : Float_t dxy (with sign) wrt first PV, in cm
+*Br  100 :Electron_dxyErr : Float_t dxy uncertainty, in cm
+*Br  101 :Electron_dz : Float_t dz (with sign) wrt first PV, in cm
+*Br  102 :Electron_dzErr : Float_t dz uncertainty, in cm
+*Br  103 :Electron_dzTrg :
+*Br  104 :Electron_eta : Float_t eta
+*Br  105 :Electron_fBrem : Float_t brem fraction from the gsf fit
+*Br  106 :Electron_ip3d : Float_t 3D impact parameter wrt first PV, in
+*Br  107 :Electron_mass : Float_t mass
+*Br  108 :Electron_mvaId : Float_t MVA ID for low pT, 20 for pfEle
+*Br  109 :Electron_pfRelIso :
+*Br  110 :Electron_pfmvaId : Float_t MVA ID for pfEle, 20 for low pT
+*Br  111 :Electron_phi : Float_t phi
+*Br  112 :Electron_pt : Float_t pt
+*Br  113 :Electron_ptBiased : Float_t ptBiased from seed BDT 20 for
+*Br  114 :Electron_sip3d :
+*Br  115 :Electron_trkRelIso :
+*Br  116 :Electron_unBiased : Float_t unBiased from seed BDT 20 for
+*Br  117 :Electron_vx : Float_t x coordinate of vertex position, in cm
+*Br  118 :Electron_vy : Float_t y coordinate of vertex position, in cm
+*Br  119 :Electron_vz : Float_t z coordinate of vertex position, in cm
+*Br  120 :Electron_charge :
+*Br  121 :Electron_pdgId :
+*Br  122 :Electron_convExtra :
+*Br  123 :Electron_convLead : Bool_t Matched to leading track from
+*Br  124 :Electron_convLoose :
+*Br  125 :Electron_convOpen :
+*Br  126 :Electron_convTight :
+*Br  127 :Electron_convTrail :
+*Br  128 :Electron_convVeto : Bool_t pass conversion veto
+*Br  129 :Electron_isLowPt : Bool_t electron is LowPt candidate
+*Br  130 :Electron_isPF : Bool_t electron is PF candidate
+*Br  131 :Electron_isPFoverlap :
+*Br  132 :Electron_skipEle :
+*Br  133 :Rho_fixedGridRhoAll :
+*Br  134 :Rho_fixedGridRhoFastjetAll :
+*Br  135 :Rho_fixedGridRhoFastjetCentral :
+*Br  136 :Rho_fixedGridRhoFastjetCentralCalo :
+*Br  137 :Rho_fixedGridRhoFastjetCentralChargedPileUp :
+*Br  138 :Rho_fixedGridRhoFastjetCentralNeutral :
+*Br  139 :nProbeTracks :
+*Br  140 :ProbeTracks_DCASig :
+*Br  141 :ProbeTracks_dxy : Float_t dxy (with sign) wrt first PV, in
+*Br  142 :ProbeTracks_dxyS : Float_t dxy/err (with sign) wrt first PV,
+*Br  143 :ProbeTracks_dz : Float_t dz (with sign) wrt first PV, in cm
+*Br  144 :ProbeTracks_dzS : Float_t dz/err (with sign) wrt first PV,
+*Br  145 :ProbeTracks_dzTrg :
+*Br  146 :ProbeTracks_eta : Float_t eta
+*Br  147 :ProbeTracks_mass : Float_t mass
+*Br  148 :ProbeTracks_phi : Float_t phi
+*Br  149 :ProbeTracks_pt : Float_t pt
+*Br  150 :ProbeTracks_vx : Float_t x coordinate of vertex position, in
+*Br  151 :ProbeTracks_vy : Float_t y coordinate of vertex position, in
+*Br  152 :ProbeTracks_vz : Float_t z coordinate of vertex position, in
+*Br  153 :ProbeTracks_charge : Int_t electric charge
+*Br  154 :ProbeTracks_isLostTrk : Int_t track from lostTrack
+*Br  155 :ProbeTracks_isPacked : Int_t track from packedCandidate
+*Br  156 :ProbeTracks_nValidHits : Int_t Number of valid hits on track
+*Br  157 :ProbeTracks_pdgId :
+*Br  158 :ProbeTracks_isMatchedToEle :
+*Br  159 :ProbeTracks_isMatchedToLooseMuon :
+*Br  160 :ProbeTracks_isMatchedToLowPtEle :
+*Br  161 :ProbeTracks_isMatchedToMediumMuon :
+*Br  162 :ProbeTracks_isMatchedToMuon : Bool_t track was used to build
+*Br  163 :ProbeTracks_isMatchedToSoftMuon :
+*Br  164 :ProbeTracks_skipTrack :
+*Br  165 :HLT_DoubleEle10_eta1p22_mMax6 : UChar_t hlt path
+*Br  166 :HLT_DoubleEle9p5_eta1p22_mMax6 : UChar_t hlt path
+*Br  167 :HLT_DoubleEle9_eta1p22_mMax6 : UChar_t hlt path
+*Br  168 :HLT_DoubleEle8p5_eta1p22_mMax6 : UChar_t hlt path
+*Br  169 :HLT_DoubleEle8_eta1p22_mMax6 : UChar_t hlt path
+*Br  170 :HLT_DoubleEle7p5_eta1p22_mMax6 : UChar_t hlt path
+*Br  171 :HLT_DoubleEle7_eta1p22_mMax6 : UChar_t hlt path
+*Br  172 :HLT_DoubleEle6p5_eta1p22_mMax6 : UChar_t hlt path
+*Br  173 :HLT_DoubleEle6_eta1p22_mMax6 : UChar_t hlt path
+*Br  174 :HLT_DoubleEle5p5_eta1p22_mMax6 : UChar_t hlt path
+*Br  175 :HLT_DoubleEle5_eta1p22_mMax6 : UChar_t hlt path
+*Br  176 :HLT_DoubleEle4p5_eta1p22_mMax6 : UChar_t hlt path
+*Br  177 :HLT_DoubleEle4_eta1p22_mMax6 : UChar_t hlt path
+*Br  178 :L1_DoubleEG11_er1p2_dR_Max0p6 : UChar_t l1 seed
+*Br  179 :L1_DoubleEG10p5_er1p2_dR_Max0p6 : UChar_t l1 seed
+*Br  180 :L1_DoubleEG10_er1p2_dR_Max0p6 : UChar_t l1 seed
+*Br  181 :L1_DoubleEG9p5_er1p2_dR_Max0p6 : UChar_t l1 seed
+*Br  182 :L1_DoubleEG9_er1p2_dR_Max0p7 : UChar_t l1 seed
+*Br  183 :L1_DoubleEG8p5_er1p2_dR_Max0p7 : UChar_t l1 seed
+*Br  184 :L1_DoubleEG8_er1p2_dR_Max0p7 : UChar_t l1 seed
+*Br  185 :L1_DoubleEG7p5_er1p2_dR_Max0p7 : UChar_t l1 seed
+*Br  186 :L1_DoubleEG7_er1p2_dR_Max0p8 : UChar_t l1 seed
+*Br  187 :L1_DoubleEG6p5_er1p2_dR_Max0p8 : UChar_t l1 seed
+*Br  188 :L1_DoubleEG6_er1p2_dR_Max0p8 : UChar_t l1 seed
+*Br  189 :L1_DoubleEG5p5_er1p2_dR_Max0p8 : UChar_t l1 seed
+*Br  190 :L1_DoubleEG5_er1p2_dR_Max0p9 : UChar_t l1 seed
+*Br  191 :L1_DoubleEG4p5_er1p2_dR_Max0p9 : UChar_t l1 seed
+*Br  192 :L1_DoubleEG4_er1p2_dR_Max0p9 : UChar_t l1 seed
+*Br  193 :nTrigObj  : UInt_t
+*Br  194 :TrigObj_pt : Float_t pt
+*Br  195 :TrigObj_eta : Float_t eta
+*Br  196 :TrigObj_phi : Float_t phi
+*Br  197 :TrigObj_l1pt : Float_t pt of associated L1 seed
+*Br  198 :TrigObj_l1pt_2 : Float_t pt of associated secondary L1 seed
+*Br  199 :TrigObj_l2pt :
+*Br  200 :TrigObj_id : Int_t ID of the object: 13 = Muon
+*Br  201 :TrigObj_l1iso : Int_t iso of associated L1 seed
+*Br  202 :TrigObj_l1charge : Int_t charge of associated L1 seed
+*Br  203 :TrigObj_filterBits : Int_t extra bits of associated
+*Br  204 :nOtherPV  : UInt_t
+*Br  205 :OtherPV_z :
+*Br  206 :OtherPV_score :
+*Br  207 :PV_ndof   : Float_t main primary vertex number of degree of
+*Br  208 :PV_x      : Float_t main primary vertex position x
+*Br  209 :PV_y      : Float_t main primary vertex position y
+*Br  210 :PV_z      : Float_t main primary vertex position z
+*Br  211 :PV_chi2   : Float_t main primary vertex reduced chi2
+*Br  212 :PV_score  :
+*Br  213 :PV_npvs   : Int_t total number of reconstructed primary
+*Br  214 :PV_npvsGood :
+*Br  215 :nSV       : UInt_t
+*Br  216 :SV_dlen   : Float_t decay length in cm
+*Br  217 :SV_dlenSig : Float_t decay length significance
+*Br  218 :SV_dxy    : Float_t 2D decay length in cm
+*Br  219 :SV_dxySig : Float_t 2D decay length significance
+*Br  220 :SV_pAngle : Float_t pointing angle, i.e. acos(p_SV * (SV -
+*Br  221 :SV_charge : Int_t sum of the charge of the SV tracks
+*Br  222 :SV_chi2   : Float_t reduced chi2, i.e. chi/ndof
+*Br  223 :SV_eta    : Float_t eta
+*Br  224 :SV_mass   : Float_t mass
+*Br  225 :SV_ndof   : Float_t number of degrees of freedom
+*Br  226 :SV_phi    : Float_t phi
+*Br  227 :SV_pt     : Float_t pt
+*Br  228 :SV_x      : Float_t secondary vertex X position, in cm
+*Br  229 :SV_y      : Float_t secondary vertex Y position, in cm
+*Br  230 :SV_z      : Float_t secondary vertex Z position, in cm
+*Br  231 :SV_ntracks : UChar_t number of tracks
